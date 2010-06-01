@@ -1,0 +1,22 @@
+#define TA			// This is a TA script
+
+#include "sfxtype.h"
+#include "exptype.h"
+
+piece  base,emit;
+
+
+Create()
+{
+	dont-shade base;
+	dont-cache base;
+	set ARMORED to 0;
+	hide emit;
+	return (0);
+}
+
+
+Killed(severity, corpsetype)
+{
+	emit-sfx 1025 from emit;
+}

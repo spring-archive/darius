@@ -1,0 +1,99 @@
+[MAP]
+{
+	Description= Trojan Hills v02 - 1v1 map by [RoX]1v0ry_k1ng. Geothermals are the key!;
+	Gravity=100;				        //in units/sec^2
+	MaxMetal=0.9534;				        //how much metal a map square with the maximum metal value gives
+	TidalStrength=15;
+	ExtractorRadius=100;				//radius that a single extractor(mine) extracts from
+	MapHardness=100;                                // how hard it is to create craters in map, default 100
+	AutoShowMetal=1;
+	Detailtex=detailtexblurred.bmp;
+[SMF]
+{
+minheight = -173;
+maxheight = 642;
+}
+
+	[ATMOSPHERE]
+	{
+		
+		FogColor=0.95 0.62 0.35;
+		FogStart=0.75;
+
+		CloudColor=0.075 0.0075 0.014;
+		SkyColor=0.79 0.22 0.03;
+		SunColor=1 0.4 0.1;
+		CloudDensity=0.65;
+		
+		MinWind=4;
+		MaxWind=16;
+		
+	}
+
+	[WATER]
+	{
+WaterSurfaceColor=0.65 0.67 0.74;
+WaterPlaneColor=0.012 0.075 0.075;
+WaterBaseColor=0.75 1 1;
+WaterAbsorb=0.005 0.004 0.0025;
+WaterMinColor=0.35 0.2 0.15;
+WaterSurfaceAlpha=0.128;
+WaterPerlinAmplitude=0.83;
+WaterPerlinLacunarity=0.55;
+//WaterReflectionDistortion = 0.1;
+//WaterBlurExponent= 1;
+	}
+	[LIGHT]
+	{
+		SunDir= 0.65 0.35 -0.4;
+
+		GroundAmbiantColor=0.6 0.7 0.75;
+		GroundSunColor=1.1 0.88 0.44;
+		GroundShadowDensity=1;
+		UnitAmbiantColor=0.2 0.28 0.32;
+		UnitSunColor=1 0.80 0.4;
+		UnitShadowDensity=1;
+		SpecularSunColor=1.6 0.44 0.06;
+
+		//SpecularSunColor=1 1 1;					//how far from the non shadowed to the ambient color stuff in shadow will go
+	}	
+[TERRAINTYPE0]
+	{
+		name=Land;
+		hardness=1;
+		tankmovespeed=1;
+		kbotmovespeed=1;
+		hovermovespeed=1;
+		shipmovespeed=1;
+	}
+	[TEAM0]
+		{
+		StartPosX=3534;
+		StartPosZ=1277;
+		}
+	[TEAM1]
+		{
+		StartPosX=4686;
+		StartPosZ=6998;
+		}
+	[TEAM2]
+		{
+		StartPosX=983;
+		StartPosZ=918;
+		}
+	[TEAM3]
+		{
+		StartPosX=7224;
+		StartPosZ=7351;
+		}
+	[TEAM4]
+		{
+		StartPosX=7311;
+		StartPosZ=936;
+		}
+	[TEAM5]
+		{
+		StartPosX=769;
+		StartPosZ=7255;
+		}
+}

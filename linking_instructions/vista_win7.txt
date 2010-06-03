@@ -10,4 +10,4 @@ mklink /D [Your Spring Install Directory]\mods\darius.sdd [Your SVN Trunk]\src
 To do the map(s) do about the same thing:
 mklink /D [Your Spring Install Directory]\maps [Your SVN Trunk]\maps
 
-/D stands for a symbolic link
+(/D stands for a symbolic link)

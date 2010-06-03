@@ -23,7 +23,7 @@ junction.exe -s "[Your Spring Install Directory]\maps\darius" "[Your SVN Trunk]\
 
 To delete junctions, use the –d switch:
 junction.exe -d "[Your Spring Install Directory]\mods\darius.sdd"
-junction.exe -d "[Your Spring Install Directory]\maps"
+junction.exe -d "[Your Spring Install Directory]\maps\darius"
 
 -----
 

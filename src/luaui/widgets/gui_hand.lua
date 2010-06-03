@@ -6,7 +6,7 @@ function widget:GetInfo()
 	author = "xcompwiz",
 	date = "May 6, 2010",
 	license = "GNU GPL, v2 or later",
-	layer = 1000,
+	layer = 0,
 	enabled = true
 	}
 end
@@ -22,11 +22,17 @@ local file = LUAUI_DIRNAME .. "Configs/crudemenu_conf.lua"
 local confdata = VFS.Include(file, nil, VFSMODE)
 local color = confdata.color
 
+WhiteStr   = "\255\255\255\255"
+GreyStr    = "\255\210\210\210"
+GreenStr   = "\255\092\255\092"
+OrangeStr  = "\255\255\190\128"
+RedStr     = "\255\255\170\170"
+
 --------------
 -- settings --
 --------------
 local settings = {
-	cardsize_x = 100,
+	cardsize_x = 140,
 	cardsize_y = 200,
 	pos_x,
 	pos_y,
@@ -36,11 +42,15 @@ local settings = {
 -- local vars --
 ----------------
 local window_hand
+local stack_hand
+
+-- The cards in the player's hand
+local old_cards_in_hand = {}
+local cards_in_hand = {}
 
 ---------------------
 -- local functions --
 ---------------------
--- Drawing --
 local function MakeHandMenu()
 	if window_hand then
 		window_hand:Dispose()
@@ -53,8 +63,17 @@ local function MakeHandMenu()
 	local hand_pos_x = settings.pos_x or 0.5 * vsx - hand_width * 0.5
 	local hand_pos_y = settings.pos_y or 0.05 * vsy - hand_height * 0.5
 
-	lbl_fps = Label:New{ name='lbl_fps', caption = 'FPS:', textColor = color.sub_header,  }
-	lbl_gtime = Label:New{ name='lbl_gtime', caption = 'Time:', textColor = color.sub_header, align="center" }
+	stack_hand = StackPanel:New{
+		name='stack_hand',
+		orientation = 'horizontal',
+		width = hand_width,
+		height = hand_height,
+		resizeItems = false,
+		padding = {0,10,0,0},
+		itemPadding = {0,0,0,0},
+		itemMargin = {0,0,0,0},
+		children = {}
+	}
 
 	window_hand = Window:New {  
 		caption="Hand",
@@ -70,21 +89,49 @@ local function MakeHandMenu()
 		backgroundColor = color.main_bg,
 
 		children = {
-			StackPanel:New{
-				name='stack_main',
-				orientation = 'horizontal',
-				width = hand_width,
-				height = hand_height,
-				resizeItems = false,
-				padding = {0,0,0,0},
-				itemPadding = {2,0,0,0},
-				itemMargin = {0,0,0,0},
-				children = {
-				}
-			}
+			stack_hand,
 		}
 	}
 	screen0:AddChild(window_hand)
+end
+
+local function HandChanged()
+	stack_hand.children = {}
+	for _, card in pairs(cards_in_hand) do
+		table.insert(stack_hand.children,
+			Button:New {
+				caption = "",
+				card = card,
+				height = settings.cardsize_y + 20,
+				width = settings.cardsize_x + 20,
+				OnMouseUp = {
+					function(self)
+						spEcho(card.name)
+					end
+				},
+				backgroundColor = color.game_bg,
+				textColor = color.game_fg,
+				children = { 
+					Label:New {
+						caption = card.name,
+					},
+					Image:New {
+						file = card.img,
+						width = settings.cardsize_x,
+						height = settings.cardsize_y,
+						keepAspect = false,
+					},
+				}
+			})
+	end
+end
+
+local function UpdateHand()
+	if (cards_in_hand == old_cards_in_hand) then
+	else
+		old_cards_in_hand = cards_in_hand --TODO: Get current hand
+		HandChanged()
+	end
 end
 
 --------------
@@ -97,6 +144,15 @@ function widget:Initialize()
 		widgetHandler:RemoveWidget(widget)
 		return
 	end
+
+	--Testing card data
+	cards_in_hand = {
+		{name = "Metal"    , type = "Material", img = 'LuaUI/images/ibeam.png'},
+		{name = "Metal"    , type = "Material", img = 'LuaUI/images/ibeam.png'},
+		{name = "Metal"    , type = "Weapon"  , img = 'LuaUI/images/ibeam.png'},
+		{name = "Fire"     , type = "Weapon"  , img = 'LuaUI/images/energy.png'},
+		{name = "Lightning", type = "Weapon"  , img = 'LuaUI/images/energy.png'},
+	}
 
 	-- setup Chili
 	 Chili = WG.Chili
@@ -111,6 +167,7 @@ function widget:Initialize()
 	 screen0 = Chili.Screen0
 
 	MakeHandMenu()
+	HandChanged()
 	widget:ViewResize(Spring.GetViewGeometry())
 end
 
@@ -133,6 +190,14 @@ end
 
 function widget:IsAbove(x, y)
 	local vsx, vsy = widgetHandler:GetViewSizes()
+	local x = x - window_hand.x
+	local y = vsy - y
+	y = y - window_hand.y
+	return window_hand:HitTest(x, y)
+end
+
+local function oldAbove()
+	local vsx, vsy = widgetHandler:GetViewSizes()
 	y = vsy - y
 	if (window_hand) then
 		if (x >= window_hand.x and x < window_hand.x + window_hand.width) then
@@ -146,13 +211,31 @@ function widget:IsAbove(x, y)
 end
 
 function widget:GetTooltip(x, y)
-  return "Basic tool tip\n"
+	local vsx, vsy = widgetHandler:GetViewSizes()
+	local x = x - window_hand.x
+	local y = vsy - y
+	y = y - window_hand.y
+	obj = window_hand:HitTest(x, y)
+	if (obj.card) then -- If we are over a button with card data
+		local name   = obj.card.name   or "Unknown"
+		local type   = obj.card.type   or "Unknown"
+		local health = obj.card.health or 0
+		local range  = obj.card.range  or 0
+		local damage = obj.card.damage or 0
+		return WhiteStr  .. "Name: "   .. name   .. "\n" ..
+			 GreyStr   .. "Type: "   .. type   .. "\n" ..
+			 GreenStr  .. "Health: " .. health .. "\n" ..
+			 OrangeStr .. "Range: "  .. range  .. "\n" ..
+			 RedStr    .. "Damage: " .. damage	
+	end
+	return
 end
 
 function widget:MousePress(x, y, button)
 end
 
 function widget:Update()
+	UpdateHand()
 end
 
 function widget:DrawScreen()

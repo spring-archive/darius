@@ -8,6 +8,8 @@
 --
 --  modified by jK and quantum
 --
+--  modified by xcompwiz (Darius)
+--
 --  Copyright (C) 2007,2008,2009.
 --  Licensed under the terms of the GNU GPL, v2 or later.
 --
@@ -17,7 +19,7 @@ local ORDER_VERSION = 1 --- change this to reset enabled/disabled widgets
 local DATA_VERSION = 1 -- change this to reset enabled/disabled widgets
 
 
-function pwl() -- ???  (print widget list)
+function pwl() -- (print widget list)
   for k,v in ipairs(widgetHandler.widgets) do
     print(k, v.whInfo.layer, v.whInfo.name)
   end

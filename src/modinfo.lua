@@ -1,4 +1,4 @@
--- $Id: modinfo.lua 4663 2009-05-24 06:00:10Z det $
+-- $Id: modinfo.lua 4663 2010-06-02 22:32:10Z det $
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 --
@@ -9,10 +9,10 @@
 --------------------------------------------------------------------------------
 
 return {
-  name='Complete Annihilation stable-7761',
-  description='Complete Annihilation',
-  shortname='ca',
-  version='stable-7761',
+  name='Darius Tower Defense',
+  description='Darius Tower Defense',
+  shortname='DTD',
+  version='0.0',
   mutator='',
   game='',
   shortGame='',

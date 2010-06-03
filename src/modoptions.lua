@@ -38,57 +38,11 @@ local options = {
     items  = {
       { 
         key  = 'normal',
-        name = 'Normal',
+        name = 'Tower Defense',
         desc = 'Normal game mode',
       },
-      {
-        key  = 'deploy',
-        name = 'Deployment',
-        desc = 'Players deploy a limited number of units before the game starts',
-      },
-      {
-        key  = 'tactics',
-        name = 'Tactics',
-        desc = 'Players select a limited number of units before the game starts (without any factories)',
-      },
-      {
-    key  = 'kingofthehill',
-    name = 'King of the Hill',
-    desc = 'Control the hill for a set amount of time to win! See King of the Hill section.',
-      },
-    },
-    
+    },    
   },
-    {
-    key    = 'koth',
-    name   = 'King of the Hill Settings',
-    desc   = 'Settings for King of the Hill mode.',
-    type   = 'section',
-    },
-    {
-        key='hilltime',
-        name='Hill control time',
-        desc='Set how long a team has to control the hill for (in minutes).',
-        type='number',
-        def=10,
-        min=1,
-        max=30,
-        step=1.0,
-        section='koth',
-    },
-    
-    {
-        key='gracetime',
-        name='No control grace period',
-        desc='No player can control the hill until period is over.',
-        type='number',
-        def=2,
-        min=0,
-        max=5,
-        step=0.5,
-        section='koth',
-    },
-  
   {
     key='commtype',
     name='Starting Unit',
@@ -104,7 +58,7 @@ local options = {
       { key='cat', name='CATcom', desc ='Classic commander blast, that does no damage to other commanders & D-gun kill everything in range except for other commanders, to which they do no damage. Commander health is 3500' },
     },
   },
-  { 
+  {
     key = "startingresourcetype",
     name = "Starting Resource Type",
     desc = "Choose the form in which starting resources are given.",
@@ -216,7 +170,7 @@ local options = {
     name   = 'Water Level',
     desc   = 'Adjusts the water level of the map',
     type   = 'number',
-    section= 'mapsettings',    
+    section= 'mapsettings',
     def    = 0,
     min    = -2000,
     max    = 2000,
@@ -275,8 +229,8 @@ local options = {
     name   = 'Experimental Settings',
     desc   = 'Experimental settings.',
     type   = 'section',
-  }, 
-    {
+  },
+  {
     key    = 'terracostmult',
     name   = 'Terraform Cost Multiplier',
     desc   = 'Multiplies the cost of terraform.',

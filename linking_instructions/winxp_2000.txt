@@ -1,0 +1,24 @@
+Mklink isn't available on Windows 2000 and Windows XP. Directory symbolic
+links are known as "NTFS junctions" in Windows 2000 and Windows XP.
+Despite the fact that Vista and Windows 7 have a build-in mklink-program
+for creating REAL symbolic links, these junctions work also in Windows Vista
+and Windows 7)
+
+So if you have Windows 2000 or Windows XP, use this program:
+http://technet.microsoft.com/en-us/sysinternals/bb896768.aspx
+
+I already added the junction.exe to this folder so you don't have to download
+anything.
+
+junction.exe -s "[Your Spring Install Directory]\mods\darius.sdd" "[Your SVN Trunk]\src"
+junction.exe -s "[Your Spring Install Directory]\maps" "[Your SVN Trunk]\maps"
+
+-s stands for recurse subdirectories
+
+To delete junctions, use the –d switch:
+junction.exe -d "[Your Spring Install Directory]\mods\darius.sdd"
+junction.exe -d "[Your Spring Install Directory]\maps"
+
+As expected, removing junctions does not remove the original folders.
+
+- malloc, 3.6.2010

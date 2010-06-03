@@ -44,9 +44,18 @@ local settings = {
 local window_hand
 local stack_hand
 
+local hoveredCard
+
 -- The cards in the player's hand
-local old_cards_in_hand = {}
 local cards_in_hand = {}
+local next_hand = { --For testing changing the hand
+	{name = "Metal", type = "Material", img = 'LuaUI/images/ibeam.png'},
+	{name = "Fire" , type = "Weapon"  , img = 'LuaUI/images/energy.png'},
+	{name = "Heal" , type = "Special" , img = 'bitmaps/gpl/nano.tga'},
+	{name = "Nuke" , type = "Special" , img = 'icons/nuke.dds'},
+	{name = "Alien", type = "Special" , img = 'LuaUI/images/friendly.png'},
+}
+next_hand = nil
 
 ---------------------
 -- local functions --
@@ -80,7 +89,7 @@ local function MakeHandMenu()
 		x = hand_pos_x,
 		y = hand_pos_y,
 		dockable = true,
-		name = "cardhand2",
+		name = "cardhand",
 		clientWidth = hand_width,
 		clientHeight = hand_height,
 		draggable = true,
@@ -95,20 +104,83 @@ local function MakeHandMenu()
 	screen0:AddChild(window_hand)
 end
 
-local function HandChanged()
+	local active_material --TODO: These likely need to change to some backend system
+	local active_weapon
+local function ActivateCard(button)
+	-- Change the currently activated cards to normal and force them to be redrawn
+	if (active_material) then
+		active_material.backgroundColor = color.game_bg
+		active_material:Invalidate()
+	end
+	if (active_weapon) then
+		active_weapon.backgroundColor = color.game_bg
+		active_weapon:Invalidate()
+	end
+	if (button.card) then  --assure the button has card data
+	if (button.card.type) then --make sure the card is properly formed
+		-- Set this card as the active material or weapon.
+		-- If it is already the active material or weapon deselect it
+		if (button.card.type == "Material") then
+			if (active_material == button) then
+				active_material = nil
+			else
+				active_material = button
+			end
+		elseif (button.card.type == "Weapon") then
+			if (active_weapon == button) then
+				active_weapon = nil
+			else
+				active_weapon = button
+			end
+		else
+			button.backgroundColor = color.blue --TODO: Do something for the other cards (probably pass them to a syatem elsewhere)
+		end
+	end
+	end
+
+	-- Change the background of the selected card
+	if (active_material) then
+		active_material.backgroundColor = color.game_fg
+	end
+	if (active_weapon) then
+		active_weapon.backgroundColor = color.game_fg
+	end
+end
+
+local function DrawHand()
+	if not (stack_hand) then
+		return
+	end
 	stack_hand.children = {}
+
+	if not (cards_in_hand) then
+		return
+	end
 	for _, card in pairs(cards_in_hand) do
+		--Create tooltip
+		local name   = card.name   or "Unknown"
+		local type   = card.type   or "Unknown"
+		local health = card.health or 0
+		local range  = card.range  or 0
+		local damage = card.damage or 0
+		local tooltip = 	WhiteStr  .. "Name: "   .. name   .. "\n" ..
+					GreyStr   .. "Type: "   .. type   .. "\n" ..
+					GreenStr  .. "Health: " .. health .. "\n" ..
+					OrangeStr .. "Range: "  .. range  .. "\n" ..
+					RedStr    .. "Damage: " .. damage
+		-- Create a button for the card
 		table.insert(stack_hand.children,
 			Button:New {
 				caption = "",
 				card = card,
 				height = settings.cardsize_y + 20,
 				width = settings.cardsize_x + 20,
-				OnMouseUp = {
+				OnMouseUp = { 
 					function(self)
-						spEcho(card.name)
+						ActivateCard(self)
 					end
 				},
+				tooltip = tooltip,
 				backgroundColor = color.game_bg,
 				textColor = color.game_fg,
 				children = { 
@@ -124,13 +196,22 @@ local function HandChanged()
 				}
 			})
 	end
+	--Force the window to be redrawn
+	window_hand:Invalidate()
+end
+
+local function GetHand()
+	local hand = next_hand or cards_in_hand
+	next_hand = nil
+	return hand
 end
 
 local function UpdateHand()
-	if (cards_in_hand == old_cards_in_hand) then
+	local new_hand = GetHand()
+	if (cards_in_hand == new_hand) then
 	else
-		old_cards_in_hand = cards_in_hand --TODO: Get current hand
-		HandChanged()
+		cards_in_hand = new_hand
+		DrawHand()
 	end
 end
 
@@ -149,7 +230,7 @@ function widget:Initialize()
 	cards_in_hand = {
 		{name = "Metal"    , type = "Material", img = 'LuaUI/images/ibeam.png'},
 		{name = "Metal"    , type = "Material", img = 'LuaUI/images/ibeam.png'},
-		{name = "Metal"    , type = "Weapon"  , img = 'LuaUI/images/ibeam.png'},
+		{name = "Fire"     , type = "Weapon"  , img = 'LuaUI/images/energy.png'},
 		{name = "Fire"     , type = "Weapon"  , img = 'LuaUI/images/energy.png'},
 		{name = "Lightning", type = "Weapon"  , img = 'LuaUI/images/energy.png'},
 	}
@@ -167,7 +248,7 @@ function widget:Initialize()
 	 screen0 = Chili.Screen0
 
 	MakeHandMenu()
-	HandChanged()
+	DrawHand()
 	widget:ViewResize(Spring.GetViewGeometry())
 end
 
@@ -193,7 +274,8 @@ function widget:IsAbove(x, y)
 	local x = x - window_hand.x
 	local y = vsy - y
 	y = y - window_hand.y
-	return window_hand:HitTest(x, y)
+	hoveredCard = window_hand:HitTest(x, y)
+	return not (hoveredCard == nil)
 end
 
 local function oldAbove()
@@ -211,22 +293,8 @@ local function oldAbove()
 end
 
 function widget:GetTooltip(x, y)
-	local vsx, vsy = widgetHandler:GetViewSizes()
-	local x = x - window_hand.x
-	local y = vsy - y
-	y = y - window_hand.y
-	obj = window_hand:HitTest(x, y)
-	if (obj.card) then -- If we are over a button with card data
-		local name   = obj.card.name   or "Unknown"
-		local type   = obj.card.type   or "Unknown"
-		local health = obj.card.health or 0
-		local range  = obj.card.range  or 0
-		local damage = obj.card.damage or 0
-		return WhiteStr  .. "Name: "   .. name   .. "\n" ..
-			 GreyStr   .. "Type: "   .. type   .. "\n" ..
-			 GreenStr  .. "Health: " .. health .. "\n" ..
-			 OrangeStr .. "Range: "  .. range  .. "\n" ..
-			 RedStr    .. "Damage: " .. damage	
+	if (hoveredCard) then
+		return hoveredCard.tooltip
 	end
 	return
 end

@@ -25,6 +25,7 @@ local color = confdata.color
 WhiteStr   = "\255\255\255\255"
 GreyStr    = "\255\210\210\210"
 GreenStr   = "\255\092\255\092"
+YellowStr  = "\255\255\255\152"
 OrangeStr  = "\255\255\190\128"
 RedStr     = "\255\255\170\170"
 
@@ -104,46 +105,61 @@ local function MakeHandMenu()
 	screen0:AddChild(window_hand)
 end
 
-	local active_material --TODO: These likely need to change to some backend system
-	local active_weapon
-local function ActivateCard(button)
-	-- Change the currently activated cards to normal and force them to be redrawn
+local active_material --TODO: These likely need to move to some backend system
+local function ActivateMaterial(button)
+	-- Change the currently activated card to normal and force it to be redrawn
 	if (active_material) then
 		active_material.backgroundColor = color.game_bg
 		active_material:Invalidate()
 	end
-	if (active_weapon) then
-		active_weapon.backgroundColor = color.game_bg
-		active_weapon:Invalidate()
-	end
-	if (button.card) then  --assure the button has card data
-	if (button.card.type) then --make sure the card is properly formed
-		-- Set this card as the active material or weapon.
-		-- If it is already the active material or weapon deselect it
-		if (button.card.type == "Material") then
-			if (active_material == button) then
-				active_material = nil
-			else
-				active_material = button
-			end
-		elseif (button.card.type == "Weapon") then
-			if (active_weapon == button) then
-				active_weapon = nil
-			else
-				active_weapon = button
-			end
-		else
-			button.backgroundColor = color.blue --TODO: Do something for the other cards (probably pass them to a syatem elsewhere)
-		end
-	end
+
+	if (active_material == button) then
+		active_material = nil
+	else
+		active_material = button
 	end
 
 	-- Change the background of the selected card
 	if (active_material) then
 		active_material.backgroundColor = color.game_fg
 	end
+end
+
+local active_weapon --TODO: These likely need to move to some backend system
+local function ActivateWeapon(button)
+	-- Change the currently activated card to normal and force it to be redrawn
+	if (active_weapon) then
+		active_weapon.backgroundColor = color.game_bg
+		active_weapon:Invalidate()
+	end
+
+	if (active_weapon == button) then
+		active_weapon = nil
+	else
+		active_weapon = button
+	end
+
+	-- Change the background of the selected card
 	if (active_weapon) then
 		active_weapon.backgroundColor = color.game_fg
+	end
+end
+
+local function ActivateOther(button)
+	button.backgroundColor = color.blue --TODO: Do something for the other cards (probably pass them to a syatem elsewhere)
+end
+
+local function ActivateCard(button)
+	if (button.card) then  --assure the button has card data
+	if (button.card.type) then --make sure the card is properly formed
+		if (button.card.type == "Material") then
+			ActivateMaterial(button)
+		elseif (button.card.type == "Weapon") then
+			ActivateWeapon(button)
+		else
+			ActivateOther(button)
+		end
+	end
 	end
 end
 
@@ -161,11 +177,13 @@ local function DrawHand()
 		local name   = card.name   or "Unknown"
 		local type   = card.type   or "Unknown"
 		local health = card.health or 0
+		local rate   = card.rate   or 0
 		local range  = card.range  or 0
 		local damage = card.damage or 0
 		local tooltip = 	WhiteStr  .. "Name: "   .. name   .. "\n" ..
 					GreyStr   .. "Type: "   .. type   .. "\n" ..
 					GreenStr  .. "Health: " .. health .. "\n" ..
+					YellowStr .. "Rate: "   .. rate   .. "\n" ..
 					OrangeStr .. "Range: "  .. range  .. "\n" ..
 					RedStr    .. "Damage: " .. damage
 		-- Create a button for the card
@@ -228,11 +246,11 @@ function widget:Initialize()
 
 	--Testing card data
 	cards_in_hand = {
-		{name = "Metal"    , type = "Material", img = 'LuaUI/images/ibeam.png'},
-		{name = "Metal"    , type = "Material", img = 'LuaUI/images/ibeam.png'},
-		{name = "Fire"     , type = "Weapon"  , img = 'LuaUI/images/energy.png'},
-		{name = "Fire"     , type = "Weapon"  , img = 'LuaUI/images/energy.png'},
-		{name = "Lightning", type = "Weapon"  , img = 'LuaUI/images/energy.png'},
+		{name = "Metal"    , type = "Material", img = 'LuaUI/images/ibeam.png' , health =   100, rate = -0.01, range =  10, damage =  0},
+		{name = "Metal"    , type = "Material", img = 'LuaUI/images/ibeam.png' , health =   100, rate = -0.01, range =  10, damage =  0},
+		{name = "Fire"     , type = "Weapon"  , img = 'LuaUI/images/energy.png', health =  - 10, rate =  1  , range =  50, damage =  5},
+		{name = "Fire"     , type = "Weapon"  , img = 'LuaUI/images/energy.png', health =  - 10, rate =  1  , range =  50, damage =  5},
+		{name = "Lightning", type = "Weapon"  , img = 'LuaUI/images/energy.png', health =     0, rate =  0.5, range = 100, damage = 10},
 	}
 
 	-- setup Chili

@@ -15,7 +15,7 @@ http://technet.microsoft.com/en-us/sysinternals/bb896768.aspx
 I added the junction.exe to this folder so you don't have to even download it.
 
 junction.exe -s "[Your Spring Install Directory]\mods\darius.sdd" "[Your SVN Trunk]\src"
-junction.exe -s "[Your Spring Install Directory]\maps" "[Your SVN Trunk]\maps"
+junction.exe -s "[Your Spring Install Directory]\maps\darius" "[Your SVN Trunk]\maps"
 
 (-s stands for recurse subdirectories)
 

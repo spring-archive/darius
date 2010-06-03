@@ -1,0 +1,64 @@
+[MAP]
+{
+	Description=Huge metal map. Many paths to fight to the enemy base. Recommended for 4vs4,5vs5 or 6vs6. Look at heightmap for starting boxes, which should be west vs east covering the white on both sides. Made by Mystery Guy;
+	TidalStrength=50;
+	Gravity=130;
+	MaxMetal=1337;
+	ExtractorRadius=25;
+	MapHardness=100;
+	[SMF]
+	{
+		minheight = 0;
+		maxheight = 200;
+	}
+	[ATMOSPHERE]
+	{
+		FogColour=0.392 0.392 0.392;
+		FogStart=0.55;
+		SunColour=1.000 0.784 0.078;
+		SkyColour=0.078 0.078 0.941;
+		CloudColour=0.588 0.588 0.588;
+		CloudDensity=0.55;
+		MinWind=1337;
+		MaxWind=1337;
+	}
+	[LIGHT]
+	{
+		SunDir=1 2 0;
+		GroundAmbientColour=0.498 0.498 0.498;
+		GroundSunColour=0.498 0.498 0.498;
+		GroundShadowDensity=0.55;
+		UnitAmbientColour=0.498 0.498 0.498;
+		UnitSunColour=0.498 0.498 0.498;
+		UnitShadowDensity=0.55;
+	}
+	[WATER]
+	{
+		WaterBaseColour=0.392 0.588 0.784;
+		WaterMinColour=0.039 0.039 0.117;
+		WaterAbsorbColour=0.0156 0.0156 0.0078;
+		WaterPlaneColour=0.7529 0.8039 0.8549;
+		WaterSurfaceColour=0.7529 0.8039 0.8549;
+	}
+	[TEAM3]
+	{
+		StartPosX=64;
+		StartPosZ=64;
+	}
+	[TEAM2]
+	{
+		StartPosX=64;
+		StartPosZ=64;
+	}
+	[TEAM1]
+	{
+		StartPosX=64;
+		StartPosZ=64;
+	}
+	[TEAM0]
+	{
+		StartPosX=64;
+		StartPosZ=64;
+	}
+
+}

@@ -1,0 +1,68 @@
+[MAP]
+{
+	description=Speed Ball Suicide! Left has low metal, and 1 geo spot, right has high metal and 27 geo spots, who will win!? Made by TradeMark.;
+	tidalstrength=25;
+	gravity=140;
+	maxmetal=20;
+	extractorradius=20;
+	maphardness=70;
+	autoshowmetal=1;
+	[ATMOSPHERE]
+	{
+		FogColor=0 0 0;
+		FogStart=0.9;
+		CloudColor=0.85 0.6 0.8;
+		SkyColor=0.2 0.1 0.6;
+		SunColor=0.79 0.4 0;
+		CloudDensity=0.8;
+		MinWind=25;
+		MaxWind=25;
+		Skybox=CorePrime.dds;
+	}
+	[WATER]
+	{
+		WaterSurfaceColor=1 1 1;
+		WaterPlaneColor=0 0 0;
+		WaterBaseColor=0 0 0;
+		WaterAbsorb=0 0 0.37;
+		WaterMinColor=0 0 0;
+		WaterDamage=200;
+		watertexture=black.jpg;
+	}
+	[LIGHT]
+	{
+		SunDir=0.383 0.508 -0.308;
+		GroundAmbiantColor=1 1 1;
+		GroundSunColor=1 1 1;
+		GroundShadowDensity=1.5;
+		UnitAmbiantColor=1 1 1;
+		UnitSunColor=1 1 1;
+		UnitShadowDensity=1.5;
+		SpecularSunColor=1 1 1;
+	}
+	[TERRAINTYPE0]
+	{
+		name=default;
+		hardness=1;
+		tankmovespeed=1;
+		kbotmovespeed=1;
+		hovermovespeed=1;
+		shipmovespeed=1;
+	}
+	[TEAM0]{
+		StartPosX=320;
+		StartPosZ=1535;
+	}
+	[TEAM1]{
+		StartPosX=7923;
+		StartPosZ=1535;
+	}
+	[TEAM2]{
+		StartPosX=1535;
+		StartPosZ=320;
+	}
+	[TEAM3]{
+		StartPosX=1535;
+		StartPosZ=2752;
+	}
+}

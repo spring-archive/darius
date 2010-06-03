@@ -1,0 +1,23 @@
+[tllmedfusion_dead]
+{
+	Description=Wreckage;
+	Object=tllmedfusion_dead;
+	Featuredead=tllmedfusion_heap;
+	Footprintx=5;
+	Footprintz=5;
+	Height=12;
+	Blocking=1;
+	Metal=3344;
+	Damage=2545;
+}
+
+[tllmedfusion_heap]
+{
+	Description=Metal Shards;
+	Object=4x4c;
+	Footprintx=5;
+	Footprintz=4;
+	Blocking=0;
+	Metal=2112;
+	Damage=1434;
+}

@@ -10,18 +10,22 @@ function gadget:GetInfo()
 	}
 end
 
+local spEcho = Spring.Echo
+
 if (not gadgetHandler:IsSyncedCode()) then
 	return false -- no unsynced code
 end
 
 local tower = nil
+local team = nil
 local x = nil
 local y = nil
 local z = nil
 
 function gadget:GameFrame(f)
 	if tower ~= nil then -- If tower variable is set then create the tower
-		Spring.CreateUnit(tower,x,y,z,"south",1,false)
+		Spring.CreateUnit(tower,x,y,z,"south",team,false)
+		team = nil
 		x = nil
 		y = nil
 		z = nil
@@ -30,7 +34,7 @@ function gadget:GameFrame(f)
 end
 
 function gadget:RecvLuaMsg(msg, playerID)
-	--Spring.Echo("RecvLuaMsg: "..msg)
+	--spEcho("RecvLuaMsg: "..msg)
 	local words = {}
 	i = 0
 	for word in string.gmatch(msg, "%S+") do -- Split the message to a table, %S = All non-space characters
@@ -38,6 +42,7 @@ function gadget:RecvLuaMsg(msg, playerID)
 		words[i] = word
 	end
 	if words[1] == "PlaceTower" then
+		team = 1 --playerID
 		tower = words[2]
 		x = tonumber(words[3])
 		y = tonumber(words[4])

@@ -10,6 +10,8 @@ function widget:GetInfo()
 	}
 end
 
+local spEcho = Spring.Echo
+
 local tower
 
 function widget:Update()
@@ -21,11 +23,12 @@ function widget:Update()
 end
 
 function widget:MousePress(x,y,button)
-	if tower ~= nil then
+	if not (tower == nil) then
 		-- Converts 2d coordinates of the mouse position to 3d coordinates
 		local _,pos = Spring.TraceScreenRay(x,y,true,false) 
 		-- Widgets can't create units so sends message to a gadget
 		Spring.SendLuaRulesMsg("PlaceTower "..tower.." "..tostring(pos[1]).." "..tostring(pos[2]).." "..tostring(pos[3]))
+		--spEcho("PlaceTower "..tower.." "..tostring(pos[1]).." "..tostring(pos[2]).." "..tostring(pos[3]))
 		tower = nil
 	end	
 end

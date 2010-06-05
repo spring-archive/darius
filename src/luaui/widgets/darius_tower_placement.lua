@@ -27,8 +27,10 @@ function widget:MousePress(x,y,button)
 		-- Converts 2d coordinates of the mouse position to 3d coordinates
 		local _,pos = Spring.TraceScreenRay(x,y,true,false) 
 		-- Widgets can't create units so sends message to a gadget
-		Spring.SendLuaRulesMsg("PlaceTower "..tower.." "..tostring(pos[1]).." "..tostring(pos[2]).." "..tostring(pos[3]))
-		--spEcho("PlaceTower "..tower.." "..tostring(pos[1]).." "..tostring(pos[2]).." "..tostring(pos[3]))
-		tower = nil
+		if (pos) then
+			Spring.SendLuaRulesMsg("PlaceTower "..tower.." "..tostring(pos[1]).." "..tostring(pos[2]).." "..tostring(pos[3]))
+			--spEcho("PlaceTower "..tower.." "..tostring(pos[1]).." "..tostring(pos[2]).." "..tostring(pos[3]))
+			tower = nil
+		end
 	end	
 end

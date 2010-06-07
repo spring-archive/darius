@@ -194,6 +194,7 @@ local function UpdateHand()
 		selectedMaterial = new_material
 		selectedWeapon   = new_weapon
 		selectedSpecial  = new_special
+		spEcho("Redrawing hand")
 		DrawHand()
 	end
 end

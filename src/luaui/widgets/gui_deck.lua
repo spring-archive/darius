@@ -89,26 +89,22 @@ local function MakeHandMenu()
 	screen0:AddChild(window_deck)
 end
 
-local function GetGreenballs()
-	--return Darius:GetGreenballs()
-end
-
 local function SendCardToHand(button)
-	--if (getGreenballs() < theAmountNeeded) then
-		--spEcho("You need more Greenballs")
-		--return
-	--end
+	if not (Darius:CanDraw()) then
+		spEcho("You need more Greenballs")
+		return
+	end
 		
 	if (button.deck.name == "Deck1") then
 		spEcho("Deck1")
-		--Darius:Deck1ToHand(button.card)
+		Darius:Draw(1)
 	elseif (button.deck.name == "Deck2") then
 		spEcho("Deck2")
-		--Darius:Deck2ToHand(button.card)
+		Darius:Draw(2)
 	end
 end
 
-local function DrawHand()
+local function DrawDeck()
 	if not (stack_deck) then
 		return
 	end
@@ -184,7 +180,7 @@ function widget:Initialize()
 	 
 	 
 	MakeHandMenu()
-	DrawHand()
+	DrawDeck()
 	widget:ViewResize(Spring.GetViewGeometry())
 end
 
@@ -205,18 +201,6 @@ end
 function widget:ViewResize(viewSizeX, viewSizeY)
 end
 
-function widget:IsAbove(x, y)
-	local vsx, vsy = widgetHandler:GetViewSizes()
-	local x = x - window_deck.x
-	local y = vsy - y
-	y = y - window_deck.y
-	hoveredCard = window_deck:HitTest(x, y)
-	return not (hoveredCard == nil)
-end
-
-function widget:GetTooltip(x, y)
-end
-
 function widget:MousePress(x, y, button)
 end
 
@@ -227,10 +211,25 @@ function widget:DrawScreen()
 end
 
 function widget:Shutdown()
-	spEcho( "Hand widget OFF" )
+	spEcho( "Deck widget OFF" )
 	if (window_deck) then
 		screen0:RemoveChild(window_deck)
 		window_deck:Dispose()
 	end
 end
+
+----------------------------------
+--Turns out, Chili handles these--
+----------------------------------
+--function widget:IsAbove(x, y)
+--	local vsx, vsy = widgetHandler:GetViewSizes()
+--	local x = x - window_deck.x
+--	local y = vsy - y
+--	y = y - window_deck.y
+--	hoveredCard = window_deck:HitTest(x, y)
+--	return not (hoveredCard == nil)
+--end
+
+--function widget:GetTooltip(x, y)
+--end
 

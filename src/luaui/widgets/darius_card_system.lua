@@ -29,12 +29,12 @@ WG.Darius = Darius
 
 local tower
 local effect
-local selectedWeapon
-local selectedMaterial
-local selectedSpecial
 local greenballs = 0
-local hand = 0
-local testhand = { --For testing the hand
+local hand = {}
+local selectedWeapon = {}
+local selectedMaterial = {}
+local selectedSpecial = {}
+local testhand = { --For testing the hand, obviously
 	{id = 1, name = "Metal", type = "Material", img = 'LuaUI/images/ibeam.png'},
 	{id = 2, name = "Fire" , type = "Weapon"  , img = 'LuaUI/images/energy.png'},
 	{id = 3, name = "Heal" , type = "Special" , img = 'bitmaps/gpl/nano.tga'},
@@ -54,7 +54,7 @@ function Darius:GetEffect()
 end
 
 function Darius:GetHand()
-	return testhand --TODO: revert to just hand
+	return hand
 end
 
 function Darius:GetSelectedMaterial()
@@ -74,10 +74,9 @@ function Darius:GetGreenBalls()
 end
 
 function Darius:CanDraw()
-	return true
 	--spEcho(greenballs .. " / " .. requiredBallsToDraw)
 	--spEcho(greenballs >= requiredBallsToDraw)
-	--return (greenballs >= requiredBallsToDraw)
+	return (greenballs >= requiredBallsToDraw)
 end
 
 function Darius:ActivateCard(card)
@@ -96,6 +95,7 @@ end
 -- Unsynced Vars Receivers --
 -----------------------------
 local function SetHand(arg)
+	--spEcho("Receiving hand")
 	hand = arg
 end
 

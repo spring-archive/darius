@@ -28,11 +28,12 @@ GG.Darius = Darius
 
 local tower
 local effect
-local selectedMaterial
-local selectedWeapon
-local selectedSpecial
+local selectedMaterial = {}
+local selectedWeapon = {}
+local selectedSpecial = {}
 local greenballs
-local hand
+
+local hand = {}
 
 local deck = {}
 deck[1] = {}
@@ -41,6 +42,13 @@ deck[2] = {}
 ------------------------------------------------
 if (gadgetHandler:IsSyncedCode()) then -- synced
 ------------------------------------------------
+
+local cards = {}
+cards[1] = {id = 1, name = "Metal"    , type = "Material", img = 'LuaUI/images/ibeam.png' , health =   100, rate = -0.01, range =  10, damage =  0}
+cards[2] = {id = 2, name = "Metal"    , type = "Material", img = 'LuaUI/images/ibeam.png' , health =   100, rate = -0.01, range =  10, damage =  0}
+cards[3] = {id = 3, name = "Fire"     , type = "Weapon"  , img = 'LuaUI/images/energy.png', health =  - 10, rate =  1   , range =  50, damage =  5}
+cards[4] = {id = 4, name = "Fire"     , type = "Weapon"  , img = 'LuaUI/images/energy.png', health =  - 10, rate =  1   , range =  50, damage =  5}
+cards[5] = {id = 5, name = "Lightning", type = "Weapon"  , img = 'LuaUI/images/energy.png', health =     0, rate =  0.5 , range = 100, damage = 10}
 
 -----------------------------
 -- SendToUnsynced Wrappers --
@@ -55,23 +63,55 @@ local function UnsyncEffect()
 end
 
 local function UnsyncSelectedMaterial()
-	SendToUnsynced("SelectedMaterialCard", selectedMaterial)
+	if (selectedMaterial) then
+		SendToUnsynced("SelectedMaterialCard", selectedMaterial.id)
+	else
+		SendToUnsynced("SelectedMaterialCard", nil)
+	end
 end
 
 local function UnsyncSelectedWeapon()
-	SendToUnsynced("SelectedWeaponCard", selectedWeapon)
+	if (selectedWeapon) then
+		SendToUnsynced("SelectedWeaponCard", selectedWeapon.id)
+	else
+		SendToUnsynced("SelectedWeaponCard", nil)
+	end
 end
 
 local function UnsyncSelectedSpecial()
-	SendToUnsynced("SelectedSpecialCard", selectedSpecial)
+	if (selectedSpecial) then
+		SendToUnsynced("SelectedSpecialCard", selectedSpecial.id)
+	else
+		SendToUnsynced("SelectedSpecialCard", nil)
+	end
 end
 
 local function UnsyncGreenballs()
 	SendToUnsynced("GreenBalls", greenballs)
 end
 
+-- Requires actual card
+local function UnsyncCard(card)
+	--spEcho("Unsyncing card [" .. card.id .. "]")
+	if not (card) then return end
+	SendToUnsynced("CardTable", 
+		card.id,
+		card.img,
+		card.name,
+		card.type,
+		card.health,
+		card.firerate,
+		card.range,
+		card.damage
+	)
+end
+
 local function UnsyncHand()
-	SendToUnsynced("Hand", nil) --TODO: Can't send tables?
+	msg = ""
+	for _, card in pairs(hand) do
+		msg = msg .. card.id .. " "
+	end
+	SendToUnsynced("CardHand", msg) --Can't send tables?
 end
 
 ----------------------
@@ -102,7 +142,7 @@ function Darius:DrawCard(deckID)
 		hand.insert(tremove(deck[deckID],1))
 		greenballs = greenballs - requiredBallsToDraw -- decrease balls
 		UnsyncHand() -- Update hand in unsynced
-		UnsyncGreenBalls() -- Update greenballs in unsynced
+		UnsyncGreenballs() -- Update greenballs in unsynced
 	end
 end
 
@@ -139,7 +179,7 @@ local function SetSelectedSpecial(card)
 	UnsyncSelectedSpecial()
 end
 
-function Darius:UseSelected()
+function Darius:DiscardSelected()
 	if (selectedWeapon) then
 		selectedWeapon.used = true
 		SetSelectedWeapon(nil)
@@ -218,46 +258,44 @@ end
 ---------------------
 function gadget:Initialize()
 	Darius:SetTower("corllt") --NOTE: The SyncActions aren't in place yet, so this isn't sent properly.
-					  -- However, the widget requests the data when it loads, so this should be taken care of.
-	hand = {
-		{id = 1, name = "Metal"    , type = "Material", img = 'LuaUI/images/ibeam.png' , health =   100, rate = -0.01, range =  10, damage =  0},
-		{id = 2, name = "Metal"    , type = "Material", img = 'LuaUI/images/ibeam.png' , health =   100, rate = -0.01, range =  10, damage =  0},
-		{id = 3, name = "Fire"     , type = "Weapon"  , img = 'LuaUI/images/energy.png', health =  - 10, rate =  1  , range =  50, damage =  5},
-		{id = 4, name = "Fire"     , type = "Weapon"  , img = 'LuaUI/images/energy.png', health =  - 10, rate =  1  , range =  50, damage =  5},
-		{id = 5, name = "Lightning", type = "Weapon"  , img = 'LuaUI/images/energy.png', health =     0, rate =  0.5, range = 100, damage = 10},
-	}
+					  -- However, the widget requests the data when it loads, so this should be taken care of for the start up.
+					  -- Unfortunately, if the rules reload then the ui needs to be reloaded (this is a minor issue)
+	hand = {cards[1], cards[2], cards[4], cards[3]}
 end
 
 function gadget:GameFrame(f)
 end
 
 function gadget:RecvLuaMsg(msg, playerID)
-	--spEcho("[Card Gadget] RecvLuaMsg: "..msg)
 	if string.find(msg, "Activate Card:") then -- Select this card
-		cardID = msg:gsub("Activate Card:","")
-		for _, card in pairs(hand) do
-			if card.id == cardID then
-				Darius:ActivateCard(card)
-				return
-			end
-		end
+		cardID = 0 + msg:gsub("Activate Card:","")
+		if not (cards[cardID]) then return end
+		Darius:ActivateCard(cards[cardID])
 	elseif string.find(msg, "Draw Card:") then -- Draw from specified
 		deckID = msg:gsub("Draw Card:","")
 		Darius:DrawCard(deckID)
-	elseif string.find(msg, "Update Card System Widget") then
+	elseif string.find(msg, "Send Card Data:") then -- The card data was requested
+		cardID = 0 + msg:gsub("Send Card Data:","")
+		--spEcho("Card data for [" .. cardID .. "] requested")
+		if not (cards[cardID]) then return end
+		--spEcho("Card is valid")
+		UnsyncCard(cards[cardID])
+	elseif string.find(msg, "Update Card System Widget") then -- the widget requested the game data
 		UnsyncHand()
 		UnsyncTower()
 		UnsyncEffect()
 		UnsyncSelectedMaterial()
 		UnsyncSelectedWeapon()
 		UnsyncSelectedSpecial()
-		UnsyncGreenBalls()
+		UnsyncGreenballs()
 	end
 end
 
 ------------------------------------------------
 else --unsynced
 ------------------------------------------------
+
+local cards = {} -- The in-game card pool
 
 ----------------------------------
 -- Send Unsynced vars to widget --
@@ -270,8 +308,39 @@ local function SendTowerName(_, tower)
 	end
 end
 
-local function SendHand(_, hand)
+local function SendHand(_, handStr)
+	local hand = {}
+	--spEcho("Sending hand as: " .. handStr)
+	for id in string.gmatch(handStr, "%d+") do
+		id = 0 + id
+		if not (cards[id]) then
+			cards[id] = {id = id}
+			Spring.SendLuaRulesMsg("Send Card Data:" .. id)
+		end
+		table.insert(hand, cards[id])
+	end
+	--for _, card in pairs(hand) do
+	--	spEcho("Card:")
+	--	for v,k in pairs(card) do spEcho(v .. ": " .. k) end
+	--end
 	if (Script.LuaUI('SetCardHand')) then
+		Script.LuaUI.SetCardHand(hand)
+	end
+end
+
+local function RcvCard(_, id, img, name, type, health, firerate, range, damage)
+	spEcho("Updating card data")
+	local card = cards[id]
+	card.id       = id
+	card.img      = img
+	card.name     = name
+	card.type     = type
+	card.health   = health
+	card.firerate = firerate
+	card.range    = range
+	card.damage   = damage
+	spEcho("Card data updated")
+	if (Script.LuaUI('UpdateCard')) then
 		Script.LuaUI.SetCardHand(hand)
 	end
 end
@@ -282,21 +351,36 @@ local function SendEffect(_, effect)
 	end
 end
 
-local function SendMaterial(_, material)
+local function SendMaterial(_, id)
+	if not (id) then return end
+	if not (cards[id]) then
+		cards[id] = {}
+		Spring.SendLuaRulesMsg("Send Card Data:" .. id)
+	end
 	if (Script.LuaUI('SetSelectedMaterialCard')) then
-		Script.LuaUI.SetSelectedMaterialCard(material)
+		Script.LuaUI.SetSelectedMaterialCard(cards[id])
 	end
 end
 
-local function SendWeapon(_, weapon)
+local function SendWeapon(_, id)
+	if not (id) then return end
+	if not (cards[id]) then
+		cards[id] = {}
+		Spring.SendLuaRulesMsg("Send Card Data:" .. id)
+	end
 	if (Script.LuaUI('SetSelectedWeaponCard')) then
-		Script.LuaUI.SetSelectedWeaponCard(weapon)
+		Script.LuaUI.SetSelectedWeaponCard(cards[id])
 	end
 end
 
-local function SendSpecial(_, card)
+local function SendSpecial(_, id)
+	if not (id) then return end
+	if not (cards[id]) then
+		cards[id] = {}
+		Spring.SendLuaRulesMsg("Send Card Data:" .. id)
+	end
 	if (Script.LuaUI('SetSelectedSpecialCard')) then
-		Script.LuaUI.SetSelectedSpecialCard(card)
+		Script.LuaUI.SetSelectedSpecialCard(cards[id])
 	end
 end
 
@@ -312,6 +396,7 @@ end
 function gadget:Initialize()
 	--Init the sender functions
 	gadgetHandler:AddSyncAction("CardHand", SendHand)
+	gadgetHandler:AddSyncAction("CardTable", RcvCard)
 	gadgetHandler:AddSyncAction("TowerName", SendTowerName)
 	gadgetHandler:AddSyncAction("CardEffect", SendEffect)
 	gadgetHandler:AddSyncAction("SelectedMaterialCard", SendMaterial)

@@ -124,15 +124,15 @@ local function DrawHand()
 		local name   = card.name   or "Unknown"
 		local type   = card.type   or "Unknown"
 		local health = card.health or 0
-		local rate   = card.rate   or 0
+		local rate   = card.firerate   or 0
 		local range  = card.range  or 0
 		local damage = card.damage or 0
-		local tooltip = 	WhiteStr  .. "Name: "   .. name   .. "\n" ..
-					GreyStr   .. "Type: "   .. type   .. "\n" ..
-					GreenStr  .. "Health: " .. health .. "\n" ..
-					YellowStr .. "Rate: "   .. rate   .. "\n" ..
-					OrangeStr .. "Range: "  .. range  .. "\n" ..
-					RedStr    .. "Damage: " .. damage
+		local tooltip = 	WhiteStr  .. "Name: "     .. name   .. "\n" ..
+					GreyStr   .. "Type: "     .. type   .. "\n" ..
+					GreenStr  .. "Health: "   .. health .. "\n" ..
+					YellowStr .. "Firerate: " .. rate   .. "\n" ..
+					OrangeStr .. "Range: "    .. range  .. "\n" ..
+					RedStr    .. "Damage: "   .. damage
 		-- Create a button for the card
 		table.insert(stack_hand.children,
 			Button:New {

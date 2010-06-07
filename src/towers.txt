@@ -1,0 +1,28 @@
+--------------------------------------------------------------------------------
+CA's towers which are licensed under GPL or similar:
+-----------------------------------------------------------------
+NAME			TOWER TYPE				FACTION		MODEL FORMAT*
+-----------------------------------------------------------------
+armanni			annihilator				arm			3do
+armarch			anti-air chaingun		arm			3do
+armartic		emp						arm			3do
+armbrtha		plasma cannon			arm			s3o
+armcir			anti-air missile		arm			3do
+armdl			depthcharge launcher	arm			3do
+armhlt			heavy laser				arm			3do
+armllt			light laser				arm			3do
+armnanotc		nanoturret				arm			3do
+armpb			gauss gun				arm			3do
+cordl			depthcharge launcher	core		3do
+corgrav			gravity turret			core		3do
+corhlt			heavy laser				core		3do
+corllt			light laser				core		s3o
+cornanotc		nanoturret				core		3do
+corrl			light missile			core		3do
+mercury			anti-air missile		?			3do
+screamer		anti-air-missile		?			3do
+--------------------------------------------------------------------------------
+*
+3do:	Original Total Annihilation
+s3o:	Spring's own
+--------------------------------------------------------------------------------

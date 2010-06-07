@@ -20,6 +20,7 @@ local requiredBallsToDraw = 5
 -- Speed Up --
 --------------
 local spEcho = Spring.Echo
+local spSendLuaRulesMsg = Spring.SendLuaRulesMsg
 
 ----------------
 -- Local Vars --
@@ -41,6 +42,8 @@ local testhand = { --For testing the hand, obviously
 	{id = 4, name = "Nuke" , type = "Special" , img = 'icons/nuke.dds'},
 	{id = 5, name = "Alien", type = "Special" , img = 'LuaUI/images/friendly.png'},
 }
+
+local cards = {} -- The in-game card pool (not necessarily the player's full card collection)
 
 ----------------------
 -- Member Functions --
@@ -81,22 +84,53 @@ end
 
 function Darius:ActivateCard(card)
 	--Pass actual card to gadget (by ID)
-	Spring.SendLuaRulesMsg("Activate Card:" .. card.id)
-	spEcho("Activate Card:" .. card.id)
+	spSendLuaRulesMsg("Activate Card:" .. card.id)
 end
 
 function Darius:Draw(deck)
 	--Tell gadget to draw from specified deck
-	Spring.SendLuaRulesMsg("Draw Card:" .. deck)
+	spSendLuaRulesMsg("Draw Card:" .. deck)
 	spEcho("Draw Card:" .. deck)
 end
 
 -----------------------------
 -- Unsynced Vars Receivers --
 -----------------------------
-local function SetHand(arg)
-	--spEcho("Receiving hand")
-	hand = arg
+local function SetHand(handStr)
+	spEcho("Receiving hand")
+	local new_hand = {}
+	for id in string.gmatch(handStr, "%d+") do
+		id = 0 + id
+		if not (cards[id]) then
+			cards[id] = {id = id}
+			spSendLuaRulesMsg("Send Card Data:" .. id)
+		end
+		table.insert(new_hand, cards[id])
+	end
+	--for _, card in pairs(new_hand) do
+	--	spEcho("Card:")
+	--	for v,k in pairs(card) do spEcho(v .. ": " .. k) end
+	--end
+	hand = new_hand
+end
+
+local function UpdateCard(id, img, name, type, health, firerate, range, damage)
+	id = 0 + id
+	if not (cards[id]) then
+		cards[id] = {}
+		spEcho("Created new card on update.  Why?")
+	end
+	--spEcho("Updating card data")
+	local card = cards[id]
+	card.id       = id
+	card.img      = img
+	card.name     = name
+	card.type     = type
+	card.health   = health
+	card.firerate = firerate
+	card.range    = range
+	card.damage   = damage
+	--for v,k in pairs(card) do spEcho(v .. ": " .. k) end
 end
 
 local function SetTower(arg)
@@ -107,16 +141,40 @@ local function SetEffect(arg)
 	effect = arg
 end
 
-local function SetSelectedMaterial(arg)
-	selectedMaterial = arg
+local function SetSelectedMaterial(id)
+	if not (id) then
+		selectedMaterial = nil
+		return
+	end
+	if not (cards[id]) then
+		cards[id] = {id = id}
+		spSendLuaRulesMsg("Send Card Data:" .. id)
+	end
+	selectedMaterial = cards[id]
 end
 
-local function SetSelectedWeapon(arg)
-	selectedWeapon = arg
+local function SetSelectedWeapon(id)
+	if not (id) then
+		selectedweapon = nil
+		return
+	end
+	if not (cards[id]) then
+		cards[id] = {id = id}
+		spSendLuaRulesMsg("Send Card Data:" .. id)
+	end
+	selectedWeapon = cards[id]
 end
 
-local function SetSelectedSpecial(arg)
-	selectedSpecial = arg
+local function SetSelectedSpecial(id)
+	if not (id) then
+		selectedSpecial = nil
+		return
+	end
+	if not (cards[id]) then
+		cards[id] = {id = id}
+		spSendLuaRulesMsg("Send Card Data:" .. id)
+	end
+	selectedSpecial = cards[id]
 end
 
 local function SetGreenBalls(arg)
@@ -128,6 +186,7 @@ end
 --------------
 function widget:Initialize()
 	widgetHandler:RegisterGlobal("SetCardHand" , SetHand)
+	widgetHandler:RegisterGlobal("UpdateCard" , UpdateCard)
 	widgetHandler:RegisterGlobal("SetTower", SetTower)
 	widgetHandler:RegisterGlobal("SetCardEffect", SetEffect)
 	widgetHandler:RegisterGlobal("SetSelectedMaterialCard", SetSelectedMaterial)
@@ -135,5 +194,5 @@ function widget:Initialize()
 	widgetHandler:RegisterGlobal("SetSelectedSpecialCard", SetSelectedSpecial)
 	widgetHandler:RegisterGlobal("SetGreenBalls", SetGreenBalls)
 
-	Spring.SendLuaRulesMsg("Update Card System Widget")
+	spSendLuaRulesMsg("Update Card System Widget")
 end

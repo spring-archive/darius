@@ -31,7 +31,6 @@ function gadget:GameFrame(f)
 	if not (Darius) then Darius = GG.Darius end
 	if not (Darius) then return end
 	if (Darius:GetSelectedMaterial() and Darius:GetSelectedWeapon()) then
-		spEcho("Setting Tower")
 		Darius:SetTower("corllt")
 	else
 		Darius:SetTower(nil)

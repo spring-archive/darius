@@ -160,7 +160,7 @@ local function SetSelectedMaterial(card)
 end
 
 local function SetSelectedWeapon(card)
-	--spEcho("Activating card as " .. card.type)
+	--if card then spEcho("Activating card as " .. card.type) end
 	if (selectedWeapon == card) then
 		selectedWeapon = nil
 	else

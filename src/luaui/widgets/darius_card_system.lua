@@ -155,7 +155,7 @@ end
 
 local function SetSelectedWeapon(id)
 	if not (id) then
-		selectedweapon = nil
+		selectedWeapon = nil
 		return
 	end
 	if not (cards[id]) then

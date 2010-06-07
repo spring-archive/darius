@@ -2,7 +2,7 @@
 function widget:GetInfo()
 	return {
 		name = "Card Hand GUI",
-		desc = "Displays the player's hand",
+		desc = "Displays the players hand",
 		author = "xcompwiz",
 		date = "June 6, 2010",
 		license = "GNU GPL, v2 or later",
@@ -33,7 +33,7 @@ RedStr     = "\255\255\170\170"
 -- settings --
 --------------
 local settings = {
-	cardsize_x = 140,
+	cardsize_x = 120,
 	cardsize_y = 200,
 	pos_x,
 	pos_y,
@@ -47,9 +47,9 @@ local stack_hand
 
 -- The cards in the player's hand
 local cards_in_hand = {}
-local selectedMaterial
-local selectedWeapon
-local selectedSpecial
+local selectedMaterial = {}
+local selectedWeapon = {}
+local selectedSpecial = {}
 
 ---------------------
 -- local functions --
@@ -88,7 +88,7 @@ local function MakeHandMenu()
 		clientWidth = hand_width,
 		clientHeight = hand_height,
 		draggable = true,
-		resizable = false,
+		resizable = true,
 		OnMouseUp = {},
 		backgroundColor = color.main_bg,
 
@@ -101,68 +101,6 @@ end
 
 local function ActivateCard(button)
 	Darius:ActivateCard(button.card)
-end
-
-local function DrawHand()
-	if not (stack_hand) then
-		return
-	end
-	stack_hand.children = {}
-
-	if not (cards_in_hand) then
-		return
-	end
-	for _, card in pairs(cards_in_hand) do
-		--Determine highlighting
-		background = color.game_bg
-		if (card == selectedSpecial) then
-			backgroun = color.blue
-		elseif (card == selectedMaterial or card == selectedWeapon) then
-			background = color.game_fg
-		end
-		--Create tooltip
-		local name   = card.name   or "Unknown"
-		local type   = card.type   or "Unknown"
-		local health = card.health or 0
-		local rate   = card.firerate   or 0
-		local range  = card.range  or 0
-		local damage = card.damage or 0
-		local tooltip = 	WhiteStr  .. "Name: "     .. name   .. "\n" ..
-					GreyStr   .. "Type: "     .. type   .. "\n" ..
-					GreenStr  .. "Health: "   .. health .. "\n" ..
-					YellowStr .. "Firerate: " .. rate   .. "\n" ..
-					OrangeStr .. "Range: "    .. range  .. "\n" ..
-					RedStr    .. "Damage: "   .. damage
-		-- Create a button for the card
-		table.insert(stack_hand.children,
-			Button:New {
-				caption = "",
-				card = card,
-				height = settings.cardsize_y + 20,
-				width = settings.cardsize_x + 20,
-				OnMouseUp = { 
-					function(self)
-						ActivateCard(self)
-					end
-				},
-				tooltip = tooltip,
-				backgroundColor = color.game_bg,
-				textColor = color.game_fg,
-				children = { 
-					Label:New {
-						caption = card.name,
-					},
-					Image:New {
-						file = card.img,
-						width = settings.cardsize_x,
-						height = settings.cardsize_y,
-						keepAspect = false,
-					},
-				}
-			})
-	end
-	--Force the window to be redrawn
-	window_hand:Invalidate()
 end
 
 local function GetHand()
@@ -182,6 +120,75 @@ local function GetSelectedSpecial()
 end
 
 local function UpdateHand()
+	--Update the local variables
+	cards_in_hand    = GetHand()
+	selectedMaterial = GetSelectedMaterial()
+	selectedWeapon   = GetSelectedWeapon()
+	selectedSpecial  = GetSelectedSpecial()
+
+	if not (stack_hand) then return end
+	if not (cards_in_hand) then return end
+
+	-- Decrease stack size to match the hand size if necessary
+	while (#stack_hand.children > #cards_in_hand) do
+		table.remove(stack_hand.children)
+	end
+	for index, card in pairs(cards_in_hand) do
+		--Determine highlighting
+		local background = color.game_bg
+		if (card == selectedSpecial) then
+			background = color.blue
+		elseif (card == selectedMaterial or card == selectedWeapon) then
+			background = color.game_fg
+		end
+		--Create tooltip
+		local name   = card.name     or "Unknown"
+		local type   = card.type     or "Unknown"
+		local health = card.health   or 0
+		local rate   = card.firerate or 0
+		local range  = card.range    or 0
+		local damage = card.damage   or 0
+		local tooltip = WhiteStr  .. "Name: "     .. name   .. "\n" ..
+				    GreyStr   .. "Type: "     .. type   .. "\n" ..
+				    GreenStr  .. "Health: "   .. health .. "\n" ..
+				    YellowStr .. "Firerate: " .. rate   .. "\n" ..
+				    OrangeStr .. "Range: "    .. range  .. "\n" ..
+				    RedStr    .. "Damage: "   .. damage
+		-- if not enough buttons, create a new one
+		if not (stack_hand.children[index]) then
+			local image = Image:New{}
+			table.insert(stack_hand.children, Button:New{children = {image}})
+		end
+		-- Get button for the card
+		button = stack_hand.children[index]
+		button.caption = ""
+		button.card = card
+		button.height = settings.cardsize_y + 20
+		button.width = settings.cardsize_x + 20
+		button.OnMouseUp = {
+				function(self)
+					ActivateCard(self)
+				end
+			}
+		button.tooltip = tooltip
+		button.backgroundColor = background
+		button.textColor = color.game_fg
+		if ((button.children[1].file ~= card.img) or
+		    (button.children[1].width ~= settings.cardsize_x) or
+		    (button.children[1].height ~= settings.cardsize_y)) then
+			button.children[1] = Image:New {
+				file = card.img,
+				width = settings.cardsize_x,
+				height = settings.cardsize_y,
+				keepAspect = false,
+			}
+		end
+	end
+	--Force the window to be redrawn
+	stack_hand:Invalidate()
+end
+
+local function oldUpdateHand()
 	local new_hand = GetHand()
 	local new_material = GetSelectedMaterial()
 	local new_weapon = GetSelectedWeapon()
@@ -195,7 +202,7 @@ local function UpdateHand()
 		selectedWeapon   = new_weapon
 		selectedSpecial  = new_special
 		spEcho("Redrawing hand")
-		DrawHand()
+		--DrawHand()
 	end
 end
 
@@ -226,7 +233,7 @@ function widget:Initialize()
 	 screen0 = Chili.Screen0
 
 	MakeHandMenu()
-	DrawHand()
+	UpdateHand()
 end
 
 function widget:ViewResize(viewSizeX, viewSizeY)

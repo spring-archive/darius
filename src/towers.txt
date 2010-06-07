@@ -1,28 +1,29 @@
---------------------------------------------------------------------------------
+
 CA's towers which are licensed under GPL or similar:
------------------------------------------------------------------
-NAME			TOWER TYPE				FACTION		MODEL FORMAT*
------------------------------------------------------------------
-armanni			annihilator				arm			3do
-armarch			anti-air chaingun		arm			3do
-armartic		emp						arm			3do
-armbrtha		plasma cannon			arm			s3o
-armcir			anti-air missile		arm			3do
-armdl			depthcharge launcher	arm			3do
-armhlt			heavy laser				arm			3do
-armllt			light laser				arm			3do
-armnanotc		nanoturret				arm			3do
-armpb			gauss gun				arm			3do
-cordl			depthcharge launcher	core		3do
-corgrav			gravity turret			core		3do
-corhlt			heavy laser				core		3do
-corllt			light laser				core		s3o
-cornanotc		nanoturret				core		3do
-corrl			light missile			core		3do
-mercury			anti-air missile		?			3do
-screamer		anti-air-missile		?			3do
---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+IDENTIFIER		TOWER TYPE				ORG. FACTION	MODEL FORMAT*	USABILITY
+---------------------------------------------------------------------------------
+armarch			anti-air chaingun		arm				3do				OK
+armartic		emp						arm				3do				OK
+armbrtha		plasma cannon			arm				s3o				OK
+armcir			anti-air missile		arm				3do				OK
+armhlt			heavy laser				arm				3do				OK
+armllt			light laser				arm				3do				OK
+armpb			gauss gun				arm				3do				OK
+mercury			anti-air missile		arm				3do				OK
+corgrav			gravity turret			core			3do				OK
+corhlt			heavy laser				core			3do				OK
+corllt			light laser				core			s3o				OK
+corrl			light missile			core			3do				OK
+screamer		anti-air-missile		core			3do				OK
+armnanotc		nanoturret				arm				3do				[builds, no use case in td]
+cornanotc		nanoturret				core			3do				[builds, no use case in td]
+armanni			annihilator				arm				3do				[requires enemy artillery]
+armdl			depthcharge launcher	arm				3do				[requires underwater units]
+cordl			depthcharge launcher	core			3do				[requires underwater units]
+
+
+
 *
 3do:	Original Total Annihilation
 s3o:	Spring's own
---------------------------------------------------------------------------------

@@ -28,9 +28,9 @@ GG.Darius = Darius
 
 local tower
 local effect
-local selectedMaterial = {}
-local selectedWeapon = {}
-local selectedSpecial = {}
+local selectedMaterial
+local selectedWeapon
+local selectedSpecial
 local greenballs
 
 local hand = {}
@@ -199,11 +199,11 @@ function Darius:DiscardSelected()
 		SetSelectedSpecial(nil)
 	end
 	--Remove used from hand
-	for i, card in pairs(hand) do
-		if (card.used == true) then
-			table.remove(hand, i) --TODO: Does this work?  Might not handle the table changinging when iterating
-		end
-	end
+--	for i, card in pairs(hand) do
+--		if (card.used == true) then
+--			table.remove(hand, i) --TODO: Does this work?  Might not handle the table changinging when iterating
+--		end
+--	end
 	UnsyncHand()
 end
 
@@ -265,7 +265,7 @@ end
 -- Synced Call-ins --
 ---------------------
 function gadget:Initialize()
-	Darius:SetTower("corllt") --NOTE: The SyncActions aren't in place yet, so this isn't sent properly.
+	--Darius:SetTower("corllt") --NOTE: The SyncActions aren't in place yet, so this isn't sent properly.
 					  -- However, the widget requests the data when it loads, so this should be taken care of for the start up.
 					  -- Unfortunately, if the rules reload then the ui needs to be reloaded (this is a minor issue)
 	hand = {cards[1], cards[2], cards[4], cards[3]}

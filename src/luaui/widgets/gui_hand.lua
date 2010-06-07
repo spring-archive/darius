@@ -37,6 +37,8 @@ local settings = {
 	cardsize_y = 200,
 	pos_x,
 	pos_y,
+	width,
+	height,
 }
 
 ----------------
@@ -54,24 +56,38 @@ local selectedSpecial = {}
 ---------------------
 -- local functions --
 ---------------------
+local function AdjustWindow()
+	if not (window_hand) then return end
+	local max_width = (window_hand.width - 120)/#cards_in_hand
+	local max_height = window_hand.height - 60
+	settings.cardsize_y = max_height
+	settings.cardsize_x = settings.cardsize_y * 0.6
+	if (settings.cardsize_x > max_width) then
+		settings.cardsize_x = max_width
+		settings.cardsize_y = max_width / 0.6
+	end
+
+	-- Force redraw
+	stack_hand:Invalidate()
+end
+
 local function MakeHandMenu()
-	if window_hand then
+	if (window_hand) then
 		window_hand:Dispose()
 		window_hand = nil
 	end
 
-	-- TODO: Adjust based on ViewSize
 	local vsx, vsy = widgetHandler:GetViewSizes()
-	local hand_width = 900
-	local hand_height = 250
+	local hand_width = settings.width or settings.cardsize_x * 5
+	local hand_height = settings.height or (settings.cardsize_y + 50)
 	local hand_pos_x = settings.pos_x or 0.5 * vsx - hand_width * 0.5
 	local hand_pos_y = settings.pos_y or 0.05 * vsy - hand_height * 0.5
 
 	stack_hand = StackPanel:New{
 		name='stack_hand',
 		orientation = 'horizontal',
-		width = hand_width,
-		height = hand_height,
+		width = -1,
+		height = -1,
 		resizeItems = false,
 		padding = {0,10,0,0},
 		itemPadding = {0,0,0,0},
@@ -79,19 +95,17 @@ local function MakeHandMenu()
 		children = {}
 	}
 
-	window_hand = Window:New {  
+	window_hand = Window:New {
 		caption="Hand",
 		x = hand_pos_x,
 		y = hand_pos_y,
 		dockable = true,
-		name = "cardhand",
+		name = "hand_window",
 		clientWidth = hand_width,
 		clientHeight = hand_height,
 		draggable = true,
 		resizable = true,
-		OnMouseUp = {},
 		backgroundColor = color.main_bg,
-
 		children = {
 			stack_hand,
 		}
@@ -157,14 +171,14 @@ local function UpdateHand()
 		-- if not enough buttons, create a new one
 		if not (stack_hand.children[index]) then
 			local image = Image:New{}
-			table.insert(stack_hand.children, Button:New{children = {image}})
+			table.insert(stack_hand.children, Button:New{name = "", children = {image}})
 		end
 		-- Get button for the card
 		button = stack_hand.children[index]
 		button.caption = ""
 		button.card = card
-		button.height = settings.cardsize_y + 20
 		button.width = settings.cardsize_x + 20
+		button.height = settings.cardsize_y + 20
 		button.OnMouseUp = {
 				function(self)
 					ActivateCard(self)
@@ -183,9 +197,10 @@ local function UpdateHand()
 				keepAspect = false,
 			}
 		end
+		button:Invalidate()
 	end
 	--Force the window to be redrawn
-	stack_hand:Invalidate()
+	window_hand:Invalidate()
 end
 
 local function oldUpdateHand()
@@ -233,28 +248,32 @@ function widget:Initialize()
 	 screen0 = Chili.Screen0
 
 	MakeHandMenu()
+	AdjustWindow()
 	UpdateHand()
 end
 
 function widget:ViewResize(viewSizeX, viewSizeY)
-	--TODO: Make adjust
+	AdjustWindow()
 end
 
 function widget:GetConfigData()
 	if (window_hand) then
-		settings.pos_x = window_hand.x
-		settings.pos_y = window_hand.y
+		settings.height = window_hand.height
+		settings.width  = window_hand.width
+		settings.pos_x  = window_hand.x
+		settings.pos_y  = window_hand.y
 	end
 	return settings
 end
 
 function widget:SetConfigData(data)
 	if (data and type(data) == 'table') then
-		--settings = data
+		settings = data
 	end
 end
 
 function widget:Update()
+	AdjustWindow()
 	UpdateHand()
 end
 

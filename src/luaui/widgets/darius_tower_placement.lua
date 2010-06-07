@@ -17,8 +17,6 @@ local tower
 function widget:Update()
 	if WG.Darius then
 		tower = WG.Darius:GetTower()
-	else
-		tower = "corllt"
 	end
 end
 
@@ -30,7 +28,6 @@ function widget:MousePress(x,y,button)
 		if (pos) then
 			Spring.SendLuaRulesMsg("PlaceTower "..tower.." "..tostring(pos[1]).." "..tostring(pos[2]).." "..tostring(pos[3]))
 			--spEcho("PlaceTower "..tower.." "..tostring(pos[1]).." "..tostring(pos[2]).." "..tostring(pos[3]))
-			tower = nil
 		end
 	end	
 end

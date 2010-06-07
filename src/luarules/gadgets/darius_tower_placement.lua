@@ -23,8 +23,14 @@ local y = nil
 local z = nil
 
 function gadget:GameFrame(f)
+	if not GG.Darius then return end
 	if tower ~= nil then -- If tower variable is set then create the tower
+		if (tower ~= GG.Darius:GetTower()) then
+			tower = nil
+			return
+		end
 		Spring.CreateUnit(tower,x,y,z,"south",team,false)
+		GG.Darius:DiscardSelected()
 		team = nil
 		x = nil
 		y = nil
@@ -42,7 +48,7 @@ function gadget:RecvLuaMsg(msg, playerID)
 		words[i] = word
 	end
 	if words[1] == "PlaceTower" then
-		team = 1 --playerID
+		team = 1 --playerID --TODO: Huh?
 		tower = words[2]
 		x = tonumber(words[3])
 		y = tonumber(words[4])

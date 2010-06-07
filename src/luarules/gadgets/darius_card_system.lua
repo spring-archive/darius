@@ -23,7 +23,7 @@ local spEcho = Spring.Echo
 ----------------
 -- Local Vars --
 ----------------
-local Darius = {}
+local Darius = gadget
 GG.Darius = Darius
 
 local tower
@@ -42,32 +42,67 @@ deck[2] = {}
 if (gadgetHandler:IsSyncedCode()) then -- synced
 ------------------------------------------------
 
+-----------------------------
+-- SendToUnsynced Wrappers --
+-----------------------------
+
+local function UnsyncTower()
+	SendToUnsynced("TowerName", tower)
+end
+
+local function UnsyncEffect()
+	SendToUnsynced("CardEffect", effect)
+end
+
+local function UnsyncSelectedMaterial()
+	SendToUnsynced("SelectedMaterialCard", selectedMaterial)
+end
+
+local function UnsyncSelectedWeapon()
+	SendToUnsynced("SelectedWeaponCard", selectedWeapon)
+end
+
+local function UnsyncSelectedSpecial()
+	SendToUnsynced("SelectedSpecialCard", selectedSpecial)
+end
+
+local function UnsyncGreenballs()
+	SendToUnsynced("GreenBalls", greenballs)
+end
+
+local function UnsyncHand()
+	SendToUnsynced("Hand", nil) --TODO: Can't send tables?
+end
+
 ----------------------
 -- Member Functions --
 ----------------------
 function Darius:SetTower(arg)
 	tower = arg
 	effect = nil
-	SendToUnsynced("TowerName", tower)
-	SendToUnsynced("CardEffect", effect)
+	UnsyncTower()
+	UnsyncEffect()
 end
 
 function Darius:SetEffect(arg)
 	effect = arg
 	tower = nil
-	SendToUnsynced("TowerName", tower)
-	SendToUnsynced("CardEffect", effect)
+	UnsyncTower()
+	UnsyncEffect()
 end
 
-function Darius:DrawCard(arg)
+function Darius:DrawCard(deckID)
+	if not (deckID) then return end
 	--If not a valid deck ID return
-	if not (arg == 1 or arg == 2) then return end
+	if not (deckID == 1 or deckID == 2) then return end
+	-- Makes sure we are allowed to draw
+	if not (Darius:CanDraw()) then return end
 	-- If we have cards to draw, draw one
-	if (#deck[arg] > 1) then
-		hand.insert(tremove(deck[arg],1))
+	if (#deck[deckID] > 1) then
+		hand.insert(tremove(deck[deckID],1))
 		greenballs = greenballs - requiredBallsToDraw -- decrease balls
-		SendToUnsynced("CardHand", hand) -- Update hand in unsynced
-		SendToUnsynced("GreenBalls", greenballs) -- Update greenballs in unsynced
+		UnsyncHand() -- Update hand in unsynced
+		UnsyncGreenBalls() -- Update greenballs in unsynced
 	end
 end
 
@@ -77,7 +112,7 @@ local function SetSelectedMaterial(card)
 	else
 		selectedMaterial = card
 	end
-	SendToUnsynced("SelectedMaterialCard", selectedMaterial)
+	UnsyncSelectedMaterial()
 end
 
 local function SetSelectedWeapon(card)
@@ -86,7 +121,7 @@ local function SetSelectedWeapon(card)
 	else
 		selectedWeapon = card
 	end
-	SendToUnsynced("SelectedWeaponCard", selectedWeapon)
+	UnsyncSelectedWeapon()
 end
 
 local function SetSelectedSpecial(card)
@@ -98,10 +133,10 @@ local function SetSelectedSpecial(card)
 	if (selectedSpecial) then
 		selectedMaterial = nil
 		selectedWeapon = nil
-		SendToUnsynced("SelectedMaterialCard", selectedMaterial)
-		SendToUnsynced("SelectedWeaponCard", selectedWeapon)
+		UnsyncSelectedMaterial()
+		UnsyncSelectedWeapon()
 	end
-	SendToUnsynced("SelectedSpecialCard", selectedSpecial)
+	UnsyncSelectedSpecial()
 end
 
 function Darius:UseSelected()
@@ -123,7 +158,7 @@ function Darius:UseSelected()
 			table.remove(hand, i) --TODO: Does this work?  Might not handle the table changinging when iterating
 		end
 	end
-	SendToUnsynced("CardHand", hand)
+	UnsyncHand()
 end
 
 -- Requires actual card
@@ -202,21 +237,21 @@ function gadget:RecvLuaMsg(msg, playerID)
 		cardID = msg:gsub("Activate Card:","")
 		for _, card in pairs(hand) do
 			if card.id == cardID then
-				ActivateCard(card)
+				Darius:ActivateCard(card)
 				return
 			end
 		end
-	elseif string.find(msg, "Draw Card:") then -- Select this card
-		deck = msg:gsub("Draw Card:","")
-		DrawCard(deck)
+	elseif string.find(msg, "Draw Card:") then -- Draw from specified
+		deckID = msg:gsub("Draw Card:","")
+		Darius:DrawCard(deckID)
 	elseif string.find(msg, "Update Card System Widget") then
-		SendToUnsynced("CardHand", nil) --hand) --TODO: Can't send tables?
-		SendToUnsynced("TowerName", tower)
-		SendToUnsynced("CardEffect", effect)
-		SendToUnsynced("SelectedMaterialCard", selectedMaterial)
-		SendToUnsynced("SelectedWeaponCard", selectedWeapon)
-		SendToUnsynced("SelectedSpecialCard", selectedSpecial)
-		SendToUnsynced("GreenBalls", greenballs)
+		UnsyncHand()
+		UnsyncTower()
+		UnsyncEffect()
+		UnsyncSelectedMaterial()
+		UnsyncSelectedWeapon()
+		UnsyncSelectedSpecial()
+		UnsyncGreenBalls()
 	end
 end
 

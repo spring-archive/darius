@@ -24,7 +24,7 @@ local spEcho = Spring.Echo
 ----------------
 -- Local Vars --
 ----------------
-local Darius = {}
+local Darius = widget
 WG.Darius = Darius
 
 local tower
@@ -32,8 +32,8 @@ local effect
 local selectedWeapon
 local selectedMaterial
 local selectedSpecial
-local greenballs
-local hand 
+local greenballs = 0
+local hand = 0
 local testhand = { --For testing the hand
 	{id = 1, name = "Metal", type = "Material", img = 'LuaUI/images/ibeam.png'},
 	{id = 2, name = "Fire" , type = "Weapon"  , img = 'LuaUI/images/energy.png'},
@@ -74,17 +74,22 @@ function Darius:GetGreenBalls()
 end
 
 function Darius:CanDraw()
-	return (greenballs >= requiredBallsToDraw)
+	return true
+	--spEcho(greenballs .. " / " .. requiredBallsToDraw)
+	--spEcho(greenballs >= requiredBallsToDraw)
+	--return (greenballs >= requiredBallsToDraw)
 end
 
 function Darius:ActivateCard(card)
 	--Pass actual card to gadget (by ID)
 	Spring.SendLuaRulesMsg("Activate Card:" .. card.id)
+	spEcho("Activate Card:" .. card.id)
 end
 
 function Darius:Draw(deck)
 	--Tell gadget to draw from specified deck
 	Spring.SendLuaRulesMsg("Draw Card:" .. deck)
+	spEcho("Draw Card:" .. deck)
 end
 
 -----------------------------

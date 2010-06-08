@@ -13,6 +13,8 @@ end
 local spEcho = Spring.Echo
 local spCreateUnit = Spring.CreateUnit
 
+local emptyTable = {}
+
 if (not gadgetHandler:IsSyncedCode()) then
 	return false -- no unsynced code
 end
@@ -30,7 +32,7 @@ function gadget:GameFrame(f)
 			if (f%monster[2] == 0 and monster[3] > 0) then
 				monster[3] = monster[3] - 1
 				unit = spCreateUnit(monster[1],x+i*200,y,z,"south",0,false)
-				Spring.SetUnitMoveGoal(unit,x2,y2,z2)
+				Spring.GiveOrderToUnit(unit,CMD_MOVE,{x2,y2,z2},emptyTable)
 			end
 		end
 	end

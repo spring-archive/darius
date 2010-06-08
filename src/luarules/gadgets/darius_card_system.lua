@@ -6,7 +6,8 @@ function gadget:GetInfo()
 		date      = "June 2010",
 		license   = "GNU GPL, v2 or later",
 		layer     = 0,
-		enabled   = true  --  loaded by default?
+		enabled   = true,  --  loaded by default?
+		api       = true, --I think this forces it to be loaded before other gadgets
 	}
 end
 
@@ -227,17 +228,14 @@ end
 -- Synced Getters --
 --------------------
 function Darius:GetTower()
-	spEcho("Gadget:Tower")
 	return tower
 end
 
 function Darius:GetEffect()
-	spEcho("Gadget:Effect")
 	return effect
 end
 
 function Darius:GetHand()
-	spEcho("Gadget:Hand")
 	return hand
 end
 

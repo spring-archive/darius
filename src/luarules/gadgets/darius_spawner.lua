@@ -24,15 +24,20 @@ local monsters = {
 	{"armcom",300,20}
 }
 
+local x,y,z
+local x2,y2,z2
+
 function gadget:GameFrame(f)
 	if f%50 == 0 then
-		local x,y,z = Spring.GetTeamStartPosition(0)
-		local x2,y2,z2 = Spring.GetTeamStartPosition(1)
+		if x == nil then
+			x,y,z = Spring.GetTeamStartPosition(0)
+			x2,y2,z2 = Spring.GetTeamStartPosition(1)
+		end
 		for i, monster in pairs(monsters) do
 			if (f%monster[2] == 0 and monster[3] > 0) then
 				monster[3] = monster[3] - 1
 				unit = spCreateUnit(monster[1],x+i*200,y,z,"south",0,false)
-				Spring.GiveOrderToUnit(unit,CMD_MOVE,{x2,y2,z2},emptyTable)
+				Spring.GiveOrderToUnit(unit,CMD.MOVE,{x2,y2,z2},emptyTable)
 			end
 		end
 	end

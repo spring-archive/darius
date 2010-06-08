@@ -24,11 +24,13 @@ local monsters = {
 
 function gadget:GameFrame(f)
 	if f%50 == 0 then
-		local x,y,z = Spring.GetTeamStartPosition(1)
-		for _, monster in pairs(monsters) do
+		local x,y,z = Spring.GetTeamStartPosition(0)
+		local x2,y2,z2 = Spring.GetTeamStartPosition(1)
+		for i, monster in pairs(monsters) do
 			if (f%monster[2] == 0 and monster[3] > 0) then
 				monster[3] = monster[3] - 1
-				spCreateUnit(monster[1],x+monster[2],y,z,"south",0,false)
+				unit = spCreateUnit(monster[1],x+i*200,y,z,"south",0,false)
+				Spring.SetUnitMoveGoal(unit,x2,y2,z2)
 			end
 		end
 	end

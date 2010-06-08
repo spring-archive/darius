@@ -19,13 +19,21 @@ if (not gadgetHandler:IsSyncedCode()) then
 	return false -- no unsynced code
 end
 
-local monsters = {
-	{"corcom",150,20},
-	{"armcom",300,20}
-}
+local monsters 
 
 local x,y,z
 local x2,y2,z2
+
+function ResetSpawner()
+	monsters = {
+		{"corcom",150,20},
+		{"armcom",300,20}
+	}	
+end
+
+function gadget:Initialize()
+	ResetSpawner()
+end
 
 function gadget:GameFrame(f)
 	if f%50 == 0 then
@@ -36,7 +44,7 @@ function gadget:GameFrame(f)
 		for i, monster in pairs(monsters) do
 			if (f%monster[2] == 0 and monster[3] > 0) then
 				monster[3] = monster[3] - 1
-				unit = spCreateUnit(monster[1],x+i*200,y,z,"south",0,false)
+				local unit = spCreateUnit(monster[1],x+i*200,y,z,"south",0,false)
 				Spring.GiveOrderToUnit(unit,CMD.MOVE,{x2,y2,z2},emptyTable)
 			end
 		end

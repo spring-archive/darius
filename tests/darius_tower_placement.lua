@@ -20,7 +20,7 @@ function teardown()
 end
 
 function gadgetHandler:IsSyncedCode() return true end
-function Spring.CreateUnit(a,b,c,d,e,f,g) print("two"); units = units .. "," .. a; unit = unit + 1 end
+function Spring.CreateUnit(a,b,c,d,e,f,g) units = units .. "," .. a; unit = unit + 1 end
 function GG.Darius:GetTower() return "towertype" end
 function GG.Darius:DiscardSelected() end
 
@@ -45,5 +45,5 @@ function test_TowerTypeIsCorrect()
 	for i=0,500 do
 		gadget:GameFrame(i)
 	end
-	assert_equal( "towertype", units, "Incorrect type(s) spawned instead of tower");
+	assert_equal( ",towertype", units, "Incorrect type(s) spawned instead of tower");
 end

@@ -44,11 +44,13 @@ end
 
 AddFaction(UnitDefNames['armcom'],'arm',{})
 AddFaction(UnitDefNames['corcom'],'core',{})
+
+--[[ DISABLED FOR DEBUGGING PURPOSES:
 AddFaction(UnitDefNames['nest'],'chicken',{})
 AddFaction(UnitDefNames['roostfac'],'chicken',{})
 AddFaction(UnitDefNames['roost'],'chicken',{})
 AddFaction(UnitDefNames['thicket'],'chicken',{})
-
+--]]
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 

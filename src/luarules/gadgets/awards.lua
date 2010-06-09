@@ -23,7 +23,7 @@ local totalTeamList = {}
 
 -------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------
-if (gadgetHandler:IsSyncedCode()) then 
+if (gadgetHandler:IsSyncedCode()) then
 -------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------
 local spAreTeamsAllied		= Spring.AreTeamsAllied
@@ -61,13 +61,13 @@ local boats, t3Units = {}, {}
 
 local nukes = {	armsilo=1, 	corsilo=1,
 				armshock=1,	cortron=1,
-				armcybr=1,	
+				armcybr=1,
 			}
 local staticO_small = {
 				armemp=1, cortron=1,
 				armbrtha=1, corint=1,
 			}
-			
+
 local staticO_big = {
 				armsilo=1,	corsilo=1,
 				mahlazer=1, corbeac=1,
@@ -76,13 +76,13 @@ local staticO_big = {
 local kamikaze = {
 				corroach=1, corsktl=1, blastwing=1,
 }
-			
+
 local flamerWeaponDefs = {}
 
 function comma_value(amount)
 	local formatted = amount .. ''
 	local k
-	while true do  
+	while true do
 		formatted, k = formatted:gsub("^(-?%d+)(%d%d%d)", '%1,%2')
 		if (k==0) then
 			break
@@ -95,7 +95,7 @@ function getMeanDamageExcept(excludeTeam)
 	local mean = 0
 	local count = 0
 	for team,dmg in pairs(damageList) do
-		if team ~= excludeTeam 
+		if team ~= excludeTeam
 			and dmg > 100
 		then
 			mean = mean + dmg
@@ -118,10 +118,10 @@ end
 
 function awardAward(team, awardType, record)
 	awardList[team][awardType] = record
-	
+
 	if testMode then
 		for _,curTeam in pairs(totalTeamList) do
-			if curTeam ~= team then	
+			if curTeam ~= team then
 				awardList[curTeam][awardType] = nil
 			end
 		end
@@ -137,7 +137,7 @@ function gadget:Initialize()
 			totalTeamList[team] = team
 		end
 	end
-		
+
 	for _,team in pairs(totalTeamList) do
 		airDamageList[team] 	= 0
 		friendlyDamageList[team]= 0
@@ -151,9 +151,9 @@ function gadget:Initialize()
 		captureList[team]		= 0
 		ouchDamageList[team]	= 0
 		kamDamageList[team]		= 0
-		
+
 		awardList[team] = {}
-		
+
 		teamCount = teamCount + 1
 	end
 
@@ -166,7 +166,9 @@ function gadget:Initialize()
 			end
 		end
 	end
-	
+
+
+	--[[ DISABLED FOR DEBUGGING PURPOSES:
 	local t3Facs = {'armshltx', 'corgant', }
 	for _, t3Fac in pairs(t3Facs) do
 		local udT3Fac = UnitDefNames[t3Fac]
@@ -174,12 +176,13 @@ function gadget:Initialize()
 			t3Units[t3DefID] = true
 		end
 	end
-	
+	--]]
+
 	for i=1,#WeaponDefs do
-		if (WeaponDefs[i].type=="Flame" or 
-			WeaponDefs[i].fireStarter >=100 or 
+		if (WeaponDefs[i].type=="Flame" or
+			WeaponDefs[i].fireStarter >=100 or
 			WeaponDefs[i].name:lower():find("napalm")) then --// == flamethrower or napalm
-			--// 0.5 cus we want to differ trees an metal/tanks 
+			--// 0.5 cus we want to differ trees an metal/tanks
 			--// (fireStarter-tag: 1.0->always flame trees, 2.0->always flame units/buildings too)
 			flamerWeaponDefs[i]=WeaponDefs[i].fireStarter
 		end
@@ -207,16 +210,16 @@ end
 
 function gadget:UnitDamaged(unitID, unitDefID, unitTeam, fullDamage, paralyzer, weaponID,
 		attackerID, attackerDefID, attackerTeam)
-	
-	if (not attackerTeam) 
+
+	if (not attackerTeam)
 		or (attackerTeam == unitTeam)
-		or (attackerTeam == gaiaTeamID) 
-		or (unitTeam == gaiaTeamID) 
+		or (attackerTeam == gaiaTeamID)
+		or (unitTeam == gaiaTeamID)
 		then return end
-	
+
 	local hp = spGetUnitHealth(unitID)
 	local damage = (hp > 0) and fullDamage or fullDamage + hp
-	
+
 	if spAreTeamsAllied(attackerTeam, unitTeam) then
 		if not paralyzer then
 			friendlyDamageList[attackerTeam] = friendlyDamageList[attackerTeam] + damage
@@ -228,41 +231,41 @@ function gadget:UnitDamaged(unitID, unitDefID, unitTeam, fullDamage, paralyzer, 
 			damageList[attackerTeam] = damageList[attackerTeam] + damage
 			ouchDamageList[unitTeam] = ouchDamageList[unitTeam] + damage
 			local ad = UnitDefs[attackerDefID]
-			
-			if (flamerWeaponDefs[weaponID]) then				
-				fireDamageList[attackerTeam] = fireDamageList[attackerTeam] + damage	
+
+			if (flamerWeaponDefs[weaponID]) then
+				fireDamageList[attackerTeam] = fireDamageList[attackerTeam] + damage
 			end
-			
+
 			-- Static Weapons
 			if (not ad.canMove) then
-			
+
 				-- bignukes, zenith, starlight
 				if staticO_big[ad.name] then
 					nuxDamageList[attackerTeam] = nuxDamageList[attackerTeam] + damage
-					
+
 				-- not lrpc, tacnuke, emp missile
 				elseif not staticO_small[ad.name] then
 					defDamageList[attackerTeam] = defDamageList[attackerTeam] + damage
-					
+
 				end
-				
+
 			elseif kamikaze[ad.name] then
 				kamDamageList[attackerTeam] = kamDamageList[attackerTeam] + damage
-			
+
 			elseif ad.canFly then
 				airDamageList[attackerTeam] = airDamageList[attackerTeam] + damage
-				
+
 			elseif boats[attackerDefID] then
 				navyDamageList[attackerTeam] = navyDamageList[attackerTeam] + damage
-			
+
 			elseif t3Units[attackerDefID] then
 				t3DamageList[attackerTeam] = t3DamageList[attackerTeam] + damage
-			
-			
-			end	
+
+
+			end
 		end
 	end
-	
+
 end
 
 function gadget:GameFrame(n)
@@ -271,20 +274,20 @@ function gadget:GameFrame(n)
 		if (frame32 < 0.1) then
 			sentAwards = false
 		end
-	
+
 	else
 		if not spIsGameOver() then return end
 	end
-	
-	if not sentAwards then 
-	
+
+	if not sentAwards then
+
 		for _, unitID in ipairs(spGetAllUnits()) do
 			local teamID = spGetUnitTeam(unitID)
 			 local unitDefID = spGetUnitDefID(unitID)
 			 gadget:UnitDestroyed(unitID, unitDefID, teamID)
 		end
-	
-		local pwnTeam, 	maxDamage 		= getMaxVal(damageList)		
+
+		local pwnTeam, 	maxDamage 		= getMaxVal(damageList)
 		local navyTeam, maxNavyDamage 	= getMaxVal(navyDamageList)
 		local airTeam, 	maxAirDamage 	= getMaxVal(airDamageList)
 		local nuxTeam, 	maxNuxDamage 	= getMaxVal(nuxDamageList)
@@ -293,29 +296,29 @@ function gadget:GameFrame(n)
 		local empTeam, 	maxEmpDamage 	= getMaxVal(empDamageList)
 		local t3Team, 	maxT3Damage 	= getMaxVal(t3DamageList)
 		local kamTeam, 	maxKamDamage 	= getMaxVal(kamDamageList)
-		
+
 		local ouchTeam, maxOuchDamage 	= getMaxVal(ouchDamageList)
-		
+
 		local capTeam, 	maxCap	 		= getMaxVal(captureList)
-		
+
 		local friendTeam
 		local maxFriendlyDamageRatio = 0
 		for team,dmg in pairs(friendlyDamageList) do
-			
+
 			local totalDamage = dmg+damageList[team]
 			local damageRatio = totalDamage>0 and dmg/totalDamage or 0
-			
+
 			if  damageRatio > maxFriendlyDamageRatio then
 				friendTeam = team
 				maxFriendlyDamageRatio = damageRatio
 			end
 		end
-	
-		
+
+
 		--test values
 		if testMode then
 			local testteam = 0
-			--[[				
+			--[[
 			pwnTeam, 	maxDamage 			= testteam+0	,1
 			navyTeam, 	maxNavyDamage 		= testteam+1	,1
 			t3Team, 	maxT3Damage 		= testteam+1	,1
@@ -323,7 +326,7 @@ function gadget:GameFrame(n)
 
 			expUnitTeam, expUnitExp			= testteam+0	,2.4444
 				expUnitDefID = 35
-	
+
 			airTeam, 	maxAirDamage 		= testteam+2	,2
 			nuxTeam, 	maxNuxDamage 		= testteam+0	,333333333
 
@@ -333,7 +336,7 @@ function gadget:GameFrame(n)
 			friendTeam, maxFriendlyDamageRatio = testteam+0	,0.5
 			fireTeam, maxFireDamage			= testteam+0	,1
 			empTeam, maxEmpDamage			= testteam+0	,1
-		
+
 			pwnTeam, 	maxDamage 			= testteam	,1
 			navyTeam, 	maxNavyDamage 	= testteam	,1
 			airTeam, 	maxAirDamage 		= testteam	,1
@@ -342,13 +345,13 @@ function gadget:GameFrame(n)
 			friendTeam, maxFriendlyDamageRatio = testteam,1
 			fireTeam, maxFireDamage		= testteam	,1
 			empTeam, maxEmpDamage			= testteam	,1
-		--]]	
+		--]]
 		end
-	
+
 		local easyFactor = 0.5
 		local veryEasyFactor = 0.3
 		local minFriendRatio = 0.25
-		
+
 		if pwnTeam then
 			awardAward(pwnTeam, 'pwn', 'Damage: '.. comma_value(maxDamage))
 		end
@@ -391,7 +394,7 @@ function gadget:GameFrame(n)
 			expUnitExpRounded = expUnitExpRounded:sub(1,3)
 			awardAward(expUnitTeam, 'vet', vetName ..', '.. expUnitExpRounded ..' XP')
 		end
-			
+
 		_G.awardList = awardList
 		sentAwards = true
 	end
@@ -456,14 +459,14 @@ local maxRow 		= 8
 local fontHeight 	= 16
 
 
-local awardDescs = 
+local awardDescs =
 {
-	pwn 	= 'Complete Annihilation Award', 
-	navy 	= 'Fleet Admiral', 
-	air 	= 'Airforce General', 
-	nux 	= 'Apocalyptic Achievement Award', 
-	friend 	= 'Friendly Fire Award', 
-	shell 	= 'Turtle Shell Award', 
+	pwn 	= 'Complete Annihilation Award',
+	navy 	= 'Fleet Admiral',
+	air 	= 'Airforce General',
+	nux 	= 'Apocalyptic Achievement Award',
+	friend 	= 'Friendly Fire Award',
+	shell 	= 'Turtle Shell Award',
 	fire 	= 'Master Grill-Chef',
 	emp 	= 'EMP Wizard',
 	t3 		= 'Experimental Engineer',
@@ -482,7 +485,7 @@ function gadget:Initialize()
 			totalTeamList[team] = team
 		end
 	end
-	
+
 	for _,team in pairs(totalTeamList) do
 		local _, leaderPlayerID = Spring.GetTeamInfo(team)
 		teamNames[team] = Spring.GetPlayerInfo(leaderPlayerID)
@@ -533,12 +536,12 @@ end
 
 
 function gadget:IsAboveCloseButton(x,y)
-	return (x > bx+exitX1) and (x < bx+exitX2) and (y > by+exitY1) and (y < by+exitY2) 
+	return (x > bx+exitX1) and (x < bx+exitX2) and (y > by+exitY1) and (y < by+exitY2)
 end
 
 
 function gadget:IsAbove_(x,y)
-	local above = (x > bx) and (x < bx+w) and (y > by) and (y < by+h) 
+	local above = (x > bx) and (x < bx+w) and (y > by) and (y < by+h)
 
 	if (above)and(self:IsAboveCloseButton(x,y)) then
 		buttonHover = true
@@ -602,14 +605,14 @@ function gadget:DrawScreen_()
 	if (not awardList) and SYNCED.awardList then
 		awardList = SYNCED.awardList
 	end
-		
+
 	fontHandler.UseFont(smallFont)
 	glPushMatrix()
 	-- Main Box
 	glTranslate(bx,by, 0)
 	glColor(0.2, 0.2, 0.2, 0.4)
 	gl.Rect(0,0,w,h)
-	
+
 	-- Title
 	glColor(1, 1, 0, 0.8)
 	glPushMatrix()
@@ -617,7 +620,7 @@ function gadget:DrawScreen_()
 	glScale(1.5, 1.5, 1.5)
 	fhDraw('Awards', 0,0)
 	glPopMatrix()
-	
+
 	-- Button
 	if buttonHover then
 		glColor(0.4, 0.4, 0.9, 0.85)
@@ -626,15 +629,15 @@ function gadget:DrawScreen_()
 	end
 	gl.Rect(exitX1,exitY1,exitX2,exitY2)
 	fhDrawCentered('Show/Hide Stats Window', (exitX1 + exitX2)/2,(exitY1 + exitY2)/2 - fontHeight/2)
-	
+
 	glTranslate(margin, h - (tHeight + margin)*2, 0)
 	local row, col = 0,0
 	if awardList then
-		
+
 		local teamCount = 0
-		
+
 		for team,awards in spairs(awardList) do
-		
+
 			local awardCount = 0
 			for awardType, record in spairs(awards) do
 				awardCount = awardCount + 1
@@ -644,22 +647,22 @@ function gadget:DrawScreen_()
 					Spring.Echo(planetWarsData)
 				end
 			end
-		
+
 			if awardCount > 0 then
 				teamCount = teamCount + 1
-				
+
 				if row == maxRow-1 then
 					row = 0
 					col = col + 1
 					glTranslate(margin+colSpacing, (tHeight+margin)*(maxRow-1) , 0)
 				end
-				
+
 				glColor( teamColorsDim[team] )
 				gl.Rect(0-margin/2, 0-margin/2, colSpacing-margin/2, tHeight+margin/2)
-				
-				glColor(1,1,1,1)	
+
+				glColor(1,1,1,1)
 				fhDraw(teamNames[team] , 0, fontHeight )
-				
+
 				row = row + 1
 				glTranslate( 0, 0 - (tHeight+margin), 0)
 				if row == maxRow then
@@ -667,22 +670,22 @@ function gadget:DrawScreen_()
 					col = col + 1
 					glTranslate(margin+colSpacing, (tHeight+margin)*maxRow , 0)
 				end
-				
+
 				for awardType, record in spairs(awards) do
-				
+
 					glColor(teamColorsDim[team] )
 					gl.Rect(0-margin/2, 0-margin/2, colSpacing-margin/2, tHeight+margin/2)
-					glColor(1,1,1,1)	
-					
+					glColor(1,1,1,1)
+
 					glPushMatrix()
-						
+
 						local border = 2
 						glColor(0,0,0,1)
 						gl.Rect(0-border, 0-border, tWidth+border, tHeight+border)
-						glColor(1,1,1,1)	
+						glColor(1,1,1,1)
 						glTexture('LuaRules/Images/awards/trophy_'.. awardType ..'.png')
 						glTexRect(0, 0, tWidth, tHeight )
-						
+
 						glTranslate(tWidth+margin,(fontHeight+margin),0)
 						glColor(1,1,0,1)
 						glPushMatrix()
@@ -691,10 +694,10 @@ function gadget:DrawScreen_()
 							elseif awardDescs[awardType]:len() > 20 then
 								glScale(0.8,1,1)
 							end
-							--fhDraw(awardCount ..') '.. awardDescs[awardType], 0,0) 
-							fhDraw(awardDescs[awardType], 0,0) 
+							--fhDraw(awardCount ..') '.. awardDescs[awardType], 0,0)
+							fhDraw(awardDescs[awardType], 0,0)
 						glPopMatrix()
-						
+
 						glTranslate(0,0-(fontHeight/2+margin),0)
 						glColor(1,1,1,1)
 						glPushMatrix()
@@ -703,12 +706,12 @@ function gadget:DrawScreen_()
 							elseif record:len() > 20 then
 								glScale(0.8,1,1)
 							end
-							
+
 							fhDraw('  '..record, 0,0)
 						glPopMatrix()
-						
+
 					glPopMatrix()
-					
+
 					row = row + 1
 					glTranslate( 0, 0 - (tHeight+margin), 0)
 					if row == maxRow then
@@ -719,7 +722,7 @@ function gadget:DrawScreen_()
 				end
 			end --if at least 1 award
 		end
-		
+
 		sentToPlanetWars = true
 	end
 	glPopMatrix()

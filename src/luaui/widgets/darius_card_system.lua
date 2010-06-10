@@ -114,7 +114,7 @@ local function SetHand(handStr)
 	hand = new_hand
 end
 
-local function UpdateCard(id, img, name, type, health, firerate, range, damage)
+local function UpdateCard(id, img, name, type, health, reloadTime, range, sightDistance, damage, weaponVelocity, desc)
 	id = 0 + id
 	if not (cards[id]) then
 		cards[id] = {}
@@ -122,14 +122,18 @@ local function UpdateCard(id, img, name, type, health, firerate, range, damage)
 	end
 	--spEcho("Updating card data")
 	local card = cards[id]
-	card.id       = id
-	card.img      = img
-	card.name     = name
-	card.type     = type
-	card.health   = health
-	card.firerate = firerate
-	card.range    = range
-	card.damage   = damage
+	card.id = id
+	card.img = img
+	card.name = name
+	card.type = type
+	card.health = health
+	card.reloadTime = reloadTime
+	card.range = range
+	card.sightDistance = sightDistance
+	card.damage = damage
+	card.weaponVelocity = weaponVelocity
+	card.desc = desc
+
 	--for v,k in pairs(card) do spEcho(v .. ": " .. k) end
 end
 

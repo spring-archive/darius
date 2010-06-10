@@ -149,25 +149,37 @@ local function UpdateHand()
 	end
 	for index, card in pairs(cards_in_hand) do
 		--Determine highlighting
+		spEcho("asd")
 		local background = color.game_bg
 		if (card == selectedSpecial) then
 			background = color.blue
 		elseif (card == selectedMaterial or card == selectedWeapon) then
 			background = color.game_fg
 		end
-		--Create tooltip
+		
+		--Create tooltip	
 		local name   = card.name     or "Unknown"
 		local type   = card.type     or "Unknown"
 		local health = card.health   or 0
-		local rate   = card.firerate or 0
+		local reloadTime   = card.reloadTime or 0
 		local range  = card.range    or 0
+		local sightDistance = card.sightDistance or 0
 		local damage = card.damage   or 0
+		local weaponVelocity = card.weaponVelocity or 0
+		local desc = card.desc or ""
 		local tooltip = WhiteStr  .. "Name: "     .. name   .. "\n" ..
 				    GreyStr   .. "Type: "     .. type   .. "\n" ..
 				    GreenStr  .. "Health: "   .. health .. "\n" ..
-				    YellowStr .. "Firerate: " .. rate   .. "\n" ..
+				    YellowStr .. "Reload Time: " .. reloadTime   .. "s\n" ..
 				    OrangeStr .. "Range: "    .. range  .. "\n" ..
-				    RedStr    .. "Damage: "   .. damage
+				    RedStr    .. "Sight Distance: "   .. sightDistance .. "\n" ..
+				    RedStr    .. "Projectile speed: "   .. weaponVelocity .. "\n" ..
+				    RedStr    .. "Damage: "   .. damage .. "\n" ..
+				    WhiteStr  .. "Desc:\n"     .. desc
+				    
+		
+		
+				
 		-- if not enough buttons, create a new one
 		if not (stack_hand.children[index]) then
 			local image = Image:New{}

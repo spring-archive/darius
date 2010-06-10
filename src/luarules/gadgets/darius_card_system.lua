@@ -45,11 +45,57 @@ if (gadgetHandler:IsSyncedCode()) then -- synced
 ------------------------------------------------
 
 local cards = {}
-cards[1] = {id = 1, name = "Metal"    , type = "Material", img = 'LuaUI/images/ibeam.png' , health =   100, rate = -0.01, range =  10, damage =  0}
+--type: Material, Weapon, Special
+--health: tower health
+--reloadTime: time to wait before next projectile in seconds,
+--range: how far can the tower shooot
+--sightDistance: how far can the tower see, if the game has mist
+--damage: how much damage one projectile inflicts
+--weaponVelocity: the speed of a projectile
+--desc: Description
+
+--a bit more official cards, should probably have their own files
+cards[1] = {
+			id = 1, 
+			name = "Stone", 
+			type = "Material", 
+			img = 'LuaUI/images/stone.png',
+			health =   1200,
+			reloadTime = 0.5,
+			range =  50,
+			sightDistance = 500,
+			damage =  0,
+			weaponVelocity = 0,
+			desc = "Creates tall stone towers with decent range and good amount of health,\n" ..
+				   "but due to tall design, adds additional weapon reloading time." 
+}
+       
+cards[2] = {
+			id = 2,
+			name = "Fire",
+			type = "Weapon",
+			img = 'LuaUI/images/fire.png',
+			health =   -150,
+			reloadTime = 0.80,
+			range =  350,
+			sightDistance = 0,
+		    damage =  100,
+		    weaponVelocity = 900,
+		    desc = "Shoots fireballs that do good damage, but with limited range and\n" ..
+		    	   "projectile speed. Also due to the unpredictable nature of fire,\n" .. 
+		    	   "costs tower healthpoints."		    
+}
+
+--test cards
+cards[3] = {id = 3, name = "Metal"    , type = "Material", img = 'LuaUI/images/ibeam.png' , health =     0, reloadTime = 0,  range =  0,   sightDistance = 0  , damage =  0   , weaponVelocity = 0}
+cards[4] = {id = 4, name = "Lightning", type = "Weapon"  , img = 'LuaUI/images/energy.png', health =     0, reloadTime = 0,  range =  0,   sightDistance = 0  , damage =  0   , weaponVelocity = 0}
+
+--[[
 cards[2] = {id = 2, name = "Metal"    , type = "Material", img = 'LuaUI/images/ibeam.png' , health =   100, rate = -0.01, range =  10, damage =  0}
 cards[3] = {id = 3, name = "Fire"     , type = "Weapon"  , img = 'LuaUI/images/energy.png', health =  - 10, rate =  1   , range =  50, damage =  5}
 cards[4] = {id = 4, name = "Fire"     , type = "Weapon"  , img = 'LuaUI/images/energy.png', health =  - 10, rate =  1   , range =  50, damage =  5}
 cards[5] = {id = 5, name = "Lightning", type = "Weapon"  , img = 'LuaUI/images/energy.png', health =     0, rate =  0.5 , range = 100, damage = 10}
+--]]
 
 -----------------------------
 -- SendToUnsynced Wrappers --
@@ -98,15 +144,19 @@ end
 local function UnsyncCard(card)
 	--spEcho("Unsyncing card [" .. card.id .. "]")
 	if not (card) then return end
-	SendToUnsynced("CardTable", 
+	SendToUnsynced("CardTable",    
+	
 		card.id,
 		card.img,
 		card.name,
 		card.type,
 		card.health,
-		card.firerate,
+		card.reloadTime,
 		card.range,
-		card.damage
+		card.sightDistance,
+		card.damage,
+		card.weaponVelocity,
+		card.desc
 	)
 end
 
@@ -266,7 +316,7 @@ function gadget:Initialize()
 	--Darius:SetTower("corllt") --NOTE: The SyncActions aren't in place yet, so this isn't sent properly.
 					  -- However, the widget requests the data when it loads, so this should be taken care of for the start up.
 					  -- Unfortunately, if the rules reload then the ui needs to be reloaded (this is a minor issue)
-	hand = {cards[1], cards[2], cards[4], cards[3]}
+	hand = {cards[1], cards[3], cards[2], cards[4]}
 end
 
 function gadget:GameFrame(f)

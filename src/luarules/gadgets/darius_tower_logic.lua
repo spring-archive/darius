@@ -30,8 +30,16 @@ end
 function gadget:GameFrame(f)
 	if not (Darius) then Darius = GG.Darius end
 	if not (Darius) then return end
-	if (Darius:GetSelectedMaterial() and Darius:GetSelectedWeapon()) then
-		Darius:SetTower("corllt")
+	
+	local material = Darius:GetSelectedMaterial()
+	local weapon = Darius:GetSelectedWeapon()
+	
+	if (material and weapon) then
+	--just a test, will probably be done in smarter way
+		if (material.name == "Stone"  and weapon.name == "Fire") then
+			Darius:SetTower("corrl")
+		else Darius:SetTower("corllt")
+		end
 	else
 		Darius:SetTower(nil)
 	end

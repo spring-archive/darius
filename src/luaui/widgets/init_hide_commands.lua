@@ -1,14 +1,13 @@
 function widget:GetInfo()
 	return {
-		version   = "1",
-		name      = "Hide commands",
-		desc      = "Hides some commands",
-		author    = "Regret",
-		date      = "February 19, 2010", --last change February 19, 2010
-		license   = "Public Domain",
-		layer     = 0,
-		enabled   = true, --enabled by default
-		handler   = true, --access to handler
+		name = "Hide commands",
+		desc = "Hides all commands",
+		author = "Jammer",
+		date = "June 2010",
+		license = "GNU GPL, v2 or later",
+		layer = 0,
+		enabled = true,
+		handler = true, --access to handler
 	}
 end
 

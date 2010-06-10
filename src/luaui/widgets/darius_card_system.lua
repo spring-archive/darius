@@ -97,7 +97,7 @@ end
 -- Unsynced Vars Receivers --
 -----------------------------
 local function SetHand(handStr)
-	spEcho("Receiving hand")
+	--spEcho("Receiving hand")
 	local new_hand = {}
 	for id in string.gmatch(handStr, "%d+") do
 		id = 0 + id

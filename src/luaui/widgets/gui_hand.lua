@@ -149,15 +149,15 @@ local function UpdateHand()
 	end
 	for index, card in pairs(cards_in_hand) do
 		--Determine highlighting
-		spEcho("asd")
+		--spEcho("asd") This absolutely pollutes the log produced by spring
 		local background = color.game_bg
 		if (card == selectedSpecial) then
 			background = color.blue
 		elseif (card == selectedMaterial or card == selectedWeapon) then
 			background = color.game_fg
 		end
-		
-		--Create tooltip	
+
+		--Create tooltip
 		local name   = card.name     or "Unknown"
 		local type   = card.type     or "Unknown"
 		local health = card.health   or 0
@@ -176,10 +176,10 @@ local function UpdateHand()
 				    RedStr    .. "Projectile speed: "   .. weaponVelocity .. "\n" ..
 				    RedStr    .. "Damage: "   .. damage .. "\n" ..
 				    WhiteStr  .. "Desc:\n"     .. desc
-				    
-		
-		
-				
+
+
+
+
 		-- if not enough buttons, create a new one
 		if not (stack_hand.children[index]) then
 			local image = Image:New{}

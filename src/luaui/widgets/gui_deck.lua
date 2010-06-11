@@ -96,10 +96,10 @@ local function SendCardToHand(button)
 	end
 		
 	if (button.deck.name == "Deck1") then
-		spEcho("Deck1")
+		--spEcho("Deck1")
 		Darius:Draw(1)
 	elseif (button.deck.name == "Deck2") then
-		spEcho("Deck2")
+		--spEcho("Deck2")
 		Darius:Draw(2)
 	end
 end

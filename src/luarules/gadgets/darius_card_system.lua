@@ -32,7 +32,8 @@ local effect
 local selectedMaterial
 local selectedWeapon
 local selectedSpecial
-local greenballs
+
+local greenballs = 10 -- Test value
 
 local hand = {}
 
@@ -53,6 +54,7 @@ local cards = {}
 --damage: how much damage one projectile inflicts
 --weaponVelocity: the speed of a projectile
 --desc: Description
+
 
 --a bit more official cards, should probably have their own files
 cards[1] = {
@@ -87,15 +89,16 @@ cards[2] = {
 }
 
 --test cards
-cards[3] = {id = 3, name = "Metal"    , type = "Material", img = 'LuaUI/images/ibeam.png' , health =     0, reloadTime = 0,  range =  0,   sightDistance = 0  , damage =  0   , weaponVelocity = 0}
-cards[4] = {id = 4, name = "Lightning", type = "Weapon"  , img = 'LuaUI/images/energy.png', health =     0, reloadTime = 0,  range =  0,   sightDistance = 0  , damage =  0   , weaponVelocity = 0}
+cards[ 3] = {id = 3, name = "Metal"              , type = "Material", img = 'LuaUI/images/ibeam.png'   , health =     0, reloadTime = 0,  range =  0,   sightDistance = 0  , damage =  0   , weaponVelocity = 0}
+cards[ 4] = {id = 4, name = "Lightning"          , type = "Weapon"  , img = 'LuaUI/images/energy.png'  , health =     0, reloadTime = 0,  range =  0,   sightDistance = 0  , damage =  0   , weaponVelocity = 0}
 
---[[
-cards[2] = {id = 2, name = "Metal"    , type = "Material", img = 'LuaUI/images/ibeam.png' , health =   100, rate = -0.01, range =  10, damage =  0}
-cards[3] = {id = 3, name = "Fire"     , type = "Weapon"  , img = 'LuaUI/images/energy.png', health =  - 10, rate =  1   , range =  50, damage =  5}
-cards[4] = {id = 4, name = "Fire"     , type = "Weapon"  , img = 'LuaUI/images/energy.png', health =  - 10, rate =  1   , range =  50, damage =  5}
-cards[5] = {id = 5, name = "Lightning", type = "Weapon"  , img = 'LuaUI/images/energy.png', health =     0, rate =  0.5 , range = 100, damage = 10}
---]]
+cards[ 5] = {id = 5, name = "Lightning"          , type = "Weapon"  , img = 'LuaUI/images/energy.png'  , health =     0, reloadTime = 0,  range =  0,   sightDistance = 0  , damage =  0   , weaponVelocity = 0}
+cards[ 6] = {id = 6, name = "Lightning"          , type = "Weapon"  , img = 'LuaUI/images/energy.png'  , health =     0, reloadTime = 0,  range =  0,   sightDistance = 0  , damage =  0   , weaponVelocity = 0}
+cards[ 7] = {id = 7, name = "Lightning"          , type = "Weapon"  , img = 'LuaUI/images/energy.png'  , health =     0, reloadTime = 0,  range =  0,   sightDistance = 0  , damage =  0   , weaponVelocity = 0}
+cards[ 8] = {id = 8, name = "Pink Fluffy Bunnies", type = "Special" , img = 'LuaUI/images/friendly.png', health =     0, reloadTime = 0,  range =  0,   sightDistance = 0  , damage =  0   , weaponVelocity = 0}
+cards[ 9] = {id = 9, name = "Metal"              , type = "Material", img = 'LuaUI/images/ibeam.png'   , health =     0, reloadTime = 0,  range =  0,   sightDistance = 0  , damage =  0   , weaponVelocity = 0}
+cards[10] = {id =10, name = "Metal"              , type = "Material", img = 'LuaUI/images/ibeam.png'   , health =     0, reloadTime = 0,  range =  0,   sightDistance = 0  , damage =  0   , weaponVelocity = 0}
+cards[11] = {id =11, name = "Metal"              , type = "Material", img = 'LuaUI/images/ibeam.png'   , health =     0, reloadTime = 0,  range =  0,   sightDistance = 0  , damage =  0   , weaponVelocity = 0}
 
 -----------------------------
 -- SendToUnsynced Wrappers --
@@ -186,15 +189,22 @@ function Darius:SetEffect(arg)
 end
 
 function Darius:DrawCard(deckID)
-	if not (deckID) then return end
 	--If not a valid deck ID return
+	if not (deckID) then return end
+	deckID = 0 + deckID
 	if not (deckID == 1 or deckID == 2) then return end
+	spEcho("Drawing from deck " .. deckID)
+
 	-- Makes sure we are allowed to draw
 	if not (Darius:CanDraw()) then return end
+	spEcho("Drawing is allowed, looking for cards")
+
 	-- If we have cards to draw, draw one
 	if (#deck[deckID] > 1) then
-		hand.insert(tremove(deck[deckID],1))
+		table.insert(hand, table.remove(deck[deckID], 1))
+		spEcho("Beginning Greenballs: " .. greenballs)
 		greenballs = greenballs - requiredBallsToDraw -- decrease balls
+		spEcho("Ending Greenballs: " .. greenballs)
 		UnsyncHand() -- Update hand in unsynced
 		UnsyncGreenballs() -- Update greenballs in unsynced
 	end
@@ -306,6 +316,7 @@ function Darius:GetGreenBalls()
 end
 
 function Darius:CanDraw()
+	--spEcho (greenballs .. " / " .. requiredBallsToDraw)
 	return (greenballs >= requiredBallsToDraw)
 end
 
@@ -317,6 +328,8 @@ function gadget:Initialize()
 					  -- However, the widget requests the data when it loads, so this should be taken care of for the start up.
 					  -- Unfortunately, if the rules reload then the ui needs to be reloaded (this is a minor issue)
 	hand = {cards[1], cards[3], cards[2], cards[4]}
+	deck[1] = {cards[5], cards[6], cards[7], cards[8]}
+	deck[2] = {cards[9], cards[10], cards[11]}
 end
 
 function gadget:GameFrame(f)
@@ -328,6 +341,7 @@ function gadget:RecvLuaMsg(msg, playerID)
 		if not (cards[cardID]) then return end
 		Darius:ActivateCard(cards[cardID])
 	elseif string.find(msg, "Draw Card:") then -- Draw from specified
+		spEcho("Backend: Drawing card")
 		deckID = msg:gsub("Draw Card:","")
 		Darius:DrawCard(deckID)
 	elseif string.find(msg, "Send Card Data:") then -- The card data was requested

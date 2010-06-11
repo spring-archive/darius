@@ -77,6 +77,11 @@ function Darius:GetGreenBalls()
 end
 
 function Darius:CanDraw()
+	if not (greenballs) then
+		greenballs = 0
+	end
+	--spEcho(greenballs)
+	--spEcho(requiredBallsToDraw)
 	--spEcho(greenballs .. " / " .. requiredBallsToDraw)
 	--spEcho(greenballs >= requiredBallsToDraw)
 	return (greenballs >= requiredBallsToDraw)
@@ -90,7 +95,7 @@ end
 function Darius:Draw(deck)
 	--Tell gadget to draw from specified deck
 	spSendLuaRulesMsg("Draw Card:" .. deck)
-	spEcho("Draw Card:" .. deck)
+	--spEcho("Draw Card:" .. deck)
 end
 
 -----------------------------
@@ -118,7 +123,7 @@ local function UpdateCard(id, img, name, type, health, reloadTime, range, sightD
 	id = 0 + id
 	if not (cards[id]) then
 		cards[id] = {}
-		spEcho("Created new card on update.  Why?")
+		spEcho("Created new card on update.  Why?") --Should never return this error.
 	end
 	--spEcho("Updating card data")
 	local card = cards[id]

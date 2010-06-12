@@ -37,8 +37,8 @@ function gadget:GameFrame(f)
 	if (material and weapon) then
 	--just a test, will probably be done in smarter way
 		if (material.name == "Stone"  and weapon.name == "Fire") then
-			Darius:SetTower("corrl")
-		else Darius:SetTower("corllt")
+			Darius:SetTower(287) --"corrl"
+		else Darius:SetTower(260) --"corllt"
 		end
 	else
 		Darius:SetTower(nil)

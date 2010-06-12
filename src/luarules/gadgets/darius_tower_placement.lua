@@ -26,6 +26,9 @@ function gadget:GameFrame(f)
 	if not GG.Darius then return end
 	if tower ~= nil then -- If tower variable is set then create the tower
 		if (tower ~= GG.Darius:GetTower()) then
+			spEcho("Tower Invalid")
+			spEcho(tower)
+			spEcho(GG.Darius:GetTower())
 			tower = nil
 			return
 		end
@@ -49,7 +52,7 @@ function gadget:RecvLuaMsg(msg, playerID)
 	end
 	if words[1] == "PlaceTower" then
 		team = 1 --playerID --TODO: Huh?
-		tower = words[2]
+		tower = 0 + words[2]
 		x = tonumber(words[3])
 		y = tonumber(words[4])
 		z = tonumber(words[5])

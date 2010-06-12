@@ -19,20 +19,19 @@ local spGetTeamColor     = Spring.GetTeamColor
 local spSendLuaRulesMsg  = Spring.SendLuaRulesMsg
 local spTraceScreenRay   = Spring.TraceScreenRay
 
-local spGetUnitDefID     = Spring.GetUnitDefID
+--local spGetUnitDefID     = Spring.GetUnitDefID
 
 local glColor            = gl.Color
-local glDrawGroundCircle = gl.DrawGroundCircle
 local glPopMatrix        = gl.PopMatrix
 local glPushMatrix       = gl.PushMatrix
 local glTranslate        = gl.Translate
 local glUnitShape        = gl.UnitShape
-local glVertex           = gl.Vertex
 
 ----------------
 -- Local Vars --
 ----------------
 local tower
+local team = 1
 
 local teamColors = {}
 
@@ -40,23 +39,24 @@ local teamColors = {}
 -- Local Functions --
 ---------------------
 
-local function GetTeamColorSet(teamID)
+local function GetTeamColor(teamID)
   local colors = teamColors[teamID]
   if (colors) then
     return colors
   end
   local r,g,b = spGetTeamColor(teamID)
   
-  colors = {{ r, g, b, 0.4 },
-            { r, g, b, 0.7 }}
-  teamColors[teamID] = colors
-  return colors
+  color = { r, g, b, 0.4 }
+  teamColors[teamID] = color
+  return color
 end
 
 -------------
 -- Callins --
 -------------
 function widget:Initialize()
+	spEcho("Tower Ghost ON")
+	team = Spring.GetMyTeamID()
 end
 
 function widget:Update()
@@ -70,26 +70,24 @@ function widget:DrawWorld()
 		local mx, my = spGetMouseState()
 		-- If we are over a chili element then return
 		if (WG.Chili) then if (WG.Chili:IsAbove(mx,my)) then return end end
-		local unitID, pos
-		local hoverType, hoverData = spTraceScreenRay(mx, my)
-		if (hoverType == "ground") then
-			pos = hoverData
-		end
-		if (hoverType == "unit") then
-			--spEcho(spGetUnitDefID(hoverData))
-		end
-		radius = 50.0
-		local colorSet  = GetTeamColorSet(1)
-		glColor(colorSet[1])
+		local _, pos = spTraceScreenRay(mx, my, true, false)
+		glColor(GetTeamColor(team))
 		if (pos) then
-			glDrawGroundCircle(pos[1], pos[2], pos[3], radius, 32)
 			glPushMatrix()
 			glTranslate(pos[1], pos[2], pos[3])
 
-			glUnitShape(260, 1) --TODO: How to get the unitDefID? (260 = corllt)
+			glUnitShape(tower, team)
 
 			glPopMatrix()
 		end
+		--local hoverType, hoverData = spTraceScreenRay(mx, my)
+		--if (hoverType == "unit") then
+		--	spEcho(spGetUnitDefID(hoverData))
+		--end
 	--	spEcho("Draw Tower "..tostring(pos[1]).." "..tostring(pos[2]).." "..tostring(pos[3]))
 	end
+end
+
+function widget:Shutdown()
+	spEcho("Tower Ghost OFF")
 end

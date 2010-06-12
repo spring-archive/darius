@@ -33,7 +33,7 @@ local selectedMaterial
 local selectedWeapon
 local selectedSpecial
 
-local greenballs = 10 -- Test value
+local greenballs = 30 -- Test value
 
 local hand = {}
 
@@ -46,11 +46,12 @@ if (gadgetHandler:IsSyncedCode()) then -- synced
 ------------------------------------------------
 
 local cards = {}
+--THE ID IS SPECIFIC TO THE CARD SYSTEM!
 --type: Material, Weapon, Special
 --health: tower health
 --reloadTime: time to wait before next projectile in seconds,
 --range: how far can the tower shooot
---sightDistance: how far can the tower see, if the game has mist
+--LOS: how far can the tower see, if the game has fog of war
 --damage: how much damage one projectile inflicts
 --weaponVelocity: the speed of a projectile
 --desc: Description
@@ -58,14 +59,14 @@ local cards = {}
 
 --a bit more official cards, should probably have their own files
 cards[1] = {
-			id = 1, 
+			id = 1,
 			name = "Stone", 
 			type = "Material", 
 			img = 'LuaUI/images/stone.png',
 			health =   1200,
 			reloadTime = 0.5,
 			range =  50,
-			sightDistance = 500,
+			LOS = 500,
 			damage =  0,
 			weaponVelocity = 0,
 			desc = "Creates tall stone towers with decent range and good amount of health,\n" ..
@@ -80,32 +81,32 @@ cards[2] = {
 			health =   -150,
 			reloadTime = 0.80,
 			range =  350,
-			sightDistance = 0,
-		    damage =  100,
-		    weaponVelocity = 900,
-		    desc = "Shoots fireballs that do good damage, but with limited range and\n" ..
-		    	   "projectile speed. Also due to the unpredictable nature of fire,\n" .. 
-		    	   "costs tower healthpoints."		    
+			LOS = 0,
+			damage =  100,
+			weaponVelocity = 900,
+			desc = "Shoots fireballs that do good damage, but with limited range and\n" ..
+				"projectile speed. Also due to the unpredictable nature of fire,\n" .. 
+				"costs tower healthpoints."		    
 }
 
 --test cards
-cards[ 3] = {id = 3, name = "Metal"              , type = "Material", img = 'LuaUI/images/ibeam.png'   , health =     0, reloadTime = 0,  range =  0,   sightDistance = 0  , damage =  0   , weaponVelocity = 0}
-cards[ 4] = {id = 4, name = "Lightning"          , type = "Weapon"  , img = 'LuaUI/images/energy.png'  , health =     0, reloadTime = 0,  range =  0,   sightDistance = 0  , damage =  0   , weaponVelocity = 0}
+cards[ 3] = {id = 3, name = "Metal"              , type = "Material", img = 'LuaUI/images/ibeam.png'   , health =     0, reloadTime = 0,  range =  0,   LOS = 0  , damage =  0   , weaponVelocity = 0}
+cards[ 4] = {id = 4, name = "Lightning"          , type = "Weapon"  , img = 'LuaUI/images/energy.png'  , health =     0, reloadTime = 0,  range =  0,   LOS = 0  , damage =  0   , weaponVelocity = 0}
 
-cards[ 5] = {id = 5, name = "Lightning"          , type = "Weapon"  , img = 'LuaUI/images/energy.png'  , health =     0, reloadTime = 0,  range =  0,   sightDistance = 0  , damage =  0   , weaponVelocity = 0}
-cards[ 6] = {id = 6, name = "Lightning"          , type = "Weapon"  , img = 'LuaUI/images/energy.png'  , health =     0, reloadTime = 0,  range =  0,   sightDistance = 0  , damage =  0   , weaponVelocity = 0}
-cards[ 7] = {id = 7, name = "Lightning"          , type = "Weapon"  , img = 'LuaUI/images/energy.png'  , health =     0, reloadTime = 0,  range =  0,   sightDistance = 0  , damage =  0   , weaponVelocity = 0}
-cards[ 8] = {id = 8, name = "Pink Fluffy Bunnies", type = "Special" , img = 'LuaUI/images/friendly.png', health =     0, reloadTime = 0,  range =  0,   sightDistance = 0  , damage =  0   , weaponVelocity = 0}
-cards[ 9] = {id = 9, name = "Metal"              , type = "Material", img = 'LuaUI/images/ibeam.png'   , health =     0, reloadTime = 0,  range =  0,   sightDistance = 0  , damage =  0   , weaponVelocity = 0}
-cards[10] = {id =10, name = "Metal"              , type = "Material", img = 'LuaUI/images/ibeam.png'   , health =     0, reloadTime = 0,  range =  0,   sightDistance = 0  , damage =  0   , weaponVelocity = 0}
-cards[11] = {id =11, name = "Metal"              , type = "Material", img = 'LuaUI/images/ibeam.png'   , health =     0, reloadTime = 0,  range =  0,   sightDistance = 0  , damage =  0   , weaponVelocity = 0}
+cards[ 5] = {id = 5, name = "Lightning"          , type = "Weapon"  , img = 'LuaUI/images/energy.png'  , health =     0, reloadTime = 0,  range =  0,   LOS = 0  , damage =  0   , weaponVelocity = 0}
+cards[ 6] = {id = 6, name = "Lightning"          , type = "Weapon"  , img = 'LuaUI/images/energy.png'  , health =     0, reloadTime = 0,  range =  0,   LOS = 0  , damage =  0   , weaponVelocity = 0}
+cards[ 7] = {id = 7, name = "Lightning"          , type = "Weapon"  , img = 'LuaUI/images/energy.png'  , health =     0, reloadTime = 0,  range =  0,   LOS = 0  , damage =  0   , weaponVelocity = 0}
+cards[ 8] = {id = 8, name = "Pink Fluffy Bunnies", type = "Special" , img = 'LuaUI/images/friendly.png', health =     0, reloadTime = 0,  range =  0,   LOS = 0  , damage =  0   , weaponVelocity = 0}
+cards[ 9] = {id = 9, name = "Metal"              , type = "Material", img = 'LuaUI/images/ibeam.png'   , health =     0, reloadTime = 0,  range =  0,   LOS = 0  , damage =  0   , weaponVelocity = 0}
+cards[10] = {id =10, name = "Metal"              , type = "Material", img = 'LuaUI/images/ibeam.png'   , health =     0, reloadTime = 0,  range =  0,   LOS = 0  , damage =  0   , weaponVelocity = 0}
+cards[11] = {id =11, name = "Metal"              , type = "Material", img = 'LuaUI/images/ibeam.png'   , health =     0, reloadTime = 0,  range =  0,   LOS = 0  , damage =  0   , weaponVelocity = 0}
 
 -----------------------------
 -- SendToUnsynced Wrappers --
 -----------------------------
 
 local function UnsyncTower()
-	SendToUnsynced("TowerName", tower)
+	SendToUnsynced("TowerID", tower)
 end
 
 local function UnsyncEffect()
@@ -200,7 +201,7 @@ function Darius:DrawCard(deckID)
 	spEcho("Drawing is allowed, looking for cards")
 
 	-- If we have cards to draw, draw one
-	if (#deck[deckID] > 1) then
+	if (#deck[deckID] > 0) then
 		table.insert(hand, table.remove(deck[deckID], 1))
 		spEcho("Beginning Greenballs: " .. greenballs)
 		greenballs = greenballs - requiredBallsToDraw -- decrease balls
@@ -368,7 +369,7 @@ else --unsynced
 ----------------------------------
 -- Send Unsynced vars to widget --
 ----------------------------------
-local function SendTowerName(_, tower)
+local function SendTowerID(_, tower)
 	--Make sure the widget still exists (might have been stopped)
 	if (Script.LuaUI('SetTower')) then
 		-- Call the widget function.  Widget must declare function via 'widgetHandler:RegisterGlobal'
@@ -426,7 +427,7 @@ function gadget:Initialize()
 	--Init the sender functions
 	gadgetHandler:AddSyncAction("CardHand", SendHand)
 	gadgetHandler:AddSyncAction("CardTable", SendCard)
-	gadgetHandler:AddSyncAction("TowerName", SendTowerName)
+	gadgetHandler:AddSyncAction("TowerID", SendTowerID)
 	gadgetHandler:AddSyncAction("CardEffect", SendEffect)
 	gadgetHandler:AddSyncAction("SelectedMaterialCard", SendMaterial)
 	gadgetHandler:AddSyncAction("SelectedWeaponCard", SendWeapon)

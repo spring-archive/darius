@@ -6,7 +6,7 @@ function widget:GetInfo()
 		author = "xcompwiz",
 		date = "June 6, 2010",
 		license = "GNU GPL, v2 or later",
-		layer = 0,
+		layer = 100,
 		enabled = true
 	}
 end
@@ -58,7 +58,10 @@ local selectedSpecial = {}
 ---------------------
 local function AdjustWindow()
 	if not (window_hand) then return end
-	local max_width = (window_hand.width - 120)/#cards_in_hand
+	stack_hand.width = window_hand.width
+	stack_hand.height = window_hand.height
+	local max_width = window_hand.width/#cards_in_hand
+	max_width = max_width - 30
 	local max_height = window_hand.height - 60
 	settings.cardsize_y = max_height
 	settings.cardsize_x = settings.cardsize_y * 0.6
@@ -68,6 +71,7 @@ local function AdjustWindow()
 	end
 
 	-- Force redraw
+	stack_hand:UpdateLayout()
 	stack_hand:Invalidate()
 end
 
@@ -87,7 +91,7 @@ local function MakeHandMenu()
 		name='stack_hand',
 		orientation = 'horizontal',
 		width = -1,
-		height = -1,
+		height = hand_height,
 		resizeItems = false,
 		padding = {0,10,0,0},
 		itemPadding = {0,0,0,0},
@@ -99,7 +103,7 @@ local function MakeHandMenu()
 		caption="Hand",
 		x = hand_pos_x,
 		y = hand_pos_y,
-		dockable = true,
+		dockable = false,
 		name = "hand_window",
 		clientWidth = hand_width,
 		clientHeight = hand_height,
@@ -158,28 +162,24 @@ local function UpdateHand()
 		end
 
 		--Create tooltip
-		local name   = card.name     or "Unknown"
-		local type   = card.type     or "Unknown"
-		local health = card.health   or 0
-		local reloadTime   = card.reloadTime or 0
-		local range  = card.range    or 0
-		local sightDistance = card.sightDistance or 0
-		local damage = card.damage   or 0
-		local weaponVelocity = card.weaponVelocity or 0
+		local name       = card.name       or "Unknown"
+		local type       = card.type       or "Unknown"
+		local health     = card.health     or 0
+		local reloadTime = card.reloadTime or 0
+		local range      = card.range      or 0
+		local LOS        = card.LOS        or 0
+		local damage     = card.damage     or 0
+		local velocity   = card.weaponVelocity or 0
 		local desc = card.desc or ""
-		local tooltip = WhiteStr  .. "Name: "     .. name   .. "\n" ..
-				    GreyStr   .. "Type: "     .. type   .. "\n" ..
-				    GreenStr  .. "Health: "   .. health .. "\n" ..
+		local tooltip = WhiteStr  .. "Name: "        .. name         .. "\n" ..
+				    GreyStr   .. "Type: "        .. type         .. "\n" ..
+				    GreenStr  .. "Health: "      .. health       .. "\n" ..
 				    YellowStr .. "Reload Time: " .. reloadTime   .. "s\n" ..
-				    OrangeStr .. "Range: "    .. range  .. "\n" ..
-				    RedStr    .. "Sight Distance: "   .. sightDistance .. "\n" ..
-				    RedStr    .. "Projectile speed: "   .. weaponVelocity .. "\n" ..
-				    RedStr    .. "Damage: "   .. damage .. "\n" ..
-				    WhiteStr  .. "Desc:\n"     .. desc
-
-
-
-
+				    OrangeStr .. "Range: "       .. range        .. "\n" ..
+				    GreyStr   .. "LOS: "         .. LOS          .. "\n" ..
+				    OrangeStr .."Projectile speed: ".. velocity  .. "\n" ..
+				    RedStr    .. "Damage: "      .. damage       .. "\n" ..
+				    WhiteStr  .. "Desc:\n"       .. desc
 		-- if not enough buttons, create a new one
 		if not (stack_hand.children[index]) then
 			local image = Image:New{}
@@ -215,24 +215,6 @@ local function UpdateHand()
 	window_hand:Invalidate()
 end
 
-local function oldUpdateHand()
-	local new_hand = GetHand()
-	local new_material = GetSelectedMaterial()
-	local new_weapon = GetSelectedWeapon()
-	local new_special = GetSelectedSpecial()
-	if ((cards_in_hand ~= new_hand) or
-	   (selectedMaterial ~= new_material) or
-	   (selectedWeapon   ~= new_weapon  ) or
-	   (selectedSpecial  ~= new_special )) then
-		cards_in_hand    = new_hand
-		selectedMaterial = new_material
-		selectedWeapon   = new_weapon
-		selectedSpecial  = new_special
-		spEcho("Redrawing hand")
-		--DrawHand()
-	end
-end
-
 --------------
 -- Call-ins --
 --------------
@@ -265,7 +247,6 @@ function widget:Initialize()
 end
 
 function widget:ViewResize(viewSizeX, viewSizeY)
-	AdjustWindow()
 end
 
 function widget:GetConfigData()

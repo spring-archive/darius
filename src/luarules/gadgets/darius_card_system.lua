@@ -194,18 +194,18 @@ function Darius:DrawCard(deckID)
 	if not (deckID) then return end
 	deckID = 0 + deckID
 	if not (deckID == 1 or deckID == 2) then return end
-	spEcho("Drawing from deck " .. deckID)
+	--spEcho("Drawing from deck " .. deckID)
 
 	-- Makes sure we are allowed to draw
 	if not (Darius:CanDraw()) then return end
-	spEcho("Drawing is allowed, looking for cards")
+	--spEcho("Drawing is allowed, looking for cards")
 
 	-- If we have cards to draw, draw one
 	if (#deck[deckID] > 0) then
 		table.insert(hand, table.remove(deck[deckID], 1))
-		spEcho("Beginning Greenballs: " .. greenballs)
+		--spEcho("Beginning Greenballs: " .. greenballs)
 		greenballs = greenballs - requiredBallsToDraw -- decrease balls
-		spEcho("Ending Greenballs: " .. greenballs)
+		--spEcho("Ending Greenballs: " .. greenballs)
 		UnsyncHand() -- Update hand in unsynced
 		UnsyncGreenballs() -- Update greenballs in unsynced
 	end
@@ -342,7 +342,7 @@ function gadget:RecvLuaMsg(msg, playerID)
 		if not (cards[cardID]) then return end
 		Darius:ActivateCard(cards[cardID])
 	elseif string.find(msg, "Draw Card:") then -- Draw from specified
-		spEcho("Backend: Drawing card")
+		--spEcho("Backend: Drawing card")
 		deckID = msg:gsub("Draw Card:","")
 		Darius:DrawCard(deckID)
 	elseif string.find(msg, "Send Card Data:") then -- The card data was requested

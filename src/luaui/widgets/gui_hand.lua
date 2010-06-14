@@ -275,5 +275,6 @@ function widget:Shutdown()
 	if (window_hand) then
 		screen0:RemoveChild(window_hand)
 		window_hand:Dispose()
+		window_hand = nil
 	end
 end

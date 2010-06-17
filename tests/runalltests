@@ -1,0 +1,36 @@
+#!/bin/bash
+testresult="testresult.txt"
+if [ -f "$testresult" ]
+then
+	rm "$testresult"
+fi
+for dir in *
+do
+	if [ -d $dir ]
+	then
+		echo "Running tests in $dir"
+		echo " "
+		for file in $dir/*.lua
+		do
+			if [ -f $file ]
+			then
+				echo "Running tests for $file"
+				./runtest $file | tee singletestresult
+				echo " "
+				echo " "
+				result=`grep "Testsuite finished" singletestresult`
+				rm singletestresult
+				if [ "$result" = "" ]
+				then
+					echo $file >> "$testresult"
+					echo "FAILURE!" >> "$testresult"
+				else
+					echo $file >> "$testresult"
+					echo $result >> "$testresult"
+				fi
+				echo "" >> "$testresult"
+			fi
+		done
+	fi
+done
+echo "See $testresult for summary"

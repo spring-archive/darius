@@ -1,0 +1,13 @@
+#!/bin/bash
+LUA_EXECUTABLE="../lua/lua5.1.exe"
+if [ -f $LUA_EXECUTABLE ]
+then
+	if [ -f lunit ]
+	then
+		./lunit -i $LUA_EXECUTABLE $1
+	else
+		echo "LUnit is missing from this directory!"
+	fi
+else
+	echo "LUA executable is not located at $LUA_EXECUTABLE"
+fi

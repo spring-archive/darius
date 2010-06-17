@@ -1,0 +1,11 @@
+﻿Running the tests for the project
+
+1) Install Cygwin http://www.cygwin.com/setup.exe
+2) Get LUA binaries http://luaforge.net/frs/download.php/4000/lua5_1_4_Win32_bin.zip
+3) Get LUnit http://www.nessie.de/mroth/lunit/lunit-0.5.tar.gz
+4) Unpack LUA (ie. c:\darius\lua)
+5) Unpack LUnit to a temp directory
+6) Move the content of lunit-0.5 directory to the tests directory (ie. c:\darius\tests)
+7) Start Cygwin terminal
+8) Go to your test folder (ie. cd /cygdrive/c/darius/tests)
+9) Now you should be able to run the tests with ./runtest <script> or ./runalltests

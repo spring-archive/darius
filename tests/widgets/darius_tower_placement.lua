@@ -2,7 +2,7 @@ gadget = {}
 Spring = {} 
 gadgetHandler = {}
 CMD = {}
-CMD.MOVE = 666
+CMD.MOVE = 666 -- fake value
 GG = {}
 GG.Darius = {}
 
@@ -21,7 +21,8 @@ end
 
 function gadgetHandler:IsSyncedCode() return true end
 function Spring.CreateUnit(a,b,c,d,e,f,g) units = units .. "," .. a; unit = unit + 1 end
-function GG.Darius:GetTower() return "towertype" end
+function Spring.Echo(e) end
+function GG.Darius:GetTower() return 260 end
 function GG.Darius:DiscardSelected() end
 
 
@@ -33,7 +34,7 @@ function test_GadgetInfoReturnsTable()
 end
 
 function test_SingleTowerIsSpawned()
-	gadget:RecvLuaMsg("PlaceTower towertype 0 0 0");
+	gadget:RecvLuaMsg("PlaceTower 260 0 0 0");
 	for i=0,500 do
 		gadget:GameFrame(i)
 	end
@@ -41,9 +42,9 @@ function test_SingleTowerIsSpawned()
 end
 
 function test_TowerTypeIsCorrect()
-	gadget:RecvLuaMsg("PlaceTower towertype 0 0 0");
+	gadget:RecvLuaMsg("PlaceTower 260 0 0 0");
 	for i=0,500 do
 		gadget:GameFrame(i)
 	end
-	assert_equal( ",towertype", units, "Incorrect type(s) spawned instead of tower");
+	assert_equal( ",260", units, "Incorrect type(s) spawned instead of tower");
 end

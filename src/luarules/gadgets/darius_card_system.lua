@@ -153,7 +153,6 @@ end
 function Darius:DrawCard(deckID)
 	--If not a valid deck ID return
 	if not (deckID) then return end
-	deckID = 0 + deckID
 	if not (deckID == 1 or deckID == 2) then return end
 	--spEcho("Drawing from deck " .. deckID)
 
@@ -266,8 +265,6 @@ function Darius:ClearGame() -- Clears the game session data
 		deck = {}
 		deck[1] = {}
 		deck[2] = {}
-
-		--TODO: Notify UI that any card data is invalid
 end
 
 --------------------
@@ -306,13 +303,16 @@ function Darius:CanDraw()
 	return (greenballs >= requiredBallsToDraw)
 end
 
+function Darius:GetDeckSize(deckID)
+	if not (deckID) then return 0 end
+	if not (deckID == 1 or deckID == 2) then return 0 end
+	return #deck[deckID]
+end
+
 ---------------------
 -- Synced Call-ins --
 ---------------------
 function gadget:Initialize()
-end
-
-function gadget:GameFrame(f)
 end
 
 function gadget:RecvLuaMsg(msg, playerID)
@@ -323,6 +323,7 @@ function gadget:RecvLuaMsg(msg, playerID)
 	elseif string.find(msg, "Draw Card:") then -- Draw from specified
 		--spEcho("Backend: Drawing card")
 		deckID = msg:gsub("Draw Card:","")
+		deckID = 0 + deckID
 		Darius:DrawCard(deckID)
 	elseif string.find(msg, "Send Card Data:") then -- The card data was requested
 		cardID = 0 + msg:gsub("Send Card Data:","")

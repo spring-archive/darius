@@ -35,15 +35,7 @@ local hand = {}
 local selectedWeapon = {}
 local selectedMaterial = {}
 local selectedSpecial = {}
-local testhand = { --For testing the hand, obviously
-	{id = 1, name = "Metal", type = "Material", img = 'LuaUI/images/ibeam.png'},
-	{id = 2, name = "Fire" , type = "Weapon"  , img = 'LuaUI/images/energy.png'},
-	{id = 3, name = "Heal" , type = "Special" , img = 'bitmaps/gpl/nano.tga'},
-	{id = 4, name = "Nuke" , type = "Special" , img = 'icons/nuke.dds'},
-	{id = 5, name = "Alien", type = "Special" , img = 'LuaUI/images/friendly.png'},
-}
-
-local cards = {} -- The in-game card pool (not necessarily the player's full card collection)
+local cards = {} -- The in-game card pool (not the player's full card collection)
 
 ----------------------
 -- Member Functions --

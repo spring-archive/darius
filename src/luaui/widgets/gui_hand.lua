@@ -251,8 +251,8 @@ end
 
 function widget:GetConfigData()
 	if (window_hand) then
-		settings.height = window_hand.height
-		settings.width  = window_hand.width
+		settings.height = window_hand.height - 25
+		settings.width  = window_hand.width - 25
 		settings.pos_x  = window_hand.x
 		settings.pos_y  = window_hand.y
 	end

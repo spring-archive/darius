@@ -94,7 +94,6 @@ local function SendCardToHand(button)
 		spEcho("You need more Greenballs")
 		return
 	end
-		
 	if (button.deck.name == "Deck1") then
 		--spEcho("Deck1")
 		Darius:Draw(1)
@@ -194,7 +193,7 @@ end
 
 function widget:SetConfigData(data)
 	if (data and type(data) == 'table') then
-		--settings = data
+		settings = data
 	end
 end
 

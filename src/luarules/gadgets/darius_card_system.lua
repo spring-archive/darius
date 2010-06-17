@@ -7,7 +7,6 @@ function gadget:GetInfo()
 		license   = "GNU GPL, v2 or later",
 		layer     = 0,
 		enabled   = true,  --  loaded by default?
-		api       = true, --I think this forces it to be loaded before other gadgets
 	}
 end
 
@@ -19,7 +18,8 @@ local requiredBallsToDraw = 5
 --------------
 -- Speed Up --
 --------------
-local spEcho = Spring.Echo
+local spEcho            = Spring.Echo
+local spSendLuaRulesMsg = Spring.SendLuaRulesMsg
 
 ----------------
 -- Local Vars --
@@ -33,10 +33,11 @@ local selectedMaterial
 local selectedWeapon
 local selectedSpecial
 
-local greenballs = 30 -- Test value
+local greenballs = 0
 
+-- Card Handling --
+local cards = {}
 local hand = {}
-
 local deck = {}
 deck[1] = {}
 deck[2] = {}
@@ -44,62 +45,6 @@ deck[2] = {}
 ------------------------------------------------
 if (gadgetHandler:IsSyncedCode()) then -- synced
 ------------------------------------------------
-
-local cards = {}
---THE ID IS SPECIFIC TO THE CARD SYSTEM!
---type: Material, Weapon, Special
---health: tower health
---reloadTime: time to wait before next projectile in seconds,
---range: how far can the tower shooot
---LOS: how far can the tower see, if the game has fog of war
---damage: how much damage one projectile inflicts
---weaponVelocity: the speed of a projectile
---desc: Description
-
-
---a bit more official cards, should probably have their own files
-cards[1] = {
-			id = 1,
-			name = "Stone", 
-			type = "Material", 
-			img = 'LuaUI/images/stone.png',
-			health =   1200,
-			reloadTime = 0.5,
-			range =  50,
-			LOS = 500,
-			damage =  0,
-			weaponVelocity = 0,
-			desc = "Creates tall stone towers with decent range and good amount of health,\n" ..
-				   "but due to tall design, adds additional weapon reloading time." 
-}
-       
-cards[2] = {
-			id = 2,
-			name = "Fire",
-			type = "Weapon",
-			img = 'LuaUI/images/fire.png',
-			health =   -150,
-			reloadTime = 0.80,
-			range =  350,
-			LOS = 0,
-			damage =  100,
-			weaponVelocity = 900,
-			desc = "Shoots fireballs that do good damage, but with limited range and\n" ..
-				"projectile speed. Also due to the unpredictable nature of fire,\n" .. 
-				"costs tower healthpoints."		    
-}
-
---test cards
-cards[ 3] = {id = 3, name = "Metal"              , type = "Material", img = 'LuaUI/images/ibeam.png'   , health =     0, reloadTime = 0,  range =  0,   LOS = 0  , damage =  0   , weaponVelocity = 0}
-cards[ 4] = {id = 4, name = "Lightning"          , type = "Weapon"  , img = 'LuaUI/images/energy.png'  , health =     0, reloadTime = 0,  range =  0,   LOS = 0  , damage =  0   , weaponVelocity = 0}
-
-cards[ 5] = {id = 5, name = "Lightning"          , type = "Weapon"  , img = 'LuaUI/images/energy.png'  , health =     0, reloadTime = 0,  range =  0,   LOS = 0  , damage =  0   , weaponVelocity = 0}
-cards[ 6] = {id = 6, name = "Lightning"          , type = "Weapon"  , img = 'LuaUI/images/energy.png'  , health =     0, reloadTime = 0,  range =  0,   LOS = 0  , damage =  0   , weaponVelocity = 0}
-cards[ 7] = {id = 7, name = "Lightning"          , type = "Weapon"  , img = 'LuaUI/images/energy.png'  , health =     0, reloadTime = 0,  range =  0,   LOS = 0  , damage =  0   , weaponVelocity = 0}
-cards[ 8] = {id = 8, name = "Pink Fluffy Bunnies", type = "Special" , img = 'LuaUI/images/friendly.png', health =     0, reloadTime = 0,  range =  0,   LOS = 0  , damage =  0   , weaponVelocity = 0}
-cards[ 9] = {id = 9, name = "Metal"              , type = "Material", img = 'LuaUI/images/ibeam.png'   , health =     0, reloadTime = 0,  range =  0,   LOS = 0  , damage =  0   , weaponVelocity = 0}
-cards[10] = {id =10, name = "Metal"              , type = "Material", img = 'LuaUI/images/ibeam.png'   , health =     0, reloadTime = 0,  range =  0,   LOS = 0  , damage =  0   , weaponVelocity = 0}
-cards[11] = {id =11, name = "Metal"              , type = "Material", img = 'LuaUI/images/ibeam.png'   , health =     0, reloadTime = 0,  range =  0,   LOS = 0  , damage =  0   , weaponVelocity = 0}
 
 -----------------------------
 -- SendToUnsynced Wrappers --
@@ -141,15 +86,15 @@ local function UnsyncSelectedSpecial()
 end
 
 local function UnsyncGreenballs()
-	SendToUnsynced("GreenBalls", greenballs)
+	--spEcho("Unsyncing Greenballs: " .. greenballs)
+	SendToUnsynced("Greenballs", greenballs)
 end
 
 -- Requires actual card
 local function UnsyncCard(card)
 	--spEcho("Unsyncing card [" .. card.id .. "]")
 	if not (card) then return end
-	SendToUnsynced("CardTable",    
-	
+	SendToUnsynced("CardTable",
 		card.id,
 		card.img,
 		card.name,
@@ -170,11 +115,20 @@ local function UnsyncHand()
 		msg = msg .. card.id .. " "
 	end
 	SendToUnsynced("CardHand", msg) --Can't send tables?
+	--spEcho("Unsyncing hand: " .. msg) --Can't send tables?
 end
 
 ----------------------
 -- Member Functions --
 ----------------------
+function Darius:AddCard(card, deckID)
+	if ((not deckID) or (not card)) then return end
+	if not (deckID == 1 or deckID == 2) then return end
+	card.id = #cards + 1 --LUA Tables are 1 indexed
+	cards[card.id] = card
+	table.insert(deck[deckID], math.random(#deck[deckID] + 1), card)
+end
+
 function Darius:SetTower(arg)
 	tower = arg
 	effect = nil
@@ -187,6 +141,13 @@ function Darius:SetEffect(arg)
 	tower = nil
 	UnsyncTower()
 	UnsyncEffect()
+end
+
+function Darius:AddGreenballs(num)
+	--spEcho("Greenballs = " .. greenballs .. " + " .. num)
+	greenballs = greenballs + num
+	--spEcho("Greenballs = " .. greenballs)
+	UnsyncGreenballs()
 end
 
 function Darius:DrawCard(deckID)
@@ -218,7 +179,9 @@ local function SetSelectedMaterial(card)
 	else
 		selectedMaterial = card
 	end
+	selectedSpecial = nil
 	UnsyncSelectedMaterial()
+	UnsyncSelectedSpecial()
 end
 
 local function SetSelectedWeapon(card)
@@ -228,7 +191,9 @@ local function SetSelectedWeapon(card)
 	else
 		selectedWeapon = card
 	end
+	selectedSpecial = nil
 	UnsyncSelectedWeapon()
+	UnsyncSelectedSpecial()
 end
 
 local function SetSelectedSpecial(card)
@@ -285,6 +250,26 @@ function Darius:ActivateCard(card)
 	end
 end
 
+function Darius:ClearGame() -- Clears the game session data
+		SetTower(nil)
+		--SetEffect(nil) --Unnecessary (set tower clears)
+		SetSelectedMaterial(nil)
+		SetSelectedWeapon(nil)
+		SetSelectedSpecial(nil)
+
+		greenballs = 0
+		UnsyncGreenballs()
+
+		cards = {}
+		hand = {}
+		UnsyncHand() -- Update hand in unsynced
+		deck = {}
+		deck[1] = {}
+		deck[2] = {}
+
+		--TODO: Notify UI that any card data is invalid
+end
+
 --------------------
 -- Synced Getters --
 --------------------
@@ -312,7 +297,7 @@ function Darius:GetSelectedSpecial()
 	return selectedSpecial
 end
 
-function Darius:GetGreenBalls()
+function Darius:GetGreenballs()
 	return greenballs
 end
 
@@ -325,12 +310,6 @@ end
 -- Synced Call-ins --
 ---------------------
 function gadget:Initialize()
-	--Darius:SetTower("corllt") --NOTE: The SyncActions aren't in place yet, so this isn't sent properly.
-					  -- However, the widget requests the data when it loads, so this should be taken care of for the start up.
-					  -- Unfortunately, if the rules reload then the ui needs to be reloaded (this is a minor issue)
-	hand = {cards[1], cards[3], cards[2], cards[4]}
-	deck[1] = {cards[5], cards[6], cards[7], cards[8]}
-	deck[2] = {cards[9], cards[10], cards[11]}
 end
 
 function gadget:GameFrame(f)
@@ -351,7 +330,7 @@ function gadget:RecvLuaMsg(msg, playerID)
 		if not (cards[cardID]) then return end
 		--spEcho("Card is valid")
 		UnsyncCard(cards[cardID])
-	elseif string.find(msg, "Update Card System Widget") then -- the widget requested the game data
+	elseif string.find(msg, "Resend All") then -- the widget requested the game data
 		UnsyncHand()
 		UnsyncTower()
 		UnsyncEffect()
@@ -415,8 +394,9 @@ local function SendSpecial(_, id)
 end
 
 local function SendBalls(_, balls)
-	if (Script.LuaUI('SetGreenBalls')) then
-		Script.LuaUI.SetGreenBalls(balls)
+	--spEcho("Sending Greenballs: " .. balls)
+	if (Script.LuaUI('SetGreenballs')) then
+		Script.LuaUI.SetGreenballs(balls)
 	end
 end
 
@@ -432,7 +412,8 @@ function gadget:Initialize()
 	gadgetHandler:AddSyncAction("SelectedMaterialCard", SendMaterial)
 	gadgetHandler:AddSyncAction("SelectedWeaponCard", SendWeapon)
 	gadgetHandler:AddSyncAction("SelectedSpecialCard", SendSpecial)
-	gadgetHandler:AddSyncAction("GreenBalls", SendBalls)
+	gadgetHandler:AddSyncAction("Greenballs", SendBalls)
+	spSendLuaRulesMsg("Resend All")
 end
 
 end -- End synced check

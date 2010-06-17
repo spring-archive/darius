@@ -72,7 +72,7 @@ function Darius:GetSelectedSpecial()
 	return selectedSpecial
 end
 
-function Darius:GetGreenBalls()
+function Darius:GetGreenballs()
 	return greenballs
 end
 
@@ -102,7 +102,7 @@ end
 -- Unsynced Vars Receivers --
 -----------------------------
 local function SetHand(handStr)
-	--spEcho("Receiving hand")
+	--spEcho("Receiving hand: " .. handStr)
 	local new_hand = {}
 	for id in string.gmatch(handStr, "%d+") do
 		id = 0 + id
@@ -186,7 +186,8 @@ local function SetSelectedSpecial(id)
 	selectedSpecial = cards[id]
 end
 
-local function SetGreenBalls(arg)
+local function SetGreenballs(arg)
+	--spEcho("Receiving Greenballs: " .. arg)
 	greenballs = arg
 end
 
@@ -201,7 +202,7 @@ function widget:Initialize()
 	widgetHandler:RegisterGlobal("SetSelectedMaterialCard", SetSelectedMaterial)
 	widgetHandler:RegisterGlobal("SetSelectedWeaponCard", SetSelectedWeapon)
 	widgetHandler:RegisterGlobal("SetSelectedSpecialCard", SetSelectedSpecial)
-	widgetHandler:RegisterGlobal("SetGreenBalls", SetGreenBalls)
+	widgetHandler:RegisterGlobal("SetGreenballs", SetGreenballs)
 
-	spSendLuaRulesMsg("Update Card System Widget")
+	spSendLuaRulesMsg("Resend All")
 end

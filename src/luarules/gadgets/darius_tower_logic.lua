@@ -37,8 +37,9 @@ function gadget:GameFrame(f)
 	if (material and weapon) then
 	--just a test, will probably be done in smarter way
 		if (material.name == "Stone"  and weapon.name == "Fire") then
-			Darius:SetTower(287) --"corrl"
-		else Darius:SetTower(260) --"corllt"
+			--number is the unit number in alphabetic order ie.more units bigger number
+			Darius:SetTower(48) --"corrl"
+		else Darius:SetTower(44) --"corllt"
 		end
 	else
 		Darius:SetTower(nil)

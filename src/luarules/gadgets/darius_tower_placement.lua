@@ -33,7 +33,7 @@ function gadget:GameFrame(f)
 			return
 		end
 		Spring.CreateUnit(tower,x,y,z,"south",team,false)
-		GG.Darius:DiscardSelected()
+		--GG.Darius:DiscardSelected()
 		team = nil
 		x = nil
 		y = nil

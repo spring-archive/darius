@@ -252,21 +252,21 @@ function Darius:DiscardSelected()
 end
 
 function Darius:ClearGame() -- Clears the game session data
-		Darius:SetTower(nil)
-		--Darius:SetEffect(nil) --Unnecessary (set tower clears)
-		SetSelectedMaterial(nil)
-		SetSelectedWeapon(nil)
-		SetSelectedSpecial(nil)
+	Darius:SetTower(nil)
+	--Darius:SetEffect(nil) --Unnecessary (set tower clears)
+	SetSelectedMaterial(nil)
+	SetSelectedWeapon(nil)
+	SetSelectedSpecial(nil)
 
-		greenballs = 0
-		UnsyncGreenballs()
+	greenballs = 0
+	UnsyncGreenballs()
 
-		cards = {}
-		hand = {}
-		UnsyncHand() -- Update hand in unsynced
-		deck = {}
-		deck[1] = {}
-		deck[2] = {}
+	cards = {}
+	hand = {}
+	UnsyncHand() -- Update hand in unsynced
+	deck = {}
+	deck[1] = {}
+	deck[2] = {}
 end
 
 --------------------
@@ -324,8 +324,7 @@ function gadget:RecvLuaMsg(msg, playerID)
 		Darius:ActivateCard(cards[cardID])
 	elseif string.find(msg, "Draw Card:") then -- Draw from specified
 		--spEcho("Backend: Drawing card")
-		deckID = msg:gsub("Draw Card:","")
-		deckID = 0 + deckID
+		deckID = 0 + msg:gsub("Draw Card:","")
 		Darius:DrawCard(deckID)
 	elseif string.find(msg, "Send Card Data:") then -- The card data was requested
 		cardID = 0 + msg:gsub("Send Card Data:","")

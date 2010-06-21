@@ -170,6 +170,10 @@ function test_Accessible()
 	assert_not_nil(GG.Darius, "Darius not accessible")
 end
 
+function test_Info()
+	assert_not_nil(GG.Darius:GetInfo(), "GetInfo function broken")
+end
+
 function test_RegistersSyncActions()
 	RunAsUnsynced()
 	gadget:Initialize()
@@ -333,6 +337,59 @@ function test_UnsyncCard()
 	gadget:RecvLuaMsg("Send Card Data:"..testCard.id, 0)
 	assert_true(called_SendToUnsynced, "SendToUnsynced not called")
 	assert_equal(testCard.id, sentVars["CardTable"], "Card not unsynced correctly")
+end
+
+function test_Message_Activate_Existing()
+	local testCard = table.copy(exampleCard)
+	testCard.type = "Material"
+	GG.Darius:AddCard(testCard, 1)
+	gadget:RecvLuaMsg("Activate Card:"..testCard.id, 0)
+
+	assert_equal(testCard, GG.Darius:GetSelectedMaterial(), "Card not selected")
+end
+
+function test_Message_Activate_Invalid()
+	local testCard = table.copy(exampleCard)
+	testCard.type = "Material"
+	testCard.id = 9
+	gadget:RecvLuaMsg("Activate Card:"..testCard.id, 0)
+
+	assert_not_equal(testCard, GG.Darius:GetSelectedMaterial(), "Card selected")
+end
+
+function test_Message_Draw()
+	local testCard = table.copy(exampleCard)
+	GG.Darius:AddCard(testCard, 1)
+	GG.Darius:AddGreenballs(200)
+	gadget:RecvLuaMsg("Draw Card:1", 0)
+	assert_equal(1, #GG.Darius:GetHand(), "Hand not correctly set up for test")
+end
+
+function test_Message_SendCard()
+	local testCard = table.copy(exampleCard)
+	GG.Darius:AddCard(testCard, 1)
+	gadget:RecvLuaMsg("Send Card Data:"..testCard.id, 0)
+	assert_true(called_SendToUnsynced, "SendToUnsynced not called")
+end
+
+function test_Message_SendAll()
+	sentVars["CardHand"]             = "Fail"
+	sentVars["TowerID"]              = "Fail"
+	sentVars["CardEffect"]           = "Fail"
+	sentVars["SelectedMaterialCard"] = "Fail"
+	sentVars["SelectedWeaponCard"]   = "Fail"
+	sentVars["SelectedSpecialCard"]  = "Fail"
+	sentVars["Greenballs"]           = "Fail"
+
+	gadget:RecvLuaMsg("Resend All", 0)
+	assert_true(called_SendToUnsynced, "SendToUnsynced not called")
+	assert_not_equal("Fail", sentVars["CardHand"], "Hand not unsynced")
+	assert_not_equal("Fail", sentVars["TowerID"], "Tower ID not unsynced")
+	assert_not_equal("Fail", sentVars["CardEffect"], "Effect not unsynced")
+	assert_not_equal("Fail", sentVars["SelectedMaterialCard"], "Material Card ID not unsynced")
+	assert_not_equal("Fail", sentVars["SelectedWeaponCard"], "Weapon Card ID not unsynced")
+	assert_not_equal("Fail", sentVars["SelectedSpecialCard"], "Special Card ID not unsynced")
+	assert_not_equal("Fail", sentVars["Greenballs"], "Greenballs not unsynced")
 end
 
 ----------------------

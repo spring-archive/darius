@@ -96,13 +96,13 @@ local function UnsyncCard(card)
 	if not (card) then return end
 	SendToUnsynced("CardTable",
 		card.id,
-		card.img,
 		card.name,
 		card.type,
+		card.img,
 		card.health,
 		card.reloadTime,
 		card.range,
-		card.sightDistance,
+		card.LOS,
 		card.damage,
 		card.weaponVelocity,
 		card.desc
@@ -115,7 +115,7 @@ local function UnsyncHand()
 		msg = msg .. card.id .. " "
 	end
 	SendToUnsynced("CardHand", msg) --Can't send tables?
-	--spEcho("Unsyncing hand: " .. msg) --Can't send tables?
+	--spEcho("Unsyncing hand: " .. msg)
 end
 
 ----------------------
@@ -211,28 +211,6 @@ local function SetSelectedSpecial(card)
 	UnsyncSelectedSpecial()
 end
 
-function Darius:DiscardSelected()
-	if (selectedWeapon) then
-		selectedWeapon.used = true
-		SetSelectedWeapon(nil)
-	end
-	if (selectedMaterial) then
-		selectedMaterial.used = true
-		SetSelectedMaterial(nil)
-	end
-	if (selectedSpecial) then
-		selectedSpecial.used = true
-		SetSelectedSpecial(nil)
-	end
-	--Remove used from hand
---	for i, card in pairs(hand) do
---		if (card.used == true) then
---			table.remove(hand, i) --TODO: Does this work?  Might not handle the table changinging when iterating
---		end
---	end
-	UnsyncHand()
-end
-
 -- Requires actual card
 function Darius:ActivateCard(card)
 	--spEcho("Card Activation Called")
@@ -249,9 +227,33 @@ function Darius:ActivateCard(card)
 	end
 end
 
+function Darius:DiscardSelected()
+	if (selectedWeapon) then
+		selectedWeapon.used = true
+		SetSelectedWeapon(nil)
+	end
+	if (selectedMaterial) then
+		selectedMaterial.used = true
+		SetSelectedMaterial(nil)
+	end
+	if (selectedSpecial) then
+		selectedSpecial.used = true
+		SetSelectedSpecial(nil)
+	end
+	--Remove used from hand
+	new_hand = {}
+	for i, card in pairs(hand) do
+		if not (card.used) then
+			table.insert(new_hand, card)
+		end
+	end
+	hand = new_hand
+	UnsyncHand()
+end
+
 function Darius:ClearGame() -- Clears the game session data
-		SetTower(nil)
-		--SetEffect(nil) --Unnecessary (set tower clears)
+		Darius:SetTower(nil)
+		--Darius:SetEffect(nil) --Unnecessary (set tower clears)
 		SetSelectedMaterial(nil)
 		SetSelectedWeapon(nil)
 		SetSelectedSpecial(nil)
@@ -350,7 +352,7 @@ else --unsynced
 -- Send Unsynced vars to widget --
 ----------------------------------
 local function SendTowerID(_, tower)
-	--Make sure the widget still exists (might have been stopped)
+	--Make sure the widget function exists
 	if (Script.LuaUI('SetTower')) then
 		-- Call the widget function.  Widget must declare function via 'widgetHandler:RegisterGlobal'
 		Script.LuaUI.SetTower(tower)

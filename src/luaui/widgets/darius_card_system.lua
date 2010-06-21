@@ -111,22 +111,22 @@ local function SetHand(handStr)
 	hand = new_hand
 end
 
-local function UpdateCard(id, img, name, type, health, reloadTime, range, sightDistance, damage, weaponVelocity, desc)
+local function UpdateCard(id, name, type, img, health, reloadTime, range, sightDistance, damage, weaponVelocity, desc)
 	id = 0 + id
 	if not (cards[id]) then
 		cards[id] = {}
-		spEcho("Created new card on update.  Why?") --Should never return this error.
+		spEcho("SNH: Created new card on update.  Why?") --Should never return this error.
 	end
 	--spEcho("Updating card data")
 	local card = cards[id]
 	card.id = id
-	card.img = img
 	card.name = name
 	card.type = type
+	card.img = img
 	card.health = health
 	card.reloadTime = reloadTime
 	card.range = range
-	card.sightDistance = sightDistance
+	card.LOS = LOS
 	card.damage = damage
 	card.weaponVelocity = weaponVelocity
 	card.desc = desc

@@ -22,8 +22,8 @@ local CMD_REPEAT 	= CMD.REPEAT
 local CMD_WAIT 		= CMD.WAIT
 
 local cloak = {
-	[ UnitDefNames['armflea'].id ] = true,
-	[ UnitDefNames['armtick'].id ] = true,
+  --[ UnitDefNames['armflea'].id ] = true,
+  --[ UnitDefNames['armtick'].id ] = true,
 	[ UnitDefNames['corroach'].id ] = true,
 }
 

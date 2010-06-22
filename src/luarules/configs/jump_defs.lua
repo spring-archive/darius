@@ -35,12 +35,12 @@ jumpCategory = {
 jumpClassGroups = {
 
 	baseclass = { 
-	"noruas",
+	--"noruas",
 	"corpyro",
-	"corfast",
-	"corsktl",
-	"core_slicer",
-	"corcan",
+	--"corfast",
+	--"corsktl",
+	--"core_slicer",
+	--"corcan",
 	"chicken_leaper",
 	-- "pizzathehut",--bad unit left for testing purposes
 	},
@@ -63,6 +63,7 @@ jumpClassGroups = {
 --		reload
 ------------------------------------------------------------------------------------------------------------------------------------------------	
 overCategory = {
+--[[
  noruas = {
     reload = 0,  },
 	
@@ -71,6 +72,7 @@ overCategory = {
 	
  corcan = {
     speed = 4,},
+--]]
 	
  chicken_leaper = {
     range = 600, reload = 1, },

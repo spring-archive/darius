@@ -18,21 +18,22 @@ local stealthDefs = {
     energy = 20,
     delay  = 30,
   },
-  
+ 
+--[[ 
   armcomdgun = {
     draw   = true,
     init   = false,
     energy = 20,
     delay  = 30,
   },
+--]]
 
   corcomdgun = {
     draw   = true,
     init   = false,
     energy = 20,
     delay  = 30,
-  },
-  
+  },  
 }
 
 

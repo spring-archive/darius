@@ -102,7 +102,7 @@ local tryloading  = 1     --// try to activate lups if it isn't found
 local lups_luaui = false --// lups running as widget?
 local nilDispList
 
-local corfusdefid = UnitDefNames["corfus"].id
+--local corfusdefid = UnitDefNames["corfus"].id
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -255,7 +255,9 @@ local function UnitDestroyed(_,unitID,unitDefID)
 end
 
 
+
 local function UnitCreated(_,unitID,unitDefID)
+--[[
   if (lups_luaui)and(corfusdefid == unitDefID) then
     Spring.UnitRendering.SetLODCount(unitID,1)
     Spring.UnitRendering.SetLODLength(unitID,1,1)
@@ -270,6 +272,7 @@ local function UnitCreated(_,unitID,unitDefID)
       end
     end
   end
+  --]]
 end
 
 --------------------------------------------------------------------------------

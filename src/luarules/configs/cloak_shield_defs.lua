@@ -30,7 +30,9 @@ local function GetUnitDecloakDistance(defName)
   return 64 * math.floor(decloakDist / 64)
 end
 
+
 local cloakShieldDefs = {
+--[[
   armjamt = {
     init = true,
     draw = true,
@@ -41,6 +43,9 @@ local cloakShieldDefs = {
     selfCloak = true,
     decloakDistance = 300,
   },
+--]]
+
+--[[
   armaser = {
     init = true,
     draw = true,
@@ -51,6 +56,7 @@ local cloakShieldDefs = {
     selfCloak = true,
     decloakDistance = 300,
   },
+--]]
 }
 
 

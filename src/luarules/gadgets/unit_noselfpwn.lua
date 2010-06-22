@@ -23,10 +23,12 @@ local GetUnitHealth = Spring.GetUnitHealth
 local SetUnitHealth = Spring.SetUnitHealth
 
 local exceptionList = {
+ --[[
   "armsilo",
   "corsilo",
   "armemp",
   "cortron",
+  --]]
 }
   
   

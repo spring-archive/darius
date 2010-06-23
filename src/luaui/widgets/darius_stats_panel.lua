@@ -38,11 +38,11 @@ local gameInfo = nil
 
 local viewSizeX, viewSizeY = 0, 0
 local panelWidth = 340
-local panelHeight = 120
+local panelHeight = 80
 local x1 = - panelWidth * 2
-local y1 = - panelHeight - 10
+local y1 = - panelHeight - 5
 local panelMarginX = 25
-local panelMarginY = 25
+local panelMarginY = 20
 local panelSpacingY = 2
 
 ------------------------

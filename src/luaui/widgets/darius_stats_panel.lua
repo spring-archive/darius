@@ -56,8 +56,8 @@ local panelSpacingY = 2
 ------------------------
 
 -- calculates position for the line number
-local function AddNewPanelRow(n)
-	return panelMarginX, panelHeight - panelMarginY - (n - 1) * (panelFontSize + panelSpacingY)
+local function AddNewPanelRow(lineNum)
+	return panelMarginX, panelHeight - panelMarginY - (lineNum - 1) * (panelFontSize + panelSpacingY)
 end
 
 -- formats seconds to hh:mm:ss or mm:ss

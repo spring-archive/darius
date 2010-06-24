@@ -39,11 +39,13 @@ local gameInfo = nil
 local viewSizeX, viewSizeY = 0, 0
 local panelWidth = 340
 local panelHeight = 80
-local x1 = - panelWidth * 2
-local y1 = - panelHeight - 5
-local panelMarginX = 25
-local panelMarginY = 20
+local x1 = -gl.GetViewSizes() + 10	-- return value y is ignored
+local y1 = -panelHeight - 10
+local panelMarginX = 20
+local panelMarginY = 22
 local panelSpacingY = 2
+
+
 
 ------------------------
 -- Unsynced Functions --

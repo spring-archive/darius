@@ -16,6 +16,7 @@ end
 
 local spEcho = Spring.Echo
 local spGetSeconds  = Spring.GetGameSeconds
+local spGetGameRulesParam = Spring.GetGameRulesParam
 
 ----------------
 -- Local Vars --
@@ -42,14 +43,19 @@ local isPanelCaptured = false
 -- panel size, initial position and margin
 local viewSizeX, viewSizeY = 0, 0
 local panelWidth = 340
-local panelHeight = 80
+local panelHeight = 110
 local x1 = -gl.GetViewSizes() + 10	-- initial position x
 local y1 = -panelHeight - 10		-- initial position y
 local panelMarginX = 20
 local panelMarginY = 22
 local panelSpacingY = 2
 
-
+local round = 0
+local wave = 0
+local monstersLeft = 0
+local monstersKilled = 0
+local nextWave
+local nextWaveDisplay = ""
 
 ------------------------
 -- Unsynced Functions --
@@ -91,9 +97,11 @@ local function CreatePanelDisplayList()
 	
 	-- draw texts
 	fontHandler.DrawStatic(white.."Time survived: "..SecondsToTimestamp(spGetSeconds()), AddNewPanelRow(1))
-	fontHandler.DrawStatic(white.."Wave number / time for the next wave", AddNewPanelRow(2))
-	fontHandler.DrawStatic(white.."Enemies left in this wave: ", AddNewPanelRow(3))
-	fontHandler.DrawStatic(white.."Enemies killed total: ", AddNewPanelRow(4))
+	fontHandler.DrawStatic(white.."Time for the next wave: "..nextWaveDisplay, AddNewPanelRow(2))
+	fontHandler.DrawStatic(white.."Enemies left in this wave: "..tostring(monstersLeft), AddNewPanelRow(3))
+	fontHandler.DrawStatic(white.."Enemies killed total: "..tostring(monstersKilled), AddNewPanelRow(4))
+	fontHandler.DrawStatic(white.."Round: "..tostring(round), AddNewPanelRow(5))
+	fontHandler.DrawStatic(white.."Wave: "..tostring(wave), AddNewPanelRow(6))
 
 	gl.PopMatrix()
 end
@@ -118,8 +126,34 @@ local function Draw()
 
 end
 
+function GetRuleOrDefault(name,default)
+	rule = spGetGameRulesParam(name)
+	if (rule == nil) then
+		return default
+	else
+		return rule
+	end
+end
+
 -- this function calculates the actual ingame stats
-local function UpdateStats()
+function UpdateStats()
+	monstersLeft = GetRuleOrDefault("monstersLeft",0)
+	monstersKilled = GetRuleOrDefault("monstersKilled",0)
+	round = GetRuleOrDefault("round",1)
+	wave = GetRuleOrDefault("wave",1)
+	nextWave = spGetGameRulesParam("nextWave")
+	if (nextWave ~= nil and nextWave ~= 0) then
+		local timeLeft = nextWave - Spring.GetGameSeconds()
+		if timeLeft > 0 then
+			timeLeft = math.floor(timeLeft)
+			nextWaveDisplay = tostring(timeLeft)
+		else
+			timeLeft = 0
+			nextWaveDisplay = ""
+		end
+	else
+		nextWaveDisplay = ""
+	end
 	panelUpdate = true -- stats changed, panel must be updated
 end
 
@@ -138,6 +172,8 @@ function widget:Initialize()
 	end)
 
 	UpdateStats() -- get the initial stats
+	widgetHandler:RegisterGlobal("Victory" , Victory)
+	widgetHandler:RegisterGlobal("UpdateStats" , UpdateStats)
 end
 
 function widget:Shutdown()
@@ -200,4 +236,8 @@ function widget:ViewResize(vsx, vsy)
 	viewSizeX, viewSizeY = vsx, vsy
 	x1 = viewSizeX + x1
 	y1 = viewSizeY + y1
+end
+
+function Victory()
+	spEcho("Congratulations, you win!")
 end

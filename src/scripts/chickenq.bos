@@ -15,116 +15,116 @@ walk()
 	if (bMoving)
 			{
 //			bMoving = FALSE;
-			turn lthighf to x-axis <70> speed<115>;
-			turn lkneef to x-axis <-40> speed<145>;
-			turn lshinf to x-axis <20> speed<145>;
-			turn lfootf to x-axis <-50> speed<210>;
+			turn lthighf to x-axis <70> speed<85>;
+			turn lkneef to x-axis <-40> speed<115>;
+			turn lshinf to x-axis <20> speed<115>;
+			turn lfootf to x-axis <-50> speed<180>;
 			
-			turn rthighf to x-axis <-20> speed<210>;
-			turn rkneef to x-axis <-60> speed<210>;
-			turn rshinf to x-axis <50> speed<210>;
-			turn rfootf to x-axis <30> speed<210>;
+			turn rthighf to x-axis <-20> speed<180>;
+			turn rkneef to x-axis <-60> speed<180>;
+			turn rshinf to x-axis <50> speed<180>;
+			turn rfootf to x-axis <30> speed<180>;
 			
-			turn rthighb to x-axis <70> speed<115>;
-			turn rkneeb to x-axis <-40> speed<145>;
-			turn rshinb to x-axis <20> speed<145>;
-			turn rfootb to x-axis <-50> speed<210>;
+			turn rthighb to x-axis <70> speed<85>;
+			turn rkneeb to x-axis <-40> speed<115>;
+			turn rshinb to x-axis <20> speed<115>;
+			turn rfootb to x-axis <-50> speed<180>;
 			
-			turn lthighb to x-axis <-20> speed<210>;
-			turn lkneeb to x-axis <-60> speed<210>;
-			turn lshinb to x-axis <50> speed<210>;
-			turn lfootb to x-axis <30> speed<210>;
+			turn lthighb to x-axis <-20> speed<180>;
+			turn lkneeb to x-axis <-60> speed<180>;
+			turn lshinb to x-axis <50> speed<180>;
+			turn lfootb to x-axis <30> speed<180>;
 			
-			turn body to z-axis <5> speed <20>;
-			turn lthighf to z-axis <-5> speed <20>;
-			turn rthighf to z-axis <-5> speed <20>;
-			turn lthighb to z-axis <-5> speed <20>;
-			turn rthighb to z-axis <-5> speed <20>;
-			move body to y-axis [0.7] speed <4000>;			
-			turn tail to y-axis <10> speed <40>;
-			turn head to x-axis <-10> speed <20>;
-			turn tail to x-axis <10> speed <20>;
+			turn body to z-axis <5> speed <15>;
+			turn lthighf to z-axis <-5> speed <15>;
+			turn rthighf to z-axis <-5> speed <15>;
+			turn lthighb to z-axis <-5> speed <15>;
+			turn rthighb to z-axis <-5> speed <15>;
+			move body to y-axis [0.7] speed <3000>;			
+			turn tail to y-axis <10> speed <35>;
+			turn head to x-axis <-10> speed <15>;
+			turn tail to x-axis <10> speed <15>;
 			wait-for-turn lthighf around x-axis;
 			
-			turn lthighf to x-axis <-10> speed<160>;
-			turn lkneef to x-axis <15> speed<145>;
-			turn lshinf to x-axis <-60> speed<250>;
-			turn lfootf to x-axis <30> speed<145>;
+			turn lthighf to x-axis <-10> speed<130>;
+			turn lkneef to x-axis <15> speed<115>;
+			turn lshinf to x-axis <-60> speed<220>;
+			turn lfootf to x-axis <30> speed<115>;
 			
-			turn rthighf to x-axis <40> speed<145>;
-			turn rkneef to x-axis <-35> speed<145>;
-			turn rshinf to x-axis <-40> speed<145>;
-			turn rfootf to x-axis <35> speed<145>;
+			turn rthighf to x-axis <40> speed<115>;
+			turn rkneef to x-axis <-35> speed<115>;
+			turn rshinf to x-axis <-40> speed<115>;
+			turn rfootf to x-axis <35> speed<115>;
 			
-			turn rthighb to x-axis <-10> speed<160>;
-			turn rkneeb to x-axis <15> speed<145>;
-			turn rshinb to x-axis <-60> speed<250>;
-			turn rfootb to x-axis <30> speed<145>;
+			turn rthighb to x-axis <-10> speed<130>;
+			turn rkneeb to x-axis <15> speed<115>;
+			turn rshinb to x-axis <-60> speed<220>;
+			turn rfootb to x-axis <30> speed<115>;
 			
-			turn lthighb to x-axis <40> speed<145>;
-			turn lkneeb to x-axis <-35> speed<145>;
-			turn lshinb to x-axis <-40> speed<145>;
-			turn lfootb to x-axis <35> speed<145>;
+			turn lthighb to x-axis <40> speed<115>;
+			turn lkneeb to x-axis <-35> speed<115>;
+			turn lshinb to x-axis <-40> speed<115>;
+			turn lfootb to x-axis <35> speed<115>;
 			
-			move body to y-axis [0] speed <4000>;
-			turn head to x-axis <10> speed <20>;
-			turn tail to x-axis <-10> speed <20>;
+			move body to y-axis [0] speed <3500>;
+			turn head to x-axis <10> speed <15>;
+			turn tail to x-axis <-10> speed <15>;
 			wait-for-turn lshinf around x-axis;
 			
-			turn rthighf to x-axis <70> speed<115>;
-			turn rkneef to x-axis <-40> speed<145>;
-			turn rshinf to x-axis <20> speed<145>;
-			turn rfootf to x-axis <-50> speed<210>;
+			turn rthighf to x-axis <70> speed<85>;
+			turn rkneef to x-axis <-40> speed<115>;
+			turn rshinf to x-axis <20> speed<115>;
+			turn rfootf to x-axis <-50> speed<180>;
 			
-			turn lthighf to x-axis <-20> speed<210>;
-			turn lkneef to x-axis <-60> speed<210>;
-			turn lshinf to x-axis <50> speed<210>;
-			turn lfootf to x-axis <30> speed<210>;
+			turn lthighf to x-axis <-20> speed<180>;
+			turn lkneef to x-axis <-60> speed<180>;
+			turn lshinf to x-axis <50> speed<180>;
+			turn lfootf to x-axis <30> speed<180>;
 						
-			turn lthighb to x-axis <70> speed<115>;
-			turn lkneeb to x-axis <-40> speed<145>;
-			turn lshinb to x-axis <20> speed<145>;
-			turn lfootb to x-axis <-50> speed<210>;
+			turn lthighb to x-axis <70> speed<85>;
+			turn lkneeb to x-axis <-40> speed<115>;
+			turn lshinb to x-axis <20> speed<115>;
+			turn lfootb to x-axis <-50> speed<180>;
 			
-			turn rthighb to x-axis <-20> speed<210>;
-			turn rkneeb to x-axis <-60> speed<210>;
-			turn rshinb to x-axis <50> speed<210>;
-			turn rfootb to x-axis <30> speed<210>;
+			turn rthighb to x-axis <-20> speed<180>;
+			turn rkneeb to x-axis <-60> speed<180>;
+			turn rshinb to x-axis <50> speed<180>;
+			turn rfootb to x-axis <30> speed<180>;
 			
-			turn tail to y-axis <-10> speed <40>;
-			turn body to z-axis <-5> speed <20>;
-			turn lthighf to z-axis <5> speed <20>;
-			turn rthighf to z-axis <5> speed <20>;
-			turn lthighb to z-axis <5> speed <20>;
-			turn rthighb to z-axis <5> speed <20>;
-			move body to y-axis [0.7] speed <4000>;
-			turn head to x-axis <-10> speed <20>;
-			turn tail to x-axis <10> speed <20>;
+			turn tail to y-axis <-10> speed <35>;
+			turn body to z-axis <-5> speed <15>;
+			turn lthighf to z-axis <5> speed <15>;
+			turn rthighf to z-axis <5> speed <15>;
+			turn lthighb to z-axis <5> speed <15>;
+			turn rthighb to z-axis <5> speed <15>;
+			move body to y-axis [0.7] speed <3500>;
+			turn head to x-axis <-10> speed <15>;
+			turn tail to x-axis <10> speed <15>;
 			wait-for-turn rthighf around x-axis;
 			
-			turn rthighf to x-axis <-10> speed<160>;
-			turn rkneef to x-axis <15> speed<145>;
-			turn rshinf to x-axis <-60> speed<250>;
-			turn rfootf to x-axis <30> speed<145>;
+			turn rthighf to x-axis <-10> speed<130>;
+			turn rkneef to x-axis <15> speed<115>;
+			turn rshinf to x-axis <-60> speed<220>;
+			turn rfootf to x-axis <30> speed<115>;
 			
-			turn lthighf to x-axis <40> speed<145>;
-			turn lkneef to x-axis <-35> speed<145>;
-			turn lshinf to x-axis <-40> speed<145>;
-			turn lfootf to x-axis <35> speed<145>;
+			turn lthighf to x-axis <40> speed<115>;
+			turn lkneef to x-axis <-35> speed<115>;
+			turn lshinf to x-axis <-40> speed<115>;
+			turn lfootf to x-axis <35> speed<115>;
 						
-			turn lthighb to x-axis <-10> speed<160>;
-			turn lkneeb to x-axis <15> speed<145>;
-			turn lshinb to x-axis <-60> speed<250>;
-			turn lfootb to x-axis <30> speed<145>;
+			turn lthighb to x-axis <-10> speed<130>;
+			turn lkneeb to x-axis <15> speed<115>;
+			turn lshinb to x-axis <-60> speed<220>;
+			turn lfootb to x-axis <30> speed<115>;
 			
-			turn rthighb to x-axis <40> speed<145>;
-			turn rkneeb to x-axis <-35> speed<145>;
-			turn rshinb to x-axis <-40> speed<145>;
-			turn rfootb to x-axis <35> speed<145>;
+			turn rthighb to x-axis <40> speed<115>;
+			turn rkneeb to x-axis <-35> speed<115>;
+			turn rshinb to x-axis <-40> speed<115>;
+			turn rfootb to x-axis <35> speed<115>;
 
-			move body to y-axis [0] speed <4000>;
-			turn head to x-axis <10> speed <20>;
-			turn tail to x-axis <-10> speed <20>;
+			move body to y-axis [0] speed <3500>;
+			turn head to x-axis <10> speed <15>;
+			turn tail to x-axis <-10> speed <15>;
 			wait-for-turn rshinf around x-axis;
 			
 //			bMoving = FALSE;
@@ -134,22 +134,22 @@ walk()
 
 stopwalk ()
 {	
-	turn lfootf		to x-axis <0> 		speed <200>;
-	turn rfootf		to x-axis <0> 		speed <200>;
-	turn rthighf	to x-axis <0> 		speed <200>;
-	turn lthighf	to x-axis <0> 		speed <200>;
-	turn lshinf		to x-axis <0> 		speed <200>;
-	turn rshinf		to x-axis <0> 		speed <200>;
-	turn lkneef 	to x-axis <0> 		speed <200>;
-	turn rkneef		to x-axis <0> 		speed <200>;
-	turn lfootb		to x-axis <0> 		speed <200>;
-	turn rfootb		to x-axis <0> 		speed <200>;
-	turn rthighb	to x-axis <0> 		speed <200>;
-	turn lthighb 	to x-axis <0> 		speed <200>;
-	turn lshinb  	to x-axis <0> 		speed <200>;
-	turn rshinb		to x-axis <0> 		speed <200>;
-	turn lkneeb  	to x-axis <0> 		speed <200>;
-	turn rkneeb		to x-axis <0> 		speed <200>;
+	turn lfootf		to x-axis <0> 		speed <180>;
+	turn rfootf		to x-axis <0> 		speed <180>;
+	turn rthighf	to x-axis <0> 		speed <180>;
+	turn lthighf	to x-axis <0> 		speed <180>;
+	turn lshinf		to x-axis <0> 		speed <180>;
+	turn rshinf		to x-axis <0> 		speed <180>;
+	turn lkneef 	to x-axis <0> 		speed <180>;
+	turn rkneef		to x-axis <0> 		speed <180>;
+	turn lfootb		to x-axis <0> 		speed <180>;
+	turn rfootb		to x-axis <0> 		speed <180>;
+	turn rthighb	to x-axis <0> 		speed <180>;
+	turn lthighb 	to x-axis <0> 		speed <180>;
+	turn lshinb  	to x-axis <0> 		speed <180>;
+	turn rshinb		to x-axis <0> 		speed <180>;
+	turn lkneeb  	to x-axis <0> 		speed <180>;
+	turn rkneeb		to x-axis <0> 		speed <180>;
 }
 
 StartMoving()

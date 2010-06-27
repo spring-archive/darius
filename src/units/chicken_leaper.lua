@@ -5,11 +5,7 @@ unitDef = {
   acceleration        = 0.5,
   bmcode              = [[1]],
   brakeRate           = 0.2,
-  buildCostEnergy     = 0,
-  buildCostMetal      = 0,
-  builder             = false,
   buildPic            = [[chicken_leaper.png]],
-  buildTime           = 100,
   canAttack           = true,
   canGuard            = true,
   canMove             = true,
@@ -18,9 +14,6 @@ unitDef = {
   category            = [[LAND]],
 
   customParams        = {
-    description_fr = [[Leaper]],
-    helptext       = [[The Leaper is the chicken's fast attack unit, running down enemies and leaping over obstacles.]],
-    helptext_fr    = [[The Leaper is the chicken's fast attack unit, running down enemies and leaping over obstacles.]],
   },
 
   defaultmissiontype  = [[Standby]],
@@ -34,9 +27,9 @@ unitDef = {
   leaveTracks         = false,
   maneuverleashlength = [[640]],
   mass                = 100,
-  maxDamage           = 520,
+  maxDamage           = 700,
   maxSlope            = 36,
-  maxVelocity         = 5.2,
+  maxVelocity         = 5,
   minCloakDistance    = 75,
   movementClass       = [[AKBOT2]],
   noAutoFire          = false,
@@ -90,7 +83,7 @@ unitDef = {
       craterMult              = 2,
 
       damage                  = {
-        default = 10,
+        default = 100,
         planes  = 10,
         subs    = 1,
       },
@@ -106,7 +99,7 @@ unitDef = {
       noSelfDamage            = true,
       predictBoost            = 1,
       range                   = 100,
-      reloadtime              = 1,
+      reloadtime              = 2,
       renderType              = 4,
       rgbColor                = [[0 0 0]],
       rgbColor2               = [[0 0 0]],

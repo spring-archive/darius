@@ -5,11 +5,7 @@ unitDef = {
   acceleration        = 0.36,
   bmcode              = [[1]],
   brakeRate           = 0.2,
-  buildCostEnergy     = 0,
-  buildCostMetal      = 0,
-  builder             = false,
   buildPic            = [[chickenc.png]],
-  buildTime           = 520,
   canAttack           = true,
   canGuard            = true,
   canMove             = true,
@@ -18,9 +14,6 @@ unitDef = {
   category            = [[LAND]],
 
   customParams        = {
-    description_fr = [[All-Terrain Riot]],
-    helptext       = [[The Basilisk climbs walls like a spider to surprise the enemy with its highly acidic spit. Only a vigilant watch keeps these critters from sauntering over hills to wreck your base from unexpected directions. Gunships are the best solution to Basilisk incursions.]],
-    helptext_fr    = [[]],
   },
 
   defaultmissiontype  = [[Standby]],
@@ -33,9 +26,9 @@ unitDef = {
   leaveTracks         = true,
   maneuverleashlength = [[640]],
   mass                = 264,
-  maxDamage           = 1800,
+  maxDamage           = 2400,
   maxSlope            = 72,
-  maxVelocity         = 2.2,
+  maxVelocity         = 1,
   maxWaterDepth       = 22,
   minCloakDistance    = 75,
   movementClass       = [[TKBOT3]],
@@ -57,9 +50,9 @@ unitDef = {
   },
 
   side                = [[THUNDERBIRDS]],
-  sightDistance       = 512,
+  sightDistance       = 400,
   smoothAnim          = true,
-  sonarDistance       = 450,
+  sonarDistance       = 380,
   steeringmode        = [[2]],
   TEDClass            = [[KBOT]],
   trackOffset         = 0.5,
@@ -95,8 +88,6 @@ unitDef = {
 
       damage                  = {
         default = 140,
-        planes  = 140,
-        subs    = 7,
       },
 
       endsmoke                = [[0]],
@@ -107,7 +98,7 @@ unitDef = {
       interceptedByShieldType = 1,
       lineOfSight             = true,
       noSelfDamage            = true,
-      range                   = 400,
+      range                   = 350,
       reloadtime              = 3,
       renderType              = 4,
       rgbColor                = [[0.2 0.6 0]],

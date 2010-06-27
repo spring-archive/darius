@@ -92,14 +92,16 @@ else
 
 	function ResetSpawner()
 		local wave1 = CreateWave({
-			{"chickens",2,10},
-			{"chickenr",5,4}
+			{"chicken",1,20},
+			{"armpw",1,15},
 		})
 		local wave2 = CreateWave({
-			{"chickenr",1,5}
+			{"cormortgold",2,5},
+			{"chicken_dodo",1,30}
 		})
 		local wave3 = CreateWave({
-			{"chickens",1,5}
+			{"armwar",2,10},
+			{"armorco",3,3}
 		})
 		local round1 = CreateRound({wave1,wave2,wave3})
 		rounds = {round1}

@@ -5,11 +5,7 @@ unitDef = {
   acceleration        = 0.36,
   bmcode              = [[1]],
   brakeRate           = 0.2,
-  buildCostEnergy     = 0,
-  buildCostMetal      = 0,
-  builder             = false,
   buildPic            = [[chicken.png]],
-  buildTime           = 25,
   canAttack           = true,
   canGuard            = true,
   canHover            = true,
@@ -19,9 +15,6 @@ unitDef = {
   category            = [[SWIM]],
 
   customParams        = {
-    description_fr = [[Swarmer]],
-    helptext       = [[The footsoldier of the Thunderbirds is an aggressive zergling-type unit. What it lacks in individual strength, it compensates for with its sheer numbers, overwhelming enemies with floods and floods of little chickens. A good riot unit is recommended for stopping them.]],
-    helptext_fr    = [[The footsoldier of the Thunderbirds is an aggressive zergling-type unit. What it lacks in individual strength, it compensates for with its sheer numbers, overwhelming enemies with floods and floods of little chickens. A good riot unit is recommended for stopping them.]],
   },
 
   defaultmissiontype  = [[Standby]],
@@ -35,9 +28,9 @@ unitDef = {
   leaveTracks         = true,
   maneuverleashlength = [[640]],
   mass                = 26.4,
-  maxDamage           = 270,
+  maxDamage           = 370,
   maxSlope            = 36,
-  maxVelocity         = 2.9,
+  maxVelocity         = 1.9,
   minCloakDistance    = 75,
   movementClass       = [[HOVER3]],
   noAutoFire          = false,
@@ -94,8 +87,6 @@ unitDef = {
 
       damage                  = {
         default = 80,
-        planes  = 80,
-        subs    = 80,
       },
 
       endsmoke                = [[0]],
@@ -106,8 +97,8 @@ unitDef = {
       interceptedByShieldType = 1,
       lineOfSight             = true,
       noSelfDamage            = true,
-      range                   = 100,
-      reloadtime              = 1.2,
+      range                   = 80,
+      reloadtime              = 0.8,
       size                    = 0,
       soundHit                = [[chickens/chickenbig2]],
       soundStart              = [[chickens/chicken]],

@@ -6,12 +6,7 @@ unitDef = {
   activateWhenBuilt      = false,
   bmcode                 = [[0]],
   brakeRate              = 0,
-  buildAngle             = 32768,
-  buildCostEnergy        = 90,
-  buildCostMetal         = 90,
-  builder                = false,
   buildPic               = [[CORLLT.png]],
-  buildTime              = 90,
   canAttack              = true,
   canstop                = [[1]],
   category               = [[SINK]],
@@ -22,9 +17,6 @@ unitDef = {
   corpse                 = [[DEAD]],
 
   customParams           = {
-    description_fr = [[Light Laser Tower ou Tourelle Laser Légcre]],
-    helptext       = [[The Lotus is a basic turret. A versatile, solid anti-ground weapon, it does well versus scouts as well as being able to take on one or two raiders. Falls relatively easily to skirmishers, artillery or assault units unless supported.]],
-    helptext_fr    = [[La Tourelle Laser Légcre aussi appellée LLT est une tourelle basique, peu solide mais utile pour se protéger des éclaireurs ou des pilleurs. Des tirailleurs ou de l'artillerie en viendrons rapidement r bout. ]],
   },
 
   defaultmissiontype     = [[GUARD_NOMOVE]],
@@ -89,9 +81,7 @@ unitDef = {
       craterMult              = 2,
 
       damage                  = {
-        default = 20,
-        planes  = 20,
-        subs    = 1,
+        default = 15,
       },
 
       duration                = 0.02,
@@ -106,8 +96,8 @@ unitDef = {
       lineOfSight             = true,
       lodDistance             = 10000,
       noSelfDamage            = true,
-      range                   = 460,
-      reloadtime              = 0.2,
+      range                   = 430,
+      reloadtime              = 0.4,
       renderType              = 0,
       rgbColor                = [[1 0 0]],
       soundHit                = [[laserhit]],

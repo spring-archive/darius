@@ -623,12 +623,6 @@ FirePrimary()
 	{
 		emit-sfx 1024 from rflare;
 		emit-sfx 1025 from rejector;
-		sleep 100;
-		emit-sfx 1024 from rflare;
-		emit-sfx 1025 from rejector;
-		sleep 100;
-		emit-sfx 1024 from rflare;
-		emit-sfx 1025 from rejector;
 		gun_1 = lflare;
 		turn rbelt to x-axis <-2.000000> speed <50.000000>;
 		turn lbelt to x-axis <2.000000> speed <50.000000>;
@@ -636,12 +630,6 @@ FirePrimary()
 	}
 	if( gun_1 == 2 )
 	{
-		emit-sfx 1024 from lflare;
-		emit-sfx 1025 from lejector;
-		sleep 100;
-		emit-sfx 1024 from lflare;
-		emit-sfx 1025 from lejector;
-		sleep 100;
 		emit-sfx 1024 from lflare;
 		emit-sfx 1025 from lejector;
 		turn lbelt to x-axis <-2.000000> speed <50.000000>;

@@ -1,0 +1,25 @@
+Units go from weakest to strongest, e.g. chicken = weakest and armwar = strongest
+Number is the dynamic unit id number (if you wanna try spawning with darius_tower_logic, won't be needed in the future)
+
+normal:	chicken = 15, //weak, slow and only close range attack
+	corthud = 55, //simple mech, decent health and shot range
+	arm_venom = 1, //spider mech, shoots emp lightning that halts tower fire
+	corstorm = 54, //mech, similar to corthud but overall better, shoots missiles
+	armsptk = 13, //spider mech, shoots a burst of missiles 
+	chicken_sporeshooter = 28, //shoots a burst of spores, good health and damage
+	armwar = 14 //best normal unit, good health and damage but not the best range
+
+fast and weak: 
+	armpw = 12, //mech infantry unit
+	corpyro = 49, //fire mech
+	chicken_dodo = 19, //suicide bomber
+	chicken_leaper = 22, //can jump over obstacles and enemy fire, strong but needs to get in close range 
+	corpyro_new = 50 //shoots wide and really damaging fire
+
+slow and strong:
+	chickena = 29, //strong, but needs to get in close range
+	cormortgold = 48, //shoots fast and damaging cannon shots
+	chickenc = 32, //shoots burst of damaging green goo
+	armorco = 10, //the most powerful mech in the game 
+	chickenq = 36 //huge, possible boss, since now crazy powerful
+

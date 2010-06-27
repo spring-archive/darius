@@ -78,7 +78,7 @@ overCategory = {
     range = 600, reload = 1, },
 	
 	-- corpyro = {
-		-- range = 400, height = 200, speed = 6,  reload = 10, },	
+	--	 range = 400, height = 200, speed = 6,  reload = 10, },	
 }
 ------------------------------------------------------------------------------------------------------------------------------------------------
 -- this is just an error checking block, not our configuration area

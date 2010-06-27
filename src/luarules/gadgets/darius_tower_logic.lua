@@ -38,8 +38,8 @@ function gadget:GameFrame(f)
 	--just a test, will probably be done in smarter way
 		if (material.name == "Stone"  and weapon.name == "Fire") then
 			--number is the unit number in alphabetic order ie.more units bigger number
-			Darius:SetTower(48) --"corrl"
-		else Darius:SetTower(44) --"corllt"
+			Darius:SetTower(47) --"corrl"
+		else Darius:SetTower(51) --"corllt"
 		end
 	else
 		Darius:SetTower(nil)

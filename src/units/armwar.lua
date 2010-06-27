@@ -1,11 +1,11 @@
 unitDef = {
-  unitname            = [[corthud]],
-  name                = [[Thug]],
-  description         = [[Assault Bot]],
-  acceleration        = 0.113,
+  unitname            = [[armwar]],
+  name                = [[Warrior]],
+  description         = [[Riot Bot]],
+  acceleration        = 0.072,
   bmcode              = [[1]],
-  brakeRate           = 0.225,
-  buildPic            = [[CORTHUD.png]],
+  brakeRate           = 0.238,
+  buildPic            = [[ARMWAR.png]],
   canAttack           = true,
   canGuard            = true,
   canMove             = true,
@@ -15,20 +15,18 @@ unitDef = {
   corpse              = [[DEAD]],
 
   customParams        = {
-  
   },
 
   defaultmissiontype  = [[Standby]],
-  explodeAs           = [[BIG_UNITEX]],
+  explodeAs           = [[SMALL_UNITEX]],
   footprintX          = 2,
   footprintZ          = 2,
-  iconType            = [[kbotassault]],
+  iconType            = [[kbotriot]],
   idleAutoHeal        = 5,
   idleTime            = 1800,
-  leaveTracks         = true,
-  maneuverleashlength = [[640]],
-  mass                = 70,
-  maxDamage           = 600,
+  maneuverleashlength = [[1]],
+  mass                = 110,
+  maxDamage           = 1200,
   maxSlope            = 36,
   maxVelocity         = 1.9,
   maxWaterDepth       = 22,
@@ -36,39 +34,33 @@ unitDef = {
   movementClass       = [[KBOT2]],
   noAutoFire          = false,
   noChaseCategory     = [[TERRAFORM FIXEDWING SATELLITE SUB]],
-  objectName          = [[thud.s3o]],
+  objectName          = [[Spherewarrior.s3o]],
   seismicSignature    = 4,
-  selfDestructAs      = [[BIG_UNITEX]],
+  selfDestructAs      = [[SMALL_UNITEX]],
 
   sfxtypes            = {
 
     explosiongenerators = {
-      [[custom:THUDMUZZLE]],
-      [[custom:THUDSHELLS]],
-      [[custom:THUDDUST]],
+      [[custom:WARMUZZLE]],
+      [[custom:emg_shells_l]],
     },
 
   },
 
-  side                = [[CORE]],
-  sightDistance       = 450,
+  side                = [[ARM]],
+  sightDistance       = 400,
   smoothAnim          = true,
   steeringmode        = [[2]],
   TEDClass            = [[KBOT]],
-  trackOffset         = 0,
-  trackStrength       = 8,
-  trackStretch        = 1,
-  trackType           = [[ComTrack]],
-  trackWidth          = 22,
   turninplace         = 0,
-  turnRate            = 1099,
+  turnRate            = 770,
   upright             = true,
   workerTime          = 0,
 
   weapons             = {
 
     {
-      def                = [[THUD_WEAPON]],
+      def                = [[WARRIOR_WEAPON]],
       badTargetCategory  = [[FIXEDWING]],
       onlyTargetCategory = [[FIXEDWING LAND SINK SHIP SWIM FLOAT GUNSHIP HOVER]],
     },
@@ -78,31 +70,42 @@ unitDef = {
 
   weaponDefs          = {
 
-    THUD_WEAPON = {
-      name                    = [[Light Plasma Cannon]],
-      areaOfEffect            = 36,
-      craterBoost             = 1,
-      craterMult              = 2,
+    WARRIOR_WEAPON = {
+      name                    = [[Heavy EMG]],
+      accuracy                = 350,
+      alphaDecay              = 0.7,
+      areaOfEffect            = 96,
+      burnblow                = true,
+      burst                   = 1,
+      burstrate               = 0.1,
+      craterBoost             = 0.15,
+      craterMult              = 0.3,
 
       damage                  = {
-        default = 60,
+        default = 39,
       },
 
-      explosionGenerator      = [[custom:MARY_SUE]],
+      edgeEffectiveness       = 0.5,
+      explosionGenerator      = [[custom:EMG_HIT_HE]],
+      firestarter             = 70,
       impulseBoost            = 0,
-      impulseFactor           = 0.4,
+      impulseFactor           = 0.2,
+      intensity               = 0.7,
       interceptedByShieldType = 1,
-      minbarrelangle          = [[-35]],
+      lineOfSight             = true,
       noSelfDamage            = true,
-      range                   = 350,
-      reloadtime              = 2.5,
+      range                   = 320,
+      reloadtime              = 0.1,
       renderType              = 4,
-      soundHit                = [[OTAunit/XPLOMED3]],
-      soundStart              = [[OTAunit/CANNON1]],
-      startsmoke              = [[1]],
+      rgbColor                = [[1 0.95 0.4]],
+      separation              = 1.5,
+      soundHit                = [[OTAunit/XPLOSML3]],
+      soundStart              = [[flashemg]],
+      stages                  = 10,
+      targetMoveError         = 0.3,
       turret                  = true,
       weaponType              = [[Cannon]],
-      weaponVelocity          = 400,
+      weaponVelocity          = 500,
     },
 
   },
@@ -111,10 +114,10 @@ unitDef = {
   featureDefs         = {
 
     DEAD  = {
-      description      = [[Wreckage - Thug]],
+      description      = [[Wreckage - Warrior]],
       blocking         = true,
       category         = [[corpses]],
-      damage           = 3000,
+      damage           = 1760,
       energy           = 0,
       featureDead      = [[DEAD2]],
       featurereclamate = [[SMUDGE01]],
@@ -122,20 +125,20 @@ unitDef = {
       footprintZ       = 2,
       height           = [[20]],
       hitdensity       = [[100]],
-      metal            = 70,
-      object           = [[thug_d.s3o]],
+      metal            = 110,
+      object           = [[spherewarrior_dead.s3o]],
       reclaimable      = true,
-      reclaimTime      = 70,
+      reclaimTime      = 110,
       seqnamereclamate = [[TREE1RECLAMATE]],
       world            = [[All Worlds]],
     },
 
 
     DEAD2 = {
-      description      = [[Heap - Thug]],
+      description      = [[Debris - Warrior]],
       blocking         = false,
       category         = [[heaps]],
-      damage           = 3000,
+      damage           = 1760,
       energy           = 0,
       featureDead      = [[HEAP]],
       featurereclamate = [[SMUDGE01]],
@@ -143,30 +146,30 @@ unitDef = {
       footprintZ       = 2,
       height           = [[4]],
       hitdensity       = [[100]],
-      metal            = 70,
-      object           = [[debris2x2c.s3o]],
+      metal            = 110,
+      object           = [[debris3x3a.s3o]],
       reclaimable      = true,
-      reclaimTime      = 70,
+      reclaimTime      = 110,
       seqnamereclamate = [[TREE1RECLAMATE]],
       world            = [[All Worlds]],
     },
 
 
     HEAP  = {
-      description      = [[Debris - Thug]],
+      description      = [[Debris - Warrior]],
       blocking         = false,
       category         = [[heaps]],
-      damage           = 3000,
+      damage           = 1760,
       energy           = 0,
       featurereclamate = [[SMUDGE01]],
       footprintX       = 2,
       footprintZ       = 2,
       height           = [[4]],
       hitdensity       = [[100]],
-      metal            = 35,
-      object           = [[debris2x2c.s3o]],
+      metal            = 55,
+      object           = [[debris3x3a.s3o]],
       reclaimable      = true,
-      reclaimTime      = 35,
+      reclaimTime      = 55,
       seqnamereclamate = [[TREE1RECLAMATE]],
       world            = [[All Worlds]],
     },
@@ -175,4 +178,4 @@ unitDef = {
 
 }
 
-return lowerkeys({ corthud = unitDef })
+return lowerkeys({ armwar = unitDef })

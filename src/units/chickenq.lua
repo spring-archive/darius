@@ -6,11 +6,7 @@ unitDef = {
   autoHeal               = 0,
   bmcode                 = [[1]],
   brakeRate              = 1,
-  buildCostEnergy        = 0,
-  buildCostMetal         = 0,
-  builder                = false,
   buildPic               = [[chickenq.png]],
-  buildTime              = 105600,
   canAttack              = true,
   canGuard               = true,
   canMove                = true,
@@ -26,13 +22,10 @@ unitDef = {
   collisionVolumeType    = [[box]],
 
   customParams           = {
-    description_fr = [[Clucking Hell!]],
-    helptext       = [[Two words: RUN AWAY! The Chicken Queen is the matriach of the Thunderbird colony, and when aggravated is virtually impossible to stop. It can spit acid, spray spores to kill aircraft, and kick land units away from it. Most of all, its jaws can rip apart the largest assault mech in seconds. Only the most determined, focused assault can hope to stop this beast in her tracks.]],
-    helptext_fr    = [[Two words: RUN AWAY! The Chicken Queen is the matriach of the Thunderbird colony, and when aggravated is virtually impossible to stop. It can spit acid, spray spores to kill aircraft, and kick land units away from it. Most of all, its jaws can rip apart the largest assault mech in seconds. Only the most determined, focused assault can hope to stop this beast in her tracks.]],
   },
 
   defaultmissiontype     = [[standby]],
-  explodeAs              = [[SMALL_UNITEX]],
+  explodeAs              = [[DODO_DEATH]],
   footprintX             = 8,
   footprintZ             = 8,
   iconType               = [[chickenq]],
@@ -40,17 +33,17 @@ unitDef = {
   idleTime               = 300,
   leaveTracks            = true,
   maneuverleashlength    = [[640]],
-  mass                   = 52800,
-  maxDamage              = 200000,
-  maxVelocity            = 2.5,
+  mass                   = 24800,
+  maxDamage              = 20000,
+  maxVelocity            = 1.3,
   minCloakDistance       = 75,
   movementClass          = [[TKBOT3]],
   noAutoFire             = false,
   noChaseCategory        = [[TERRAFORM SATELLITE]],
   objectName             = [[chickenq.s3o]],
-  power                  = 65536,
+  power                  = 6000,
   seismicSignature       = 4,
-  selfDestructAs         = [[SMALL_UNITEX]],
+  selfDestructAs         = [[DODO_DEATH]],
 
   sfxtypes               = {
 
@@ -63,7 +56,7 @@ unitDef = {
   },
 
   side                   = [[THUNDERBIRDS]],
-  sightDistance          = 2048,
+  sightDistance          = 800,
   smoothAnim             = true,
   sonarDistance          = 450,
   steeringmode           = [[2]],
@@ -126,16 +119,14 @@ unitDef = {
     GOO        = {
       name                    = [[Blob]],
       areaOfEffect            = 256,
-      burst                   = 8,
+      burst                   = 6,
       burstrate               = 0.01,
       cegTag                  = [[queen_trail]],
       craterBoost             = 0,
       craterMult              = 0,
 
       damage                  = {
-        default = 800,
-        planes  = 800,
-        subs    = 4,
+        default = 500,
       },
 
       endsmoke                = [[0]],
@@ -147,7 +138,7 @@ unitDef = {
       lineOfSight             = true,
       noSelfDamage            = true,
       proximityPriority       = -4,
-      range                   = 1200,
+      range                   = 450,
       reloadtime              = 6,
       renderType              = 4,
       rgbColor                = [[0.2 0.6 0]],
@@ -171,9 +162,7 @@ unitDef = {
       craterMult              = 0,
 
       damage                  = {
-        default = 2000,
-        planes  = 2000,
-        subs    = 2000,
+        default = 3000,
       },
 
       endsmoke                = [[0]],
@@ -206,10 +195,6 @@ unitDef = {
 
       damage                  = {
         default    = 10,
-        chicken    = 0.001,
-        commanders = 1,
-        planes     = 10,
-        subs       = 5,
       },
 
       edgeEffectiveness       = 1,
@@ -243,7 +228,7 @@ unitDef = {
       craterMult              = 2,
 
       damage                  = {
-        default = 75,
+        default = 10,
         planes  = [[150]],
         subs    = 7.5,
       },
@@ -264,7 +249,7 @@ unitDef = {
       metalpershot            = 0,
       model                   = [[chickeneggpink.s3o]],
       noSelfDamage            = true,
-      range                   = 600,
+      range                   = 400,
       reloadtime              = 4,
       renderType              = 1,
       selfprop                = true,

@@ -5,11 +5,7 @@ unitDef = {
   acceleration        = 0.36,
   bmcode              = [[1]],
   brakeRate           = 0.2,
-  buildCostEnergy     = 0,
-  buildCostMetal      = 0,
-  builder             = false,
   buildPic            = [[chickena.png]],
-  buildTime           = 350,
   canAttack           = true,
   canGuard            = true,
   canMove             = true,
@@ -18,9 +14,6 @@ unitDef = {
   category            = [[LAND]],
 
   customParams        = {
-    description_fr = [[Assault]],
-    helptext       = [[The Cockatrice is truly a beast. Seemingly impervious to enemy fire, it casually walks up to its target and dismembers it with its incredibly powerful jaws. Fortunately, it is not fast or particularly intelligent, and can be destroyed with skirmishers or swarmers easily.]],
-    helptext_fr    = [[The Cockatrice is truly a beast. Seemingly impervious to enemy fire, it casually walks up to its target and dismembers it with its incredibly powerful jaws. Fortunately, it is not fast or particularly intelligent, and can be destroyed with skirmishers or air easily.]],
   },
 
   defaultmissiontype  = [[Standby]],
@@ -33,9 +26,9 @@ unitDef = {
   leaveTracks         = true,
   maneuverleashlength = [[640]],
   mass                = 176,
-  maxDamage           = 2800,
+  maxDamage           = 2500,
   maxSlope            = 37,
-  maxVelocity         = 1.8,
+  maxVelocity         = 1.2,
   maxWaterDepth       = 5000,
   minCloakDistance    = 75,
   movementClass       = [[AKBOT6]],
@@ -91,9 +84,7 @@ unitDef = {
       craterMult              = 2,
 
       damage                  = {
-        default = 1700,
-        planes  = 1700,
-        subs    = 6,
+        default = 1000,
       },
 
       endsmoke                = [[0]],

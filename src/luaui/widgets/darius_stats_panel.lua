@@ -204,8 +204,7 @@ function widget:Initialize()
 	
 	UpdateStats() -- get the initial stats
 	
-	--widgetHandler:RegisterGlobal("Victory" , Victory)
-	--widgetHandler:RegisterGlobal("UpdateStats" , UpdateStats)
+	widgetHandler:RegisterGlobal("Victory" , Victory)
 end
 
 function widget:Shutdown()

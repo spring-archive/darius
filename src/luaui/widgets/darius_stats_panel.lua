@@ -25,7 +25,7 @@ local spGetGameRulesParam = Spring.GetGameRulesParam
 -- fonts
 local fontHandler  = loadstring(VFS.LoadFile(LUAUI_DIRNAME.."modfonts.lua", VFS.ZIP_FIRST))()
 local panelFont = LUAUI_DIRNAME.."fonts/freesansbold_14"
-local panelFontSize = fontHandler.GetFontSize()
+local waveFont = LUAUI_DIRNAME.."fonts/freesansbold_16"
 
 -- panel outfit
 local panelTexture  = ":n:"..LUAUI_DIRNAME.."images/panel.tga"
@@ -37,6 +37,7 @@ local dispListPanel = nil
 
 -- panel status
 local panelUpdate = false
+local waveUpdate = false
 local isPanelMoved = false
 local isPanelCaptured = false
 
@@ -54,8 +55,12 @@ local round = 0
 local wave = 0
 local monstersLeft = 0
 local monstersKilled = 0
-local nextWave
-local nextWaveDisplay = ""
+local nextWaveDisplay = 0
+
+fontHandler.UseFont(panelFont)
+local panelFontSize = fontHandler.GetFontSize()
+
+
 
 ------------------------
 -- Unsynced Functions --
@@ -65,6 +70,7 @@ local nextWaveDisplay = ""
 local function AddNewPanelRow(lineNum)
 	return panelMarginX, panelHeight - panelMarginY - (lineNum - 1) * (panelFontSize + panelSpacingY)
 end
+
 
 -- formats seconds to hh:mm:ss or mm:ss
 local function SecondsToTimestamp(numberOfSeconds)
@@ -93,6 +99,7 @@ local function CreatePanelDisplayList()
 	
 	-- draw texts with textures beneath
 	fontHandler.DisableCache()
+	fontHandler.UseFont(panelFont)
 	fontHandler.BindTexture()
 	
 	-- draw texts
@@ -100,8 +107,12 @@ local function CreatePanelDisplayList()
 	fontHandler.DrawStatic(white.."Time for the next wave: "..nextWaveDisplay, AddNewPanelRow(2))
 	fontHandler.DrawStatic(white.."Enemies left in this wave: "..tostring(monstersLeft), AddNewPanelRow(3))
 	fontHandler.DrawStatic(white.."Enemies killed total: "..tostring(monstersKilled), AddNewPanelRow(4))
+	
 	fontHandler.DrawStatic(white.."Round: "..tostring(round), AddNewPanelRow(5))
-	fontHandler.DrawStatic(white.."Wave: "..tostring(wave), AddNewPanelRow(6))
+	
+	if (wave > 0) then
+		fontHandler.DrawStatic(white.."Wave: "..tostring(wave), AddNewPanelRow(6))
+	end
 
 	gl.PopMatrix()
 end
@@ -123,10 +134,19 @@ local function Draw()
 	if (dispListPanel) then
 		gl.CallList(dispListPanel)
 	end
-
+	
+	-- draw the new wave message
+	if (waveMessage) then
+		fontHandler.UseFont(waveFont)
+		
+		for i, message in ipairs(waveMessage) do
+			fontHandler.DrawCentered(message, viewSizeX/2, viewSizeY/2)
+		end
+	end
 end
 
-function GetRuleOrDefault(name,default)
+-- this function gets the parameter from synced code
+function GetRuleOrDefault(name, default)
 	rule = spGetGameRulesParam(name)
 	if (rule == nil) then
 		return default
@@ -137,24 +157,37 @@ end
 
 -- this function calculates the actual ingame stats
 function UpdateStats()
-	monstersLeft = GetRuleOrDefault("monstersLeft",0)
-	monstersKilled = GetRuleOrDefault("monstersKilled",0)
-	round = GetRuleOrDefault("round",1)
-	wave = GetRuleOrDefault("wave",1)
-	nextWave = spGetGameRulesParam("nextWave")
-	if (nextWave ~= nil and nextWave ~= 0) then
-		local timeLeft = nextWave - Spring.GetGameSeconds()
+	monstersLeft = GetRuleOrDefault("monstersLeft", 0)
+	monstersKilled = GetRuleOrDefault("monstersKilled", 0)
+	round = GetRuleOrDefault("round", 1)
+	wave = GetRuleOrDefault("wave", 0)
+	timeToNextWave = spGetGameRulesParam("nextWave")
+	
+	if (timeToNextWave ~= nil and timeToNextWave ~= 0) then
+		local timeLeft = timeToNextWave - spGetSeconds()
+		
 		if timeLeft > 0 then
-			timeLeft = math.floor(timeLeft)
-			nextWaveDisplay = tostring(timeLeft)
+			nextWaveDisplay = tostring(math.floor(timeLeft))
 		else
 			timeLeft = 0
-			nextWaveDisplay = ""
+			nextWaveDisplay = 0;
 		end
-	else
-		nextWaveDisplay = ""
 	end
+	
+	if (nextWaveDisplay == 0) then
+		waveMessage = {}
+		nextWaveNumber = wave + 1;
+		waveMessage[1] = "Wave "..tostring(nextWaveNumber).." begins!"
+	else
+		waveMessage = nil
+	end
+	
 	panelUpdate = true -- stats changed, panel must be updated
+end
+
+-- from synced
+function Victory()
+	spEcho("Congratulations, you win!")
 end
 
 --------------
@@ -162,18 +195,17 @@ end
 --------------
 
 function widget:Initialize()
-	fontHandler.UseFont(panelFont)
-
 	-- create a new display list for texturing the panel
 	dispListPanelTex = gl.CreateList(function()
 		gl.Color(1, 1, 1, 1)
 		gl.Texture(panelTexture)
 		gl.TexRect(0, 0, panelWidth, panelHeight)
 	end)
-
+	
 	UpdateStats() -- get the initial stats
-	widgetHandler:RegisterGlobal("Victory" , Victory)
-	widgetHandler:RegisterGlobal("UpdateStats" , UpdateStats)
+	
+	--widgetHandler:RegisterGlobal("Victory" , Victory)
+	--widgetHandler:RegisterGlobal("UpdateStats" , UpdateStats)
 end
 
 function widget:Shutdown()
@@ -236,8 +268,4 @@ function widget:ViewResize(vsx, vsy)
 	viewSizeX, viewSizeY = vsx, vsy
 	x1 = viewSizeX + x1
 	y1 = viewSizeY + y1
-end
-
-function Victory()
-	spEcho("Congratulations, you win!")
 end

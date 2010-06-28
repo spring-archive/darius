@@ -209,6 +209,7 @@ function gadget:Initialize()
 	InitRoundsAndWaves()
 	
 	spSetGameRulesParam("gameWon", 0)
+	
 	spSetGameRulesParam("monstersLeftInTheWave", monstersLeftInTheWave)
 	spSetGameRulesParam("monstersTeam", monsterTeamNumber)
 	spSetGameRulesParam("monstersKilledTotal", monstersKilledTotal)
@@ -228,7 +229,7 @@ function gadget:GameStart()
 	spSendCommands("globallos")
 	spEcho("Darius spawner: Enabled cheats to get rid of the Fog of War")
 	
-	SetSpawningAndGoalLocations();
+	SetSpawingAndGoalLocations();
 	
 	gameUnfinished = true
 	roundUnfinished = false

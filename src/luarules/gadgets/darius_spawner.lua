@@ -2,8 +2,8 @@ function gadget:GetInfo()
 	return {
 		name      = "Simple monster spawner",
 		desc      = "Spawns monster at certain rate",
-		author    = "Jammer",
-		date      = "June 2010",
+		author    = "Jammer & malloc",
+		date      = "June 28, 2010",
 		license   = "GNU GPL, v2 or later",
 		layer     = 0,
 		enabled   = true
@@ -35,7 +35,7 @@ currentWave = 0
 monsterTeamNumber = 0
 monstersLeftInTheWave = 1 -- hack
 monstersKilledTotal = -1 -- hack
-timeToNextWave = -1
+timeToTheNextWave = -1
 	
 	
 
@@ -114,15 +114,15 @@ end
 
 function ShowGraceForSeconds(graceSeconds)
 	diff = spGetGameSeconds() - waveFinishedTime
-	timeToNextWave = graceSeconds - diff
-	spSetGameRulesParam("timeToNextWave", timeToNextWave)
+	timeToTheNextWave = graceSeconds - diff
+	spSetGameRulesParam("timeToTheNextWave", timeToTheNextWave)
 
 	if (diff > graceSeconds) then
 		currentWave = currentWave + 1
 		spSetGameRulesParam("currentWave", currentWave)
-		spSetGameRulesParam("timeToNextWave", -1)
-		waveStarted = true
-		spEcho("New wave started")
+		spSetGameRulesParam("timeToTheNextWave", -1)
+		waveUnfinished = true
+		--spEcho("New wave started")
 	end
 end
 
@@ -152,20 +152,20 @@ function StartNewRound()
 	currentWave = 0
 	spSetGameRulesParam("currentWave", currentWave)
 	
-	waveStarted = false
-	roundStarted = true
-	spEcho("New round started")
+	waveUnfinished = false
+	roundUnfinished = true
+	--spEcho("New round started")
 end
 
 function GadgetUpdate(f)
-	if gameStarted == true then
-		if roundStarted == true then
-			if waveStarted == true then
+	if gameUnfinished == true then
+		if roundUnfinished == true then
+			if waveUnfinished == true then
 				SpawnWaveMonsters()
-			else -- new wave
+			else -- wave finished
 				ShowGraceForSeconds(10)
 			end
-		else -- new round
+		else -- round finished
 			StartNewRound()
 		end
 	else
@@ -179,12 +179,12 @@ function UpdateGameStatus()
 	-- if round is finished, move to the next round
 	if (rounds[currentRound][currentWave + 1] == nil) then
 		if	(rounds[currentRound + 1] == nil) then
-			gameStarted = false	-- win
+			gameUnfinished = false	-- win
 		end
-		roundStarted = false -- next round
+		roundUnfinished = false -- next round
 	end
 	
-	waveStarted = false -- next wave
+	waveUnfinished = false -- next wave
 end
 
 function UpdateStats()
@@ -208,7 +208,7 @@ function gadget:Initialize()
 	spSetGameRulesParam("monstersKilledTotal", monstersKilledTotal)
 	spSetGameRulesParam("currentRound", currentRound)
 	spSetGameRulesParam("currentWave", currentWave)
-	spSetGameRulesParam("timeToNextWave", timeToNextWave)
+	spSetGameRulesParam("timeToTheNextWave", timeToTheNextWave)
 end
 
 function gadget:GameFrame(f)
@@ -225,8 +225,8 @@ function gadget:GameStart()
 	x_src, y_src, z_src = spGetTeamStartPosition(0)
 	x_dest, y_dest, z_dest = spGetTeamStartPosition(1)
 
-	gameStarted = true
-	roundStarted = false
+	gameUnfinished = true
+	roundUnfinished = false
 end
 
 function gadget:UnitDestroyed(unitID, unitDefID, teamID, _)

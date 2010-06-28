@@ -134,19 +134,20 @@ local function Draw()
 	end
 	
 	-- draw the new wave message
-	if (nextWaveDisplay > 0) then
+	if (nextWaveDisplay > -1) then
 		fontHandler.UseFont(waveFont)
 		
 		waveMessage = {}
-		waveMessage[1] = "Time to the wave #"..(wave+1)..": "..math.floor(nextWaveDisplay).." seconds"
 
-		--[[if (nextWaveDisplay == 3) then
-			waveMessage[1] = "Ready"
-		else (nextWaveDisplay == 2) then
-			waveMessage[2] = "Set"
-		else (nextWaveDisplay == 1) then
-			waveMessage[2] = "GO!"
-		end]]--
+		if (math.floor(nextWaveDisplay) == 3) then
+			waveMessage[1] = "Ready!"
+		elseif (math.floor(nextWaveDisplay) == 2) then
+			waveMessage[1] = "Set!"
+		elseif (math.floor(nextWaveDisplay) < 2) then
+			waveMessage[1] = "Wave #"..(wave+1).." begins!"
+		else
+			waveMessage[1] = "Time to the wave #"..(wave+1)..": "..math.floor(nextWaveDisplay).." seconds"
+		end
 	
 		for i, message in ipairs(waveMessage) do
 			fontHandler.DrawCentered(message, viewSizeX/2, viewSizeY/2)

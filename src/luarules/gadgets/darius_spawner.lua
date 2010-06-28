@@ -112,7 +112,7 @@ function InitRoundsAndWaves()
 	rounds = {round1}
 end
 
-function ShowGraceForSeconds(graceSeconds)
+function ShowGracePeriod(graceSeconds)
 	diff = spGetGameSeconds() - waveFinishedTime
 	timeToTheNextWave = graceSeconds - diff
 	spSetGameRulesParam("timeToTheNextWave", timeToTheNextWave)
@@ -142,7 +142,7 @@ function SpawnWaveMonsters()
 end
 
 function GameVictory()
-	spEcho("Congs. You won")
+	spSetGameRulesParam("gameWon", 1);
 end
 
 function StartNewRound()
@@ -163,12 +163,12 @@ function GadgetUpdate(f)
 			if waveUnfinished == true then
 				SpawnWaveMonsters()
 			else -- wave finished
-				ShowGraceForSeconds(10)
+				ShowGracePeriod(10)
 			end
 		else -- round finished
 			StartNewRound()
 		end
-	else
+	else -- game finished
 		GameVictory()
 	end
 end
@@ -194,6 +194,11 @@ function UpdateStats()
 	spSetGameRulesParam("monstersKilledTotal", monstersKilledTotal)
 end
 
+function SetSpawingAndGoalLocations()
+	x_src, y_src, z_src = spGetTeamStartPosition(0)
+	x_dest, y_dest, z_dest = spGetTeamStartPosition(1)
+end
+
 
 
 --------------
@@ -203,6 +208,7 @@ end
 function gadget:Initialize()
 	InitRoundsAndWaves()
 	
+	spSetGameRulesParam("gameWon", 0)
 	spSetGameRulesParam("monstersLeftInTheWave", monstersLeftInTheWave)
 	spSetGameRulesParam("monstersTeam", monsterTeamNumber)
 	spSetGameRulesParam("monstersKilledTotal", monstersKilledTotal)
@@ -222,9 +228,8 @@ function gadget:GameStart()
 	spSendCommands("globallos")
 	spEcho("Darius spawner: Enabled cheats to get rid of the Fog of War")
 	
-	x_src, y_src, z_src = spGetTeamStartPosition(0)
-	x_dest, y_dest, z_dest = spGetTeamStartPosition(1)
-
+	SetSpawningAndGoalLocations();
+	
 	gameUnfinished = true
 	roundUnfinished = false
 end

@@ -42,7 +42,6 @@ rounds = {}
 ----------------------
 -- Synced Functions --
 ----------------------
-
 if (gadgetHandler:IsSyncedCode()) then
 
 function CreateWave(monsters)
@@ -189,5 +188,4 @@ function gadget:UnitDestroyed(unitID, unitDefID, teamID, _)
 	end
 end
 
-
-end
+end -- end synced

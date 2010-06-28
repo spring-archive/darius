@@ -51,17 +51,12 @@
 	}
 	[TEAM0]
 	{
-		startposx=180;
+		startposx=320;
 		startposz=320;
 	}
 	[TEAM1]
 	{
-		startposx=3200;
+		startposx=3400;
 		startposz=320;
-	}
-	[TEAM2]
-	{
-		startposx=2892;
-		startposz=1536;
 	}
 }

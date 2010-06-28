@@ -2,8 +2,8 @@ function widget:GetInfo()
 	return {
 		name      = "Darius stats panel",
 		desc      = "Displays ingame stats",
-		author    = "malloc",
-		date      = "June 24, 2010",
+		author    = "Jammer & malloc",
+		date      = "June 28, 2010",
 		license   = "GNU GPL, v2 or later",
 		layer     = 100,
 		enabled   = true
@@ -136,20 +136,20 @@ local function Draw()
 	-- draw the next wave message
 	if (nextWaveDisplay > -1) then
 		if (math.floor(nextWaveDisplay) == 3) then
-			waveMessage[1] = "Ready!"
+			StatusMessage[1] = "Ready!"
 		elseif (math.floor(nextWaveDisplay) == 2) then
-			waveMessage[1] = "Set!"
+			StatusMessage[1] = "Set!"
 		elseif (math.floor(nextWaveDisplay) < 2) then
-			waveMessage[1] = "Wave #"..(wave+1).." begins!"
+			StatusMessage[1] = "Wave #"..(wave+1).." begins!"
 		else
-			waveMessage[1] = "Time before the wave #"..(wave+1)..": "..math.floor(nextWaveDisplay).." seconds"
+			StatusMessage[1] = "Time before the wave #"..(wave+1)..": "..math.floor(nextWaveDisplay).." seconds"
 		end
 	elseif (wave > 0) then
-		waveMessage = {}
+		StatusMessage = {}
 	end
 		
 	fontHandler.UseFont(waveFont)
-	for i, message in ipairs(waveMessage) do
+	for i, message in ipairs(StatusMessage) do
 		fontHandler.DrawCentered(message, viewSizeX/2, viewSizeY/2)
 	end
 end
@@ -167,7 +167,7 @@ function UpdateStats()
 	monstersKilledTotal = GetParamFromSpawner("monstersKilledTotal")
 	round = GetParamFromSpawner("currentRound")
 	wave = GetParamFromSpawner("currentWave")
-	nextWaveDisplay = GetParamFromSpawner("timeToNextWave")
+	nextWaveDisplay = GetParamFromSpawner("timeToTheNextWave")
 	
 	panelUpdate = true -- stats changed, panel must be updated
 end
@@ -186,8 +186,8 @@ function widget:Initialize()
 		gl.TexRect(0, 0, panelWidth, panelHeight)
 	end)
 	
-	waveMessage = {}
-	waveMessage[1] = "Welcome to Darius Tower Defense. Get ready."
+	StatusMessage = {}
+	StatusMessage[1] = "Welcome to Darius Tower Defense. Get ready."
 	
 	UpdateStats() -- get the initial stats
 end

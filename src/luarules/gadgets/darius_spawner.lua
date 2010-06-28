@@ -29,10 +29,15 @@ local spSendCommands = Spring.SendCommands
 
 local x_src, y_src, z_src
 local x_dest, y_dest, z_dest
+
+currentRound = 0
+currentWave = 0
+monsterTeamNumber = 0
+monstersLeftInTheWave = 1 -- hack
+monstersKilledTotal = -1 -- hack
+timeToNextWave = -1
 	
-rounds = {}
-
-
+	
 
 ----------------------
 -- Synced Functions --
@@ -65,8 +70,6 @@ function CreateWave(monsters)
 	return wave
 end
 
-
-
 function CreateRound(waves)
 	local round = {class = "round"}
 	
@@ -91,9 +94,8 @@ function CreateRound(waves)
 	return round
 end
 
-
-
 function InitRoundsAndWaves()
+	-- should these be loaded from a config file?
 	local wave1 = CreateWave({
 		{"chicken", 2, 2}
 	})
@@ -107,59 +109,89 @@ function InitRoundsAndWaves()
 	})
 	
 	local round1 = CreateRound({wave1, wave2})
-	
 	rounds = {round1}
 end
 
+function ShowGraceForSeconds(graceSeconds)
+	diff = spGetGameSeconds() - waveFinishedTime
+	timeToNextWave = graceSeconds - diff
+	spSetGameRulesParam("timeToNextWave", timeToNextWave)
 
+	if (diff > graceSeconds) then
+		currentWave = currentWave + 1
+		spSetGameRulesParam("currentWave", currentWave)
+		spSetGameRulesParam("timeToNextWave", -1)
+		waveStarted = true
+		spEcho("New wave started")
+	end
+end
 
+function SpawnWaveMonsters()
+	local monsters = rounds[currentRound][currentWave]
+	if monsters ~= nil then
+		for i, monster in ipairs(monsters) do
+			if monster[3] > 0 then
+				local unit = spCreateUnit(monster[1], x_src + i * 200, y_src, z_src, "south", monsterTeamNumber, false)
+				spGiveOrderToUnit(unit, CMD.MOVE, {x_dest, y_dest, z_dest}, {})
+				monstersLeftInTheWave = monstersLeftInTheWave + 1
+				spSetGameRulesParam("monstersLeftInTheWave", monstersLeftInTheWave)
+				monster[3] = monster[3] - 1
+			end
+		end
+	end
+end
+
+function GameVictory()
+	spEcho("Congs. You won")
+end
+
+function StartNewRound()
+	currentRound = currentRound + 1
+	spSetGameRulesParam("currentRound", currentRound)
+	
+	currentWave = 0
+	spSetGameRulesParam("currentWave", currentWave)
+	
+	waveStarted = false
+	roundStarted = true
+	spEcho("New round started")
+end
 
 function GadgetUpdate(f)
-	if gameGoing == true then
-		if roundGoing == true then
-			if waveGoing == true then -- wave is on
-
-				local monsters = rounds[currentRound][currentWave]
-				
-				if monsters ~= nil then
-					for i, monster in ipairs(monsters) do
-						if monster[3] > 0 then
-							local unit = spCreateUnit(monster[1], x_src + i * 200, y_src, z_src, "south", monsterTeamNumber, false)
-							spGiveOrderToUnit(unit, CMD.MOVE, {x_dest, y_dest, z_dest}, {})
-							
-							monstersLeftInTheWave = monstersLeftInTheWave + 1
-							spSetGameRulesParam("monstersLeftInTheWave", monstersLeftInTheWave)
-							monster[3] = monster[3] - 1
-						end
-					end
-				end
-			else -- rest period
-				gracePeriod = 20
-				diff = spGetGameSeconds() - waveFinishedTime
-				timeToNextWave = gracePeriod - diff
-				spSetGameRulesParam("timeToNextWave", timeToNextWave)
-			
-				if (diff > gracePeriod) then
-					currentWave = currentWave + 1
-					spSetGameRulesParam("currentWave", currentWave)
-					spSetGameRulesParam("timeToNextWave", -1)
-					waveGoing = true
-					spEcho("New wave started")
-				end
+	if gameStarted == true then
+		if roundStarted == true then
+			if waveStarted == true then
+				SpawnWaveMonsters()
+			else -- new wave
+				ShowGraceForSeconds(10)
 			end
-		else
-			-- prepare
-			currentRound = currentRound + 1
-			spSetGameRulesParam("currentRound", currentRound)
-			currentWave = 0
-			spSetGameRulesParam("currentWave", currentWave)
-			waveGoing = false
-			roundGoing = true
-			spEcho("New round started")
+		else -- new round
+			StartNewRound()
 		end
 	else
-		spEcho("Congratulations. You Won.")
+		GameVictory()
 	end
+end
+
+function UpdateGameStatus()
+	waveFinishedTime = spGetGameSeconds()
+
+	-- if round is finished, move to the next round
+	if (rounds[currentRound][currentWave + 1] == nil) then
+		if	(rounds[currentRound + 1] == nil) then
+			gameStarted = false	-- win
+		end
+		roundStarted = false -- next round
+	end
+	
+	waveStarted = false -- next wave
+end
+
+function UpdateStats()
+	monstersLeftInTheWave = monstersLeftInTheWave - 1
+	monstersKilledTotal = monstersKilledTotal + 1
+	spSetGameRulesParam("monstersLeftInTheWave", monstersLeftInTheWave)
+	spSetGameRulesParam("monstersKilledTotal", monstersKilledTotal)
 end
 
 
@@ -171,13 +203,6 @@ end
 function gadget:Initialize()
 	InitRoundsAndWaves()
 	
-	currentRound = 0
-	currentWave = 0
-	monstersLeftInTheWave = 0
-	monsterTeamNumber = 0
-	monstersKilledTotal = 0
-	timeToNextWave = -1
-	
 	spSetGameRulesParam("monstersLeftInTheWave", monstersLeftInTheWave)
 	spSetGameRulesParam("monstersTeam", monsterTeamNumber)
 	spSetGameRulesParam("monstersKilledTotal", monstersKilledTotal)
@@ -186,62 +211,34 @@ function gadget:Initialize()
 	spSetGameRulesParam("timeToNextWave", timeToNextWave)
 end
 
-
-
 function gadget:GameFrame(f)
 	if (f%30 < 1) then
 		GadgetUpdate(f);
 	end
 end
 
-
 function gadget:GameStart()
 	spSendCommands("cheat")
 	spSendCommands("globallos")
-	spEcho("Spawner: Enabled cheats to get rid of Fog of War")
+	spEcho("Darius spawner: Enabled cheats to get rid of the Fog of War")
 	
 	x_src, y_src, z_src = spGetTeamStartPosition(0)
 	x_dest, y_dest, z_dest = spGetTeamStartPosition(1)
-	
-	spSetGameRulesParam("currentRound", currentRound)
-	spSetGameRulesParam("currentWave", currentWave)	
-	
-	gameGoing = true
-	roundGoing = false
-	waveFinishedTime = 0
+
+	gameStarted = true
+	roundStarted = false
 end
-
-
 
 function gadget:UnitDestroyed(unitID, unitDefID, teamID, _)
-	if unitDefID == 54 then -- start point?? gets destroyed at start
-		return
-	end
-	
 	if teamID == monsterTeamNumber then
-		monstersLeftInTheWave = monstersLeftInTheWave - 1
-		spSetGameRulesParam("monstersLeftInTheWave", monstersLeftInTheWave)
-		
-		monstersKilledTotal = monstersKilledTotal + 1
-		spSetGameRulesParam("monstersKilledTotal", monstersKilledTotal)
+		UpdateStats()
 	end
 	
-	
-	if (monstersLeftInTheWave == -1) then
-		waveFinishedTime = spGetGameSeconds()
-		waveGoing = false
-		
-		-- if round finished, move to the next round
-		if (rounds[currentRound][currentWave + 1] == nil) then
-			
-			if	(rounds[currentRound + 1] == nil) then
-				gameGoing = false
-			end
-			
-			roundGoing = false
-		end
+	if (monstersLeftInTheWave == 0) then
+		UpdateGameStatus()
 	end
-	
 end
+
+
 
 end -- end synced

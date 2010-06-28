@@ -105,12 +105,12 @@ local function CreatePanelDisplayList()
 	
 	if (nextWaveDisplay == -1 and wave > 0) then
 		fontHandler.DrawStatic(white.."Wave: "..tostring(wave), AddNewPanelRow(3))
+		fontHandler.DrawStatic(white.."Enemies left in this wave: "..tostring(monstersLeftInThisWave), AddNewPanelRow(4))
 	end
 	
-	fontHandler.DrawStatic(white.."Enemies left in this wave: "..tostring(monstersLeftInThisWave), AddNewPanelRow(4))
-	fontHandler.DrawStatic(white.."Enemies killed total: "..tostring(monstersKilledTotal), AddNewPanelRow(5))
-	
-
+	if (monstersKilledTotal > -1) then
+		fontHandler.DrawStatic(white.."Enemies killed total: "..tostring(monstersKilledTotal), AddNewPanelRow(5))
+	end
 		
 	gl.PopMatrix()
 end
@@ -144,7 +144,7 @@ local function Draw()
 		else
 			waveMessage[1] = "Time before the wave #"..(wave+1)..": "..math.floor(nextWaveDisplay).." seconds"
 		end
-	else
+	elseif (wave > 0) then
 		waveMessage = {}
 	end
 		
@@ -187,7 +187,7 @@ function widget:Initialize()
 	end)
 	
 	waveMessage = {}
-	waveMessage[1] = "Welcome to Darius Tower Defense!"
+	waveMessage[1] = "Welcome to Darius Tower Defense. Get ready."
 	
 	UpdateStats() -- get the initial stats
 end

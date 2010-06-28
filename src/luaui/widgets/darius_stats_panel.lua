@@ -147,6 +147,10 @@ local function Draw()
 	elseif (wave > 0) then
 		StatusMessage = {}
 	end
+	
+	if (gameWon == 1) then
+		StatusMessage[1] = "Congratulations! You won the game.";
+	end
 		
 	fontHandler.UseFont(waveFont)
 	for i, message in ipairs(StatusMessage) do
@@ -162,12 +166,16 @@ function GetParamFromSpawner(name)
 end
 
 -- this function calculates the actual ingame stats
-function UpdateStats()
+function UpdateStatus()
 	monstersLeftInThisWave = GetParamFromSpawner("monstersLeftInTheWave")
 	monstersKilledTotal = GetParamFromSpawner("monstersKilledTotal")
 	round = GetParamFromSpawner("currentRound")
 	wave = GetParamFromSpawner("currentWave")
 	nextWaveDisplay = GetParamFromSpawner("timeToTheNextWave")
+
+	waveCleared = GetParamFromSpawner("waveCleared")
+	roundCleared = GetParamFromSpawner("roundCleared")
+	gameWon = GetParamFromSpawner("gameWon")
 	
 	panelUpdate = true -- stats changed, panel must be updated
 end
@@ -189,7 +197,7 @@ function widget:Initialize()
 	StatusMessage = {}
 	StatusMessage[1] = "Welcome to Darius Tower Defense. Get ready."
 	
-	UpdateStats() -- get the initial stats
+	UpdateStatus() -- get the initial stats
 end
 
 function widget:Shutdown()
@@ -207,7 +215,7 @@ end
 
 function widget:GameFrame(n)
 	if (n%30 < 1) then
-		UpdateStats()
+		UpdateStatus()
 	end
 end
 

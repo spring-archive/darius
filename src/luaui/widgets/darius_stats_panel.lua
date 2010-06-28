@@ -107,8 +107,8 @@ local function CreatePanelDisplayList()
 		fontHandler.DrawStatic(white.."Wave: "..tostring(wave), AddNewPanelRow(3))
 	end
 	
-	fontHandler.DrawStatic(white.."Enemies left in this wave: "..tostring(monstersLeft), AddNewPanelRow(4))
-	fontHandler.DrawStatic(white.."Enemies killed total: "..tostring(monstersKilled), AddNewPanelRow(5))
+	fontHandler.DrawStatic(white.."Enemies left in this wave: "..tostring(monstersLeftInThisWave), AddNewPanelRow(4))
+	fontHandler.DrawStatic(white.."Enemies killed total: "..tostring(monstersKilledTotal), AddNewPanelRow(5))
 	
 
 		
@@ -133,12 +133,8 @@ local function Draw()
 		gl.CallList(dispListPanel)
 	end
 	
-	-- draw the new wave message
+	-- draw the next wave message
 	if (nextWaveDisplay > -1) then
-		fontHandler.UseFont(waveFont)
-		
-		waveMessage = {}
-
 		if (math.floor(nextWaveDisplay) == 3) then
 			waveMessage[1] = "Ready!"
 		elseif (math.floor(nextWaveDisplay) == 2) then
@@ -146,13 +142,15 @@ local function Draw()
 		elseif (math.floor(nextWaveDisplay) < 2) then
 			waveMessage[1] = "Wave #"..(wave+1).." begins!"
 		else
-			waveMessage[1] = "Time to the wave #"..(wave+1)..": "..math.floor(nextWaveDisplay).." seconds"
+			waveMessage[1] = "Time before the wave #"..(wave+1)..": "..math.floor(nextWaveDisplay).." seconds"
 		end
-	
-		for i, message in ipairs(waveMessage) do
-			fontHandler.DrawCentered(message, viewSizeX/2, viewSizeY/2)
-		end
+	else
+		waveMessage = {}
+	end
 		
+	fontHandler.UseFont(waveFont)
+	for i, message in ipairs(waveMessage) do
+		fontHandler.DrawCentered(message, viewSizeX/2, viewSizeY/2)
 	end
 end
 
@@ -165,8 +163,8 @@ end
 
 -- this function calculates the actual ingame stats
 function UpdateStats()
-	monstersLeft = GetParamFromSpawner("monstersLeftInTheWave")
-	monstersKilled = GetParamFromSpawner("monstersKilledTotal")
+	monstersLeftInThisWave = GetParamFromSpawner("monstersLeftInTheWave")
+	monstersKilledTotal = GetParamFromSpawner("monstersKilledTotal")
 	round = GetParamFromSpawner("currentRound")
 	wave = GetParamFromSpawner("currentWave")
 	nextWaveDisplay = GetParamFromSpawner("timeToNextWave")
@@ -187,6 +185,9 @@ function widget:Initialize()
 		gl.Texture(panelTexture)
 		gl.TexRect(0, 0, panelWidth, panelHeight)
 	end)
+	
+	waveMessage = {}
+	waveMessage[1] = "Welcome to Darius Tower Defense!"
 	
 	UpdateStats() -- get the initial stats
 end

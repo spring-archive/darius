@@ -49,5 +49,6 @@ skin.window = {
   DrawResizeGrip = DrawResizeGrip,
 }
 
+skin.control = skin.general
 
 return skin

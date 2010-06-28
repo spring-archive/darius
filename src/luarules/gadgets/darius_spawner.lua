@@ -97,18 +97,44 @@ end
 function InitRoundsAndWaves()
 	-- should these be loaded from a config file?
 	local wave1 = CreateWave({
-		{"chicken", 2, 2}
+		{"chicken", 2, 12}
 	})
 	
 	local wave2 = CreateWave({
-		{"chicken", 2, 2}
+		{"chicken_dodo", 2, 20}
 	})
 	
 	local wave3 = CreateWave({
-		{"chicken", 2, 2}
+		{"chicken", 2, 10},
+		{"chickena", 2, 6}
 	})
 	
-	local round1 = CreateRound({wave1, wave2})
+	local wave4 = CreateWave({
+		{"chickena", 2, 10}
+	})
+	
+	local wave5 = CreateWave({
+		{"chickenc", 2, 4}
+	})
+	
+	local wave6 = CreateWave({
+		{"chickena", 2, 2},
+		{"chickenc", 2, 2},
+		{"chicken_sporeshooter", 2, 2}
+	})
+	
+	local wave7 = CreateWave({
+		{"chicken_dodo", 2, 20},
+		{"chicken_sporeshooter", 2, 2},
+		{"chickena", 2, 2},
+		{"chickenc", 2, 2},
+	})
+	
+	local wave8 = CreateWave({
+		{"chickenq", 2, 1}
+	})
+	
+	local round1 = CreateRound({wave1, wave2, wave3, wave4, wave5, wave6, wave7, wave8})
 	rounds = {round1}
 end
 
@@ -236,6 +262,10 @@ function gadget:GameStart()
 end
 
 function gadget:UnitDestroyed(unitID, unitDefID, teamID, _)
+	if unitDefID == 54 then -- start point?? gets destroyed at start
+			return
+	end
+
 	if teamID == monsterTeamNumber then
 		UpdateStats()
 	end

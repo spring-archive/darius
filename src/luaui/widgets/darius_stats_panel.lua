@@ -51,12 +51,6 @@ local panelMarginX = 20
 local panelMarginY = 22
 local panelSpacingY = 2
 
-local round = 0
-local wave = 0
-local monstersLeft = 0
-local monstersKilled = 0
-local nextWaveDisplay = 0
-
 fontHandler.UseFont(panelFont)
 local panelFontSize = fontHandler.GetFontSize()
 
@@ -104,16 +98,20 @@ local function CreatePanelDisplayList()
 	
 	-- draw texts
 	fontHandler.DrawStatic(white.."Time survived: "..SecondsToTimestamp(spGetSeconds()), AddNewPanelRow(1))
-	fontHandler.DrawStatic(white.."Time for the next wave: "..nextWaveDisplay, AddNewPanelRow(2))
-	fontHandler.DrawStatic(white.."Enemies left in this wave: "..tostring(monstersLeft), AddNewPanelRow(3))
-	fontHandler.DrawStatic(white.."Enemies killed total: "..tostring(monstersKilled), AddNewPanelRow(4))
 	
-	fontHandler.DrawStatic(white.."Round: "..tostring(round), AddNewPanelRow(5))
-	
-	if (wave > 0) then
-		fontHandler.DrawStatic(white.."Wave: "..tostring(wave), AddNewPanelRow(6))
+	if (round > 0) then
+		fontHandler.DrawStatic(white.."Round: "..tostring(round), AddNewPanelRow(2))
 	end
+	
+	if (nextWaveDisplay == -1 and wave > 0) then
+		fontHandler.DrawStatic(white.."Wave: "..tostring(wave), AddNewPanelRow(3))
+	end
+	
+	fontHandler.DrawStatic(white.."Enemies left in this wave: "..tostring(monstersLeft), AddNewPanelRow(4))
+	fontHandler.DrawStatic(white.."Enemies killed total: "..tostring(monstersKilled), AddNewPanelRow(5))
+	
 
+		
 	gl.PopMatrix()
 end
 
@@ -136,59 +134,46 @@ local function Draw()
 	end
 	
 	-- draw the new wave message
-	if (waveMessage) then
+	if (nextWaveDisplay > 0) then
 		fontHandler.UseFont(waveFont)
 		
+		waveMessage = {}
+		waveMessage[1] = "Time to the wave #"..(wave+1)..": "..math.floor(nextWaveDisplay).." seconds"
+
+		if (nextWaveDisplay == 3) then
+			waveMessage[1] = "Ready"
+		else (nextWaveDisplay == 2) then
+			waveMessage[2] = "Set"
+		else (nextWaveDisplay == 1) then
+			waveMessage[2] = "GO!"
+		end
+	
 		for i, message in ipairs(waveMessage) do
 			fontHandler.DrawCentered(message, viewSizeX/2, viewSizeY/2)
 		end
+		
 	end
 end
 
 -- this function gets the parameter from synced code
-function GetRuleOrDefault(name, default)
+function GetParamFromSpawner(name)
 	rule = spGetGameRulesParam(name)
-	if (rule == nil) then
-		return default
-	else
-		return rule
-	end
+
+	return rule
 end
 
 -- this function calculates the actual ingame stats
 function UpdateStats()
-	monstersLeft = GetRuleOrDefault("monstersLeft", 0)
-	monstersKilled = GetRuleOrDefault("monstersKilled", 0)
-	round = GetRuleOrDefault("round", 1)
-	wave = GetRuleOrDefault("wave", 0)
-	timeToNextWave = spGetGameRulesParam("nextWave")
-	
-	if (timeToNextWave ~= nil and timeToNextWave ~= 0) then
-		local timeLeft = timeToNextWave - spGetSeconds()
-		
-		if timeLeft > 0 then
-			nextWaveDisplay = tostring(math.floor(timeLeft))
-		else
-			timeLeft = 0
-			nextWaveDisplay = 0;
-		end
-	end
-	
-	if (nextWaveDisplay == 0) then
-		waveMessage = {}
-		nextWaveNumber = wave + 1;
-		waveMessage[1] = "Wave "..tostring(nextWaveNumber).." begins!"
-	else
-		waveMessage = nil
-	end
+	monstersLeft = GetParamFromSpawner("monstersLeftInTheWave")
+	monstersKilled = GetParamFromSpawner("monstersKilledTotal")
+	round = GetParamFromSpawner("currentRound")
+	wave = GetParamFromSpawner("currentWave")
+	nextWaveDisplay = GetParamFromSpawner("timeToNextWave")
 	
 	panelUpdate = true -- stats changed, panel must be updated
 end
 
--- from synced
-function Victory()
-	spEcho("Congratulations, you win!")
-end
+
 
 --------------
 -- Call-ins --
@@ -203,8 +188,6 @@ function widget:Initialize()
 	end)
 	
 	UpdateStats() -- get the initial stats
-	
-	widgetHandler:RegisterGlobal("Victory" , Victory)
 end
 
 function widget:Shutdown()

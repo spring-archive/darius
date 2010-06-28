@@ -140,13 +140,13 @@ local function Draw()
 		waveMessage = {}
 		waveMessage[1] = "Time to the wave #"..(wave+1)..": "..math.floor(nextWaveDisplay).." seconds"
 
-		if (nextWaveDisplay == 3) then
+		--[[if (nextWaveDisplay == 3) then
 			waveMessage[1] = "Ready"
 		else (nextWaveDisplay == 2) then
 			waveMessage[2] = "Set"
 		else (nextWaveDisplay == 1) then
 			waveMessage[2] = "GO!"
-		end
+		end]]--
 	
 		for i, message in ipairs(waveMessage) do
 			fontHandler.DrawCentered(message, viewSizeX/2, viewSizeY/2)

@@ -42,9 +42,9 @@ cards = {	--should probably have their own files
 		health =   1200,
 		reloadTime = 0.5,
 		range =  50,
-		LOS = 500,
 		damage =  0,
-		weaponVelocity = 0,
+		greenballs =  0,
+		effect =  nil,
 		desc = "Creates tall stone towers with decent range and good amount of health,\n" ..
 			"but due to tall design, adds additional weapon reloading time.",
 	},
@@ -56,9 +56,9 @@ cards = {	--should probably have their own files
 		health =   -150,
 		reloadTime = 0.80,
 		range =  350,
-		LOS = 0,
 		damage =  100,
-		weaponVelocity = 900,
+		greenballs =  0,
+		effect =  nil,
 		desc = "Shoots fireballs that do good damage, but with limited range and\n" ..
 			"projectile speed. Also due to the unpredictable nature of fire,\n" .. 
 			"costs tower healthpoints.",
@@ -71,9 +71,9 @@ cards = {	--should probably have their own files
 		health = 0,
 		reloadTime = 0,
 		range =  0,
-		LOS = 0,
 		damage =  0,
-		weaponVelocity = 0,
+		greenballs =  0,
+		effect =  nil,
 		desc = "Metal material card",
 	},
 
@@ -84,9 +84,9 @@ cards = {	--should probably have their own files
 		health = 0,
 		reloadTime = 0,
 		range =  0,
-		LOS = 0,
 		damage =  0,
-		weaponVelocity = 0,
+		greenballs =  0,
+		effect =  nil,
 		desc = "Lightning material card",
 	},
 
@@ -97,9 +97,11 @@ cards = {	--should probably have their own files
 		health = 0,
 		reloadTime = 0,
 		range = 0,
-		LOS = 0,
 		damage = 0,
-		weaponVelocity = 0,
+		greenballs =  0,
+		effect =  function(pos)
+			spEcho("HELLO!")
+		end,
 		desc = "Huh?",
 	},
 }

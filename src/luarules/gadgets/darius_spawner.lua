@@ -97,52 +97,70 @@ end
 function InitRoundsAndWaves()
 	-- should these be loaded from a config file?
 	local wave1 = CreateWave({
-		{"chicken", 2, 3}
-		{"corthud", 2, 3}
-		{"armpw", 2, 3}  
+		{"chicken", 2, 3},
 	})
 	
 	local wave2 = CreateWave({
-		{"arm_venom", 2, 3}
-		{"corstorm", 2, 3}
-		{"corpyro", 2, 3}  
+		{"corthud", 2, 3},
 	})
 	
 	local wave3 = CreateWave({
-		{"armsptk", 2, 3}
-		{"chickena", 2, 3}
-		{"chicken_dodo", 2, 3}  
+		{"armpw", 2, 3}, 		  
 	})
 	
 	local wave4 = CreateWave({
-		{"chicken_leaper", 2, 3}
-		{"chicken_sporeshooter", 2, 3}
-		{"cormortgold", 2, 3}  
+		{"arm_venom", 2, 3},
 	})
 	
 	local wave5 = CreateWave({
-		{"armwar", 2, 3}
-		{"chickenc", 2, 3}
-		{"corpyro_new", 2, 3}  
+		{"corstorm", 2, 3},
 	})
 	
 	local wave6 = CreateWave({
-		{"armorco", 2, 3}
-		{"chickenq", 2, 3}
+		{"corpyro", 2, 3},  
 	})
 	
 	local wave7 = CreateWave({
-		{"chicken_dodo", 2, 20},
-		{"chicken_sporeshooter", 2, 2},
-		{"chickena", 2, 2},
-		{"chickenc", 2, 2},
+		{"armsptk", 2, 3},
 	})
 	
 	local wave8 = CreateWave({
-		{"chickenq", 2, 1}
+		{"chickena", 2, 3},
 	})
 	
-	local round1 = CreateRound({wave1, wave2, wave3, wave4, wave5, wave6, wave7, wave8})
+	local wave9 = CreateWave({
+		{"chicken_dodo", 2, 3},
+	})
+	
+	local wave10 = CreateWave({
+		{"chicken_leaper", 2, 3},
+	})
+	
+	local wave11 = CreateWave({
+		{"chicken_sporeshooter", 2, 3},
+	})
+	
+	local wave12 = CreateWave({
+		{"cormortgold", 2, 3},
+	})
+	
+	local wave13 = CreateWave({
+		{"armwar", 2, 3},
+	})
+	
+	local wave14 = CreateWave({
+		{"chickenc", 2, 3},
+	})
+	
+	local wave15 = CreateWave({
+		{"armorco", 2, 3},
+	})
+	
+	local wave16 = CreateWave({
+		{"chickenq", 2, 3},
+	})
+	
+	local round1 = CreateRound({wave1, wave2, wave3, wave4, wave5, wave6, wave7, wave8, wave9, wave10, wave11, wave12, wave13, wave14, wave15, wave16 })
 	rounds = {round1}
 end
 

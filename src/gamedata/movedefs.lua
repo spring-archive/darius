@@ -14,7 +14,7 @@ local moveDefs = {
 		footprintx = 1,
 		footprintz = 1,
 		maxwaterdepth = 15,
-		maxslope = 36,
+		maxslope = 26,
 		crushstrength = 5,
 	},
 
@@ -22,7 +22,7 @@ local moveDefs = {
 		footprintx = 2,
 		footprintz = 2,
 		maxwaterdepth = 22,
-		maxslope = 36,
+		maxslope = 26,
 		crushstrength = 50,
 	},
 
@@ -30,7 +30,7 @@ local moveDefs = {
 		footprintx = 4,
 		footprintz = 4,
 		maxwaterdepth = 22,
-		maxslope = 36,
+		maxslope = 26,
 		crushstrength = 500,
 	},
 	
@@ -39,7 +39,7 @@ local moveDefs = {
 		footprintz = 2,
 		maxwaterdepth = 5000,
 		depthmod = 0,
-		maxslope = 36,
+		maxslope = 26,
 		crushstrength = 50,
 	},
 	
@@ -48,7 +48,7 @@ local moveDefs = {
 		footprintz = 6,
 		maxwaterdepth = 5000,
 		depthmod = 0,
-		maxslope = 36,
+		maxslope = 26,
 		crushstrength = 5000,
 	},
 	
@@ -56,7 +56,7 @@ local moveDefs = {
 		footprintx = 1,
 		footprintz = 1,
 		maxwaterdepth = 15,
-		maxslope = 72,
+		maxslope = 26,
 		crushstrength = 5,
 	},
 
@@ -64,7 +64,7 @@ local moveDefs = {
 		footprintx = 3,
 		footprintz = 3,
 		maxwaterdepth = 22,
-		maxslope = 72,
+		maxslope = 26,
 		crushstrength = 150,
 	},
 	
@@ -96,7 +96,7 @@ local moveDefs = {
 		footprintx = 3,
 		footprintz = 3,
 		maxslope = 36,
-		slopemod = 36.7,
+		slopemod = 26,
 		crushstrength = 5,
 	},
 	

@@ -354,16 +354,19 @@ end
 --------------------------------------------------------------------------------
 
 --// armmex overdrive FX
+--[[
 local armmexDefID = UnitDefNames["armmex"].id
 local armmexes    = {}
 local armmexesFxIDs = {}
 local armmexFX    = armmexJet
+--]]
 
 --// cormex overdrive FX
+--[[
 local cormexDefID = UnitDefNames["cormex"].id
 local cormexes    = {}
 local cormexFX    = cormexGlow
-
+--]]
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 

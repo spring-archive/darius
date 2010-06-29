@@ -81,7 +81,7 @@ unitDef = {
       craterMult              = 2,
 
       damage                  = {
-        default = 15,
+        default = 300,
       },
 
       duration                = 0.02,
@@ -97,7 +97,7 @@ unitDef = {
       lodDistance             = 10000,
       noSelfDamage            = true,
       range                   = 430,
-      reloadtime              = 0.4,
+      reloadtime              = 0.2,
       renderType              = 0,
       rgbColor                = [[1 0 0]],
       soundHit                = [[laserhit]],

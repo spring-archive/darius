@@ -97,30 +97,38 @@ end
 function InitRoundsAndWaves()
 	-- should these be loaded from a config file?
 	local wave1 = CreateWave({
-		{"chicken", 2, 12}
+		{"chicken", 2, 3}
+		{"corthud", 2, 3}
+		{"armpw", 2, 3}  
 	})
 	
 	local wave2 = CreateWave({
-		{"chicken_dodo", 2, 20}
+		{"arm_venom", 2, 3}
+		{"corstorm", 2, 3}
+		{"corpyro", 2, 3}  
 	})
 	
 	local wave3 = CreateWave({
-		{"chicken", 2, 10},
-		{"chickena", 2, 6}
+		{"armsptk", 2, 3}
+		{"chickena", 2, 3}
+		{"chicken_dodo", 2, 3}  
 	})
 	
 	local wave4 = CreateWave({
-		{"chickena", 2, 10}
+		{"chicken_leaper", 2, 3}
+		{"chicken_sporeshooter", 2, 3}
+		{"cormortgold", 2, 3}  
 	})
 	
 	local wave5 = CreateWave({
-		{"chickenc", 2, 4}
+		{"armwar", 2, 3}
+		{"chickenc", 2, 3}
+		{"corpyro_new", 2, 3}  
 	})
 	
 	local wave6 = CreateWave({
-		{"chickena", 2, 2},
-		{"chickenc", 2, 2},
-		{"chicken_sporeshooter", 2, 2}
+		{"armorco", 2, 3}
+		{"chickenq", 2, 3}
 	})
 	
 	local wave7 = CreateWave({

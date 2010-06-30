@@ -105,7 +105,7 @@ unitDef = {
 
     DEAD  = {
       description      = [[Wreckage - Golden Morty]],
-      blocking         = true,
+      blocking         = false,
       category         = [[corpses]],
       damage           = 1300,
       energy           = 0,

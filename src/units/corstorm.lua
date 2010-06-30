@@ -123,7 +123,7 @@ unitDef = {
 
     DEAD  = {
       description      = [[Wreckage - Rogue]],
-      blocking         = true,
+      blocking         = false,
       category         = [[corpses]],
       damage           = 1140,
       energy           = 0,

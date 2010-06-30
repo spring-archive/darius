@@ -116,7 +116,7 @@ unitDef = {
   
     DEAD  = {
       description      = [[Wreckage - Detriment]],
-      blocking         = true,
+      blocking         = false,
       category         = [[arm_corpses]],
       damage           = 171600,
       featureDead      = [[DEAD2]],

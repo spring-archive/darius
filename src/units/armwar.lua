@@ -115,7 +115,7 @@ unitDef = {
 
     DEAD  = {
       description      = [[Wreckage - Warrior]],
-      blocking         = true,
+      blocking         = false,
       category         = [[corpses]],
       damage           = 1760,
       energy           = 0,

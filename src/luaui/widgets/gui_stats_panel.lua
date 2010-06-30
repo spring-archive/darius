@@ -6,7 +6,7 @@ function widget:GetInfo()
 		date      = "July 1, 2010",
 		license   = "GNU GPL, v2 or later",
 		layer     = 100,
-		enabled   = true
+		enabled   = true -- enabled by default
 	}
 end
 
@@ -193,6 +193,12 @@ function widget:Initialize()
 end
 
 
+
+function widget:Update()
+	UpdateStats()
+end
+
+
 -- loads the ui settings
 function widget:GetConfigData()
 	-- only get settings if the window has been initialized
@@ -212,11 +218,6 @@ function widget:SetConfigData(data)
 	if (data and type(data) == 'table') then
 		settings = data
 	end
-end
-
-
-function widget:Update()
-	UpdateStats()
 end
 
 

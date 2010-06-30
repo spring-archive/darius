@@ -31,14 +31,14 @@ include("Configs/lupsFXs.lua")
 
 local function MergeTable(table1,table2)
   local result = {}
-  for i,v in pairs(table2) do 
+  for i,v in pairs(table2) do
     if (type(v)=='table') then
       result[i] = MergeTable(v,{})
     else
       result[i] = v
     end
   end
-  for i,v in pairs(table1) do 
+  for i,v in pairs(table1) do
     if (result[i]==nil) then
       if (type(v)=='table') then
         if (type(result[i])~='table') then result[i] = {} end
@@ -132,7 +132,7 @@ AddFX("corestor", {
 AddFX("armestor", {
     {class='GroundFlash',options=groundFlashArmestor},
   })
-  
+
 --// PYLONS // ----------------------------------
 AddFX("mexpylon", {
     {class='GroundFlash',options=groundFlashCorestor},
@@ -254,14 +254,14 @@ AddFX("armcsa", {
 
   AddFX("bladew", {
     {class='Ribbon',options={width=1, size=5, piece="ljet"}},
-    {class='Ribbon',options={width=1, size=5, piece="rjet"}},	
+    {class='Ribbon',options={width=1, size=5, piece="rjet"}},
 	{class='AirJet',options={color={0.1,0.4,0.6}, width=3, length=14, piece="ljet", onActive=true, emitVector = {0, 1, 0}}},
 	{class='AirJet',options={color={0.1,0.4,0.6}, width=3, length=14, piece="rjet", onActive=true, emitVector = {0, 1, 0}}},
   })
 
 AddFX("armkam", {
     {class='Ribbon',options={width=1, size=10, piece="lfx"}},
-    {class='Ribbon',options={width=1, size=10, piece="rfx"}},	
+    {class='Ribbon',options={width=1, size=10, piece="rfx"}},
 	{class='AirJet',options={color={0.1,0.4,0.6}, width=4, length=25, piece="lfx", onActive=true, emitVector = {0, 0, 1}}},
 	{class='AirJet',options={color={0.1,0.4,0.6}, width=4, length=25, piece="rfx", onActive=true, emitVector = {0, 0, 1}}},
   })
@@ -269,7 +269,7 @@ AddFX("armpnix", {
     {class='AirJet',options={color={0.1,0.4,0.6}, width=3.5, length=25, piece="exhaustl", onActive=true}},
     {class='AirJet',options={color={0.1,0.4,0.6}, width=3.5, length=25, piece="exhaustr", onActive=true}},
     {class='Ribbon',options={width=1, size=10, piece="wingtipl"}},
-    {class='Ribbon',options={width=1, size=10, piece="wingtipr"}},	
+    {class='Ribbon',options={width=1, size=10, piece="wingtipr"}},
   })
 AddFX("armthund", {
     {class='AirJet',options={color={0.1,0.4,0.6}, width=3.5, length=15, piece="nozzle1", onActive=true}},
@@ -354,7 +354,7 @@ end
 --------------------------------------------------------------------------------
 
 --// armmex overdrive FX
---[[
+---[[ THIS BLOCK WAS ORIGINALLY DISABLED
 local armmexDefID = UnitDefNames["armmex"].id
 local armmexes    = {}
 local armmexesFxIDs = {}
@@ -362,7 +362,7 @@ local armmexFX    = armmexJet
 --]]
 
 --// cormex overdrive FX
---[[
+---[[ THIS BLOCK WAS ORIGINALLY DISABLED
 local cormexDefID = UnitDefNames["cormex"].id
 local cormexes    = {}
 local cormexFX    = cormexGlow
@@ -402,15 +402,15 @@ local function ClearFx(unitID, fxIDtoDel)
   if (particleIDs[unitID]) then
 	local newTable = {}
 	for _,fxID in ipairs(particleIDs[unitID]) do
-		if fxID == fxIDtoDel then 
+		if fxID == fxIDtoDel then
 			Lups.RemoveParticles(fxID)
-		else 
+		else
 			newTable[#newTable+1] = fxID
 		end
     end
-	if #newTable == 0 then 
+	if #newTable == 0 then
 		particleIDs[unitID] = nil
-	else 
+	else
 		particleIDs[unitID] = newTable
 	end
   end
@@ -434,7 +434,7 @@ local function UnitFinished(_,unitID,unitDefID)
     armmexes[unitID] = 0
     armmexFX.unit    = unitID
     particleIDs[unitID] = {}
-    
+
 	local fxID = LupsAddFX("airjet",armmexFX)
 	armmexesFxIDs[unitID] = fxID
 	AddFxs( unitID, fxID )
@@ -538,11 +538,11 @@ local function GameFrame(_,n)
         cur_strength = strength + ((cur_strength>strength and 1) or -1)*0.3
 
         ClearFx(unitID, armmexesFxIDs[unitID])
-		
+
         armmexFX.unit   = unitID
         armmexFX.color  = blendColor(color1,color2, (cur_strength-1)*0.5)
         armmexFX.length = blend(140,80, (cur_strength-1)*0.75)
-        
+
 		local fxID = LupsAddFX("airjet",armmexFX)
 		armmexesFxIDs[unitID] = fxID
 		AddFxs( unitID, fxID )

@@ -21,7 +21,7 @@ skin.window = {
 
   --In the following order: left, top, right, bottom
 
-  tiles = {25, 25, 25, 25},-- Affects on how the edges of the window will be drawn
+  tiles = {60, 60, 60, 60},-- Affects on how the edges of the window will be drawn
 
   padding = {15, 13, 10, 10},-- The empty space between the window edge and the elements inside
 

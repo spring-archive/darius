@@ -355,7 +355,7 @@ end
 
 --// armmex overdrive FX
 ---[[ THIS BLOCK WAS ORIGINALLY DISABLED
-local armmexDefID = UnitDefNames["armmex"].id
+local armmexDefID = 0 --UnitDefNames["armmex"].id
 local armmexes    = {}
 local armmexesFxIDs = {}
 local armmexFX    = armmexJet
@@ -363,7 +363,7 @@ local armmexFX    = armmexJet
 
 --// cormex overdrive FX
 ---[[ THIS BLOCK WAS ORIGINALLY DISABLED
-local cormexDefID = UnitDefNames["cormex"].id
+local cormexDefID = 0 --UnitDefNames["cormex"].id
 local cormexes    = {}
 local cormexFX    = cormexGlow
 --]]

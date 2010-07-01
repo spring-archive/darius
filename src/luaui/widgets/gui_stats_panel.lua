@@ -37,11 +37,11 @@ local color    = confdata.color
 -- Local Vars --
 ----------------
 
--- the status panel ui
-local window_stats
+-- the status panel UI element
+local windowStats
 
 -- settings of the status panel
-local settings = {
+local storedSettings = {
 	pos_x,
 	pos_y,
 	width,
@@ -50,11 +50,11 @@ local settings = {
 
 -- in-game stats
 local gamestats = {
-	gametime,
-	curroundnum,
-	curwavenum,
-	enemiesleftinwave,
-	enemieskilledtotal
+	timeElapsed,
+	curRoundNum,
+	curWaveNum,
+	enemiesLeftInTheWave,
+	enemiesKilledTotal
 }
 
 
@@ -85,77 +85,78 @@ end
 
 -- This function gets the stats from the backend
 local function GetStatsFromBackend()
-	gamestats.curroundnum = GetParamFromSpawner("currentRound")
-	gamestats.curwavenum = GetParamFromSpawner("currentWave")
-	gamestats.enemiesleftinwave = GetParamFromSpawner("monstersLeftInTheWave")
-	gamestats.enemieskilledtotal = GetParamFromSpawner("monstersKilledTotal")
+	gamestats.curRoundNum = GetParamFromSpawner("currentRound")
+	gamestats.curWaveNum = GetParamFromSpawner("currentWave")
+	gamestats.enemiesLeftInTheWave = GetParamFromSpawner("monstersLeftInTheWave")
+	gamestats.enemiesKilledTotal = GetParamFromSpawner("monstersKilledTotal")
 end
 
 
 -- This function updates the stats-labels in the panel
 local function UpdateStats()
-	gamestats.gametime = SecondsToHHMMSS(spGetSeconds())
+	gamestats.timeElapsed = SecondsToHHMMSS(spGetSeconds())
 	GetStatsFromBackend()
 
 	if lbl_time then
-		lbl_time:SetCaption(gamestats.gametime)
+		lbl_time:SetCaption(gamestats.timeElapsed)
 	end
 
 	if lbl_roundnum then
-		lbl_roundnum:SetCaption(gamestats.curroundnum)
+		lbl_roundnum:SetCaption(gamestats.curRoundNum)
 	end
 
 	if lbl_wavenum then
-		lbl_wavenum:SetCaption(gamestats.curwavenum)
+		lbl_wavenum:SetCaption(gamestats.curWaveNum)
 	end
 
 	if lbl_enemiesleft then
-		lbl_enemiesleft:SetCaption(gamestats.enemiesleftinwave)
+		lbl_enemiesleft:SetCaption(gamestats.enemiesLeftInTheWave)
 	end
 
 	if lbl_enemieskilled then
-		lbl_enemieskilled:SetCaption(gamestats.enemieskilledtotal)
+		lbl_enemieskilled:SetCaption(gamestats.enemiesKilledTotal)
 	end
 end
 
 
--- This function creates and draws the actual UI-element
+-- This function creates and draws the actual UI element
 local function CreatePanel()
 
-	-- if window hasn't been initialized, quit immediately
-	if window_stats then
-		window_stats:Dispose()
-		window_stats = nil
+	-- if window hasn't been initialized, free the resources associated
+	if windowStats then
+		windowStats:Dispose()
+		windowStats = nil
 	end
 
 	-- position x of the stats in the panel
 	local label_x_offset = 180
 
 	-- labels which store dynamic data
-	lbl_time = Label:New          { textColor = color.sub_fg, y=0,  x=label_x_offset }
-	lbl_roundnum = Label:New      { textColor = color.sub_fg, y=15, x=label_x_offset }
-	lbl_wavenum = Label:New       { textColor = color.sub_fg, y=30, x=label_x_offset }
-	lbl_enemiesleft = Label:New   { textColor = color.sub_fg, y=45, x=label_x_offset }
-	lbl_enemieskilled = Label:New { textColor = color.sub_fg, y=60, x=label_x_offset }
+	lbl_time = Label:New          { textColor = color.sub_fg, x=label_x_offset, y=0 }
+	lbl_roundnum = Label:New      { textColor = color.sub_fg, x=label_x_offset, y=15 }
+	lbl_wavenum = Label:New       { textColor = color.sub_fg, x=label_x_offset, y=30 }
+	lbl_enemiesleft = Label:New   { textColor = color.sub_fg, x=label_x_offset, y=45 }
+	lbl_enemieskilled = Label:New { textColor = color.sub_fg, x=label_x_offset, y=60 }
 
 	-- the ui
-	window_stats = Window:New {
+	windowStats = Window:New {
 		name = 'stats_panel',
-		x = settings.pos_x or 10,
-		y = settings.pos_y or 10,
-		clientWidth = settings.width or 280,
-		clientHeight = settings.height or 90,
+		x = storedSettings.pos_x or 10,
+		y = storedSettings.pos_y or 10,
+		clientWidth = storedSettings.width or 280,
+		clientHeight = storedSettings.height or 90,
 		dockable = true,
 		draggable = true,
 		resizable = true,
-		backgroundColor = color.main_bg,
 		parent = screen0,
 		children = {
+			-- static labels
 			Label:New { caption = 'Time survived:',             textColor = color.sub_fg, y=0  },
 			Label:New { caption = 'Round:',                     textColor = color.sub_fg, y=15 },
 			Label:New { caption = 'Wave:',                      textColor = color.sub_fg, y=30 },
 			Label:New { caption = 'Enemies left in this wave:', textColor = color.sub_fg, y=45 },
 			Label:New { caption = 'Enemies killed total:',      textColor = color.sub_fg, y=60 },
+			-- dynamic labels
 			lbl_time,
 			lbl_roundnum,
 			lbl_wavenum,
@@ -181,7 +182,7 @@ function widget:Initialize()
 		return
 	end
 
-	-- chili stuff
+	-- the chili components needed
 	Chili = WG.Chili
 	Window = Chili.Window
 	Label = Chili.Label
@@ -201,22 +202,22 @@ end
 
 -- loads the ui settings
 function widget:GetConfigData()
-	-- only get settings if the window has been initialized
-	if (window_stats) then
-		settings.pos_x = window_stats.x
-		settings.pos_y = window_stats.y
-		settings.width = window_stats.width
-		settings.height = window_stats.height
+	-- only get the stored settings if the window has been initialized
+	if (windowStats) then
+		storedSettings.pos_x = windowStats.x
+		storedSettings.pos_y = windowStats.y
+		storedSettings.width = windowStats.width
+		storedSettings.height = windowStats.height
 	end
 
-	return settings
+	return storedSettings
 end
 
 
 -- stores the ui settings to [somewhere yet unknown place] 
 function widget:SetConfigData(data)
 	if (data and type(data) == 'table') then
-		settings = data
+		storedSettings = data -- store the settings
 	end
 end
 
@@ -224,9 +225,10 @@ end
 function widget:Shutdown()
 	spEcho("Darius in-game stats panel disabled")
 
-	if (window_stats) then
-		screen0:RemoveChild(window_stats)
-		window_stats:Dispose()
-		window_stats = nil
+	-- delete the window
+	if (windowStats) then
+		screen0:RemoveChild(windowStats) -- remove window
+		windowStats:Dispose() -- free the resources
+		windowStats = nil
 	end
 end

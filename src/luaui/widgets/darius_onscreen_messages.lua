@@ -30,7 +30,7 @@ local fontHandler = loadstring(VFS.LoadFile(LUAUI_DIRNAME.."modfonts.lua", VFS.Z
 local messageFont = LUAUI_DIRNAME.."fonts/freesansbold_16"
 
 -- array to store the messages to display
-local StatusMessages = {}
+local statusMessages = {}
 
 -- size of the window (used for centering the text)
 local viewSizeX, viewSizeY = gl.GetViewSizes()
@@ -45,29 +45,29 @@ local viewSizeX, viewSizeY = gl.GetViewSizes()
 local function DrawMessages()
 	-- the next wave messages
 	if (timeToNextWave > -1) then
-		if (math.floor(timeToNextWave) < 1) then StatusMessages = {} -- clear
-		elseif (math.floor(timeToNextWave) == 3) then StatusMessages[1] = "Ready!"
-		elseif (math.floor(timeToNextWave) == 2) then StatusMessages[1] = "Set!"
-		elseif (math.floor(timeToNextWave) < 2) then StatusMessages[1] = "Wave #"..numOfNextWave.." begins!"
+		if (math.floor(timeToNextWave) < 1) then statusMessages = {} -- clear
+		elseif (math.floor(timeToNextWave) == 3) then statusMessages[1] = "Ready!"
+		elseif (math.floor(timeToNextWave) == 2) then statusMessages[1] = "Set!"
+		elseif (math.floor(timeToNextWave) < 2) then statusMessages[1] = "Wave #"..numOfNextWave.." begins!"
 		else
-			StatusMessages[1] = "Time before the wave #"..numOfNextWave..": "..math.floor(timeToNextWave).." seconds"
+			statusMessages[1] = "Time before the wave #"..numOfNextWave..": "..math.floor(timeToNextWave).." seconds"
 		end
 	end
 
 	-- the game finished message
 	if (isGameFinished == 1) then
-		StatusMessages[1] = "Congratulations! You won the game.";
+		statusMessages[1] = "Congratulations! You won the game.";
 	end
 
 	-- draws the actual texts set above
-	for i, message in ipairs(StatusMessages) do
+	for i, message in ipairs(statusMessages) do
 		fontHandler.DrawCentered("\255\255\255\255"..message, viewSizeX/2, viewSizeY/2)
 	end
 end
 
 
 -- gets the game status from the spawner (backend)
-function UpdateStatus()
+function GetGameStatusFromBackend()
 	numOfNextWave = spGetGameRulesParam("currentWave") + 1
 	timeToNextWave = spGetGameRulesParam("timeToTheNextWave")
 	isGameFinished = spGetGameRulesParam("gameWon")
@@ -86,28 +86,28 @@ function widget:Initialize()
 	fontHandler.UseFont(messageFont)
 	
 	-- the initial welcome message
-	StatusMessages[1] = "Welcome to Darius Tower Defense. Game starts in a few seconds."
+	statusMessages[1] = "Welcome to Darius Tower Defense! Game starts in a few seconds."
 end
 
 
 function widget:Update()
-	UpdateStatus()
+	GetGameStatusFromBackend()
 end
 
 
 function widget:DrawScreen()
-	DrawMessages()
+	DrawMessages() -- do the opengl stuff there
 end
 
 
 -- runs when the window is resized
 function widget:ViewResize(vsx, vsy)
-	viewSizeX, viewSizeY = vsx, vsy
+   -- store the new size using parameters, no need to call the GetViewSizes function
+	viewSizeX, viewSizeY = vsx, vsy	
 end
 
 
 function widget:Shutdown()
 	spEcho("Darius on-screen messages disabled")
-	
 	fontHandler.FreeFont(messageFont)
 end

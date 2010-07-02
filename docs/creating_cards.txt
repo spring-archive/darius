@@ -32,9 +32,12 @@ Card data skeleton:
 	--e.g. Weapon damage 100 = Towers total damage 100
 
 	greenballs =  0,
-	--How many greenballs it takes to use a card, min value is 0.
+	--How many greenballs it takes to use a card. The property gets negative values, max value is 0. The towers total 
+	--greenball cost will be the sum of the used Material and Weapon cards greenball cost
+	--e.g. Weapon greenball -2 + Material greenball 0 = Towers total greenball cost -2
 
 	effect =  nil,
+	--Not finalized yet can still change.
 	--The effect value in a Special card is a function that performs the cards action. Material and Weapon cards effect is nil
 	--e.g. effect = function(pos)
 	--		spEcho("HELLO!")

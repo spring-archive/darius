@@ -44,8 +44,8 @@ end
 
 
 local function LoadCardFromFile(cardName)
-	cardName = string.lower(cardName) -- filenames are in lowercase
-	cardName = string.gsub(cardName, " ", "_") -- filenames have underscores instead of spaces
+	cardName = string.lower(cardName) -- filename is in lowercase
+	cardName = string.gsub(cardName, " ", "_") -- filename has underscores instead of spaces
 	
 	local cardData = {}
 	cardData = VFS.Include("LuaRules/cards/"..cardName..".lua")

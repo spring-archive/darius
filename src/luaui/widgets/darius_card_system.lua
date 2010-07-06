@@ -6,7 +6,7 @@ function widget:GetInfo()
 		date      = "June 2010",
 		license   = "GNU GPL, v2 or later",
 		layer     = 0,
-		enabled   = true,  --  loaded by default?
+		enabled   = true,  --  loaded by default
 		api       = true, --I think this forces it to be loaded before other widgets
 	}
 end
@@ -22,6 +22,20 @@ local requiredBallsToDraw = 5
 local spEcho = Spring.Echo
 local spSendLuaRulesMsg = Spring.SendLuaRulesMsg
 
+-- Chili Stuff
+local VFSMODE      = VFS.RAW_FIRST
+local file = LUAUI_DIRNAME .. "Configs/crudemenu_conf.lua"
+local confdata = VFS.Include(file, nil, VFSMODE)
+local color = confdata.color
+
+WhiteStr   = "\255\255\255\255"
+GreyStr    = "\255\210\210\210"
+GreenStr   = "\255\092\255\092"
+YellowStr  = "\255\255\255\152"
+OrangeStr  = "\255\255\190\128"
+RedStr     = "\255\255\170\170"
+
+
 ----------------
 -- Local Vars --
 ----------------
@@ -36,6 +50,16 @@ local selectedWeapon = {}
 local selectedMaterial = {}
 local selectedSpecial = {}
 local cards = {} -- The in-game card pool (not the player's full card collection)
+
+local function getCardBackground(type)
+	if (type == "Material") then
+		return 'LuaUI/images/stone.png' --Awaiting task 5#10
+	elseif (type == "Weapon") then
+		return 'LuaUI/images/fire.png' --Awaiting task 5#12
+	elseif (type == "Special") then
+		return nil --Awaiting task 30#5
+	end
+end
 
 ----------------------
 -- Member Functions --
@@ -90,6 +114,100 @@ function Darius:Draw(deck)
 	--spEcho("Draw Card:" .. deck)
 end
 
+function Darius:GetCardButton(card, width, height)
+	-- setup Chili
+	if not (Button) then Button = WG.Chili.Button end
+	if not (Label) then Label = WG.Chili.Label end
+	if not (Image) then Image = WG.Chili.Image end
+
+	local lbl_name = Label:New{valign = "top"}
+	local lbl_greenballs = Label:New{valign = "top", align = "right"}
+	local img_center = Image:New{keepAspect = false}
+	local img_background= Image:New{keepAspect = false}
+
+	lbl_name:SetCaption("")
+	lbl_greenballs:SetCaption("")
+
+	local button = Button:New{
+		name = "",
+		caption = "",
+		textColor = color.game_fg,
+		card = card,
+		children = {
+			lbl_name,
+			lbl_greenballs,
+			img_center,
+			img_background,
+		},
+		image = image,
+		backImage = backImage,
+
+		UpdateCard = function(button, width, height)
+			local card = button.card
+			
+			button.width = width
+			button.height = height
+
+			width = width - 10
+			height = height - 10
+
+			--Create tooltip
+			local name       = card.name       or "Unknown"
+			local type       = card.type       or "Unknown"
+			local health     = card.health     or 0
+			local reloadTime = card.reloadTime or 0
+			local range      = card.range      or 0
+			local damage     = card.damage     or 0
+			local desc = card.desc or ""
+			local tooltip = WhiteStr  .. "Name: "        .. name         .. "\n" ..
+					    GreyStr   .. "Type: "        .. type         .. "\n" ..
+					    GreenStr  .. "Health: "      .. health       .. "\n" ..
+					    YellowStr .. "Reload Time: " .. reloadTime   .. "s\n" ..
+					    OrangeStr .. "Range: "       .. range        .. "\n" ..
+					    RedStr    .. "Damage: "      .. damage       .. "\n" ..
+					    WhiteStr  .. "Desc:\n"       .. desc
+			button.tooltip = tooltip
+	
+			--Determine highlighting
+			local background = color.game_bg
+			if (card == selectedSpecial) then
+				background = color.blue
+			elseif (card == selectedMaterial or card == selectedWeapon) then
+				background = color.game_fg
+			end
+			button.backgroundColor = background
+			
+			-- Visual formatting
+			lbl_name:SetCaption(card.name)
+			lbl_name.x = 5
+			lbl_name.y = 5
+			lbl_name:Invalidate()
+
+			lbl_greenballs:SetCaption(card.greenballs)
+			lbl_greenballs.x = width - 15
+			lbl_greenballs.y = 5
+			lbl_greenballs:Invalidate()
+
+			img_center.file = card.img
+			img_center.x = width/6
+			img_center.y = height/10
+			img_center.width = width*2/3
+			img_center.height = height*2/5
+			img_center:Invalidate()
+
+			img_background.file = getCardBackground(card.type)
+			img_background.width = width
+			img_background.height = height
+			img_background:Invalidate()
+
+			button:Invalidate()
+		end,
+	}
+
+	button:UpdateCard(width, height)
+	return button
+end
+
 -----------------------------
 -- Unsynced Vars Receivers --
 -----------------------------
@@ -111,7 +229,7 @@ local function SetHand(handStr)
 	hand = new_hand
 end
 
-local function UpdateCard(id, name, type, img, health, reloadTime, range, sightDistance, damage, weaponVelocity, desc)
+local function UpdateCard(id, name, type, img, health, reloadTime, range, damage, greenballs, desc)
 	id = 0 + id
 	if not (cards[id]) then
 		cards[id] = {}
@@ -126,9 +244,8 @@ local function UpdateCard(id, name, type, img, health, reloadTime, range, sightD
 	card.health = health
 	card.reloadTime = reloadTime
 	card.range = range
-	card.LOS = LOS
 	card.damage = damage
-	card.weaponVelocity = weaponVelocity
+	card.greenballs = greenballs
 	card.desc = desc
 
 	--for v,k in pairs(card) do spEcho(v .. ": " .. k) end

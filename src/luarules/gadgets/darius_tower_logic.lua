@@ -6,7 +6,7 @@ function gadget:GetInfo()
 		date      = "June 7, 2010",
 		license   = "GNU GPL, v2 or later",
 		layer     = 0,
-		enabled   = true  --  loaded by default?
+		enabled   = true  --  loaded by default
 	}
 end
 
@@ -14,6 +14,29 @@ end
 -- Speed Up --
 --------------
 local spEcho = Spring.Echo
+
+---------------------
+-- Local Functions --
+---------------------
+local unitIDs = {}
+
+local function getUnitDef(name)
+	if (unitIDs[name]) then return unitIDs[name] end
+	for id, unit in pairs(UnitDefs) do
+		if (unit.name == name) then
+			unitIDs[name] = id
+			return id
+		end
+	end
+	return nil
+end
+
+local function getTowerID(material, weapon)
+	if ((material.type ~= "Material") or (weapon.type ~= "Weapon")) then return nil end
+	local id = getUnitDef(material.name .. weapon.name)
+	if (id) then return id end
+	return getUnitDef("corllt") -- Default tower
+end
 
 ------------------------------------------------
 if (gadgetHandler:IsSyncedCode()) then -- synced
@@ -35,12 +58,7 @@ function gadget:GameFrame(f)
 	local weapon = Darius:GetSelectedWeapon()
 	
 	if (material and weapon) then
-	--just a test, will probably be done in smarter way
-		if (material.name == "Stone"  and weapon.name == "Fire") then
-			--number is the unit number in alphabetic order ie.more units bigger number
-			Darius:SetTower(47) --"corrl"
-		else Darius:SetTower(51) --"corllt"
-		end
+		Darius:SetTower(getTowerID(material, weapon))
 	else
 		Darius:SetTower(nil)
 	end

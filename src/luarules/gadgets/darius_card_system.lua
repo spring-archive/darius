@@ -102,9 +102,8 @@ local function UnsyncCard(card)
 		card.health,
 		card.reloadTime,
 		card.range,
-		card.LOS,
 		card.damage,
-		card.weaponVelocity,
+		card.greenballs,
 		card.desc
 	)
 end

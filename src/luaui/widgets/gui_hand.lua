@@ -16,19 +16,6 @@ end
 --------------
 local spEcho = Spring.Echo
 
--- Chili Stuff
-local VFSMODE      = VFS.RAW_FIRST
-local file = LUAUI_DIRNAME .. "Configs/crudemenu_conf.lua"
-local confdata = VFS.Include(file, nil, VFSMODE)
-local color = confdata.color
-
-WhiteStr   = "\255\255\255\255"
-GreyStr    = "\255\210\210\210"
-GreenStr   = "\255\092\255\092"
-YellowStr  = "\255\255\255\152"
-OrangeStr  = "\255\255\190\128"
-RedStr     = "\255\255\170\170"
-
 --------------
 -- settings --
 --------------
@@ -49,9 +36,6 @@ local stack_hand
 
 -- The cards in the player's hand
 local cards_in_hand = {}
-local selectedMaterial = {}
-local selectedWeapon = {}
-local selectedSpecial = {}
 
 ---------------------
 -- local functions --
@@ -60,8 +44,7 @@ local function AdjustWindow()
 	if not (window_hand) then return end
 	stack_hand.width = window_hand.width
 	stack_hand.height = window_hand.height
-	local max_width = window_hand.width/#cards_in_hand
-	max_width = max_width - 30
+	local max_width = (window_hand.width - 60)/#cards_in_hand
 	local max_height = window_hand.height - 60
 	settings.cardsize_y = max_height
 	settings.cardsize_x = settings.cardsize_y * 0.6
@@ -85,7 +68,7 @@ local function MakeHandMenu()
 	local hand_width = settings.width or settings.cardsize_x * 5
 	local hand_height = settings.height or (settings.cardsize_y + 50)
 	local hand_pos_x = settings.pos_x or 0.5 * vsx - hand_width * 0.5
-	local hand_pos_y = settings.pos_y or 0.05 * vsy - hand_height * 0.5
+	local hand_pos_y = settings.pos_y or 0.05 * vsy + hand_height * 0.5
 
 	stack_hand = StackPanel:New{
 		name='stack_hand',
@@ -109,7 +92,6 @@ local function MakeHandMenu()
 		clientHeight = hand_height,
 		draggable = true,
 		resizable = true,
-		backgroundColor = color.main_bg,
 		children = {
 			stack_hand,
 		}
@@ -125,24 +107,9 @@ local function GetHand()
 	return Darius:GetHand()
 end
 
-local function GetSelectedMaterial()
-	return Darius:GetSelectedMaterial()
-end
-
-local function GetSelectedWeapon()
-	return Darius:GetSelectedWeapon()
-end
-
-local function GetSelectedSpecial()
-	return Darius:GetSelectedSpecial()
-end
-
 local function UpdateHand()
 	--Update the local variables
 	cards_in_hand    = GetHand()
-	selectedMaterial = GetSelectedMaterial()
-	selectedWeapon   = GetSelectedWeapon()
-	selectedSpecial  = GetSelectedSpecial()
 
 	if not (stack_hand) then return end
 	if not (cards_in_hand) then return end
@@ -152,64 +119,15 @@ local function UpdateHand()
 		table.remove(stack_hand.children)
 	end
 	for index, card in pairs(cards_in_hand) do
-		--Determine highlighting
-		--spEcho("asd") This absolutely pollutes the log produced by spring
-		local background = color.game_bg
-		if (card == selectedSpecial) then
-			background = color.blue
-		elseif (card == selectedMaterial or card == selectedWeapon) then
-			background = color.game_fg
-		end
-
-		--Create tooltip
-		local name       = card.name       or "Unknown"
-		local type       = card.type       or "Unknown"
-		local health     = card.health     or 0
-		local reloadTime = card.reloadTime or 0
-		local range      = card.range      or 0
-		local LOS        = card.LOS        or 0
-		local damage     = card.damage     or 0
-		local velocity   = card.weaponVelocity or 0
-		local desc = card.desc or ""
-		local tooltip = WhiteStr  .. "Name: "        .. name         .. "\n" ..
-				    GreyStr   .. "Type: "        .. type         .. "\n" ..
-				    GreenStr  .. "Health: "      .. health       .. "\n" ..
-				    YellowStr .. "Reload Time: " .. reloadTime   .. "s\n" ..
-				    OrangeStr .. "Range: "       .. range        .. "\n" ..
-				    GreyStr   .. "LOS: "         .. LOS          .. "\n" ..
-				    OrangeStr .."Projectile speed: ".. velocity  .. "\n" ..
-				    RedStr    .. "Damage: "      .. damage       .. "\n" ..
-				    WhiteStr  .. "Desc:\n"       .. desc
-		-- if not enough buttons, create a new one
+		-- if the button doesn't exist, create a new one, otherwise update the existing one
 		if not (stack_hand.children[index]) then
-			local image = Image:New{}
-			table.insert(stack_hand.children, Button:New{name = "", children = {image}})
+			local button = Darius:GetCardButton(card, settings.cardsize_x, settings.cardsize_y)
+			button.OnMouseUp = {function(self) ActivateCard(self) end}
+			table.insert(stack_hand.children, button)
+		else
+			--stack_hand.children[index].card = card
+			stack_hand.children[index]:UpdateCard(settings.cardsize_x, settings.cardsize_y)
 		end
-		-- Get button for the card
-		button = stack_hand.children[index]
-		button.caption = ""
-		button.card = card
-		button.width = settings.cardsize_x + 20
-		button.height = settings.cardsize_y + 20
-		button.OnMouseUp = {
-				function(self)
-					ActivateCard(self)
-				end
-			}
-		button.tooltip = tooltip
-		button.backgroundColor = background
-		button.textColor = color.game_fg
-		if ((button.children[1].file ~= card.img) or
-		    (button.children[1].width ~= settings.cardsize_x) or
-		    (button.children[1].height ~= settings.cardsize_y)) then
-			button.children[1] = Image:New {
-				file = card.img,
-				width = settings.cardsize_x,
-				height = settings.cardsize_y,
-				keepAspect = false,
-			}
-		end
-		button:Invalidate()
 	end
 	--Force the window to be redrawn
 	window_hand:Invalidate()

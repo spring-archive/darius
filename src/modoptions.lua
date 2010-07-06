@@ -20,11 +20,11 @@
 --  section:  so lobbies can order options in categories/panels
 --  scope:    'all', 'player', 'team', 'allyteam'      <<< not supported yet >>>
 --
- 
+
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 --
---  Example ModOptions.lua 
+--  Example ModOptions.lua
 --
 
 local options = {
@@ -33,22 +33,22 @@ local options = {
     name   = 'Game Mode',
     desc   = 'Change the game mode.',
     type   = 'list',
-    section= 'modifiers',    
+    section= 'modifiers',
     def    = 'normal',
     items  = {
-      { 
+      {
         key  = 'normal',
         name = 'Tower Defense',
         desc = 'Normal game mode',
       },
-    },    
+    },
   },
   {
     key='commtype',
     name='Starting Unit',
     desc='Choose the Commander type.',
     type='list',
-    section= 'startconds',        
+    section= 'startconds',
     def='default',
     items = {
       { key='default', name="Default Commander", desc='The default comm of CA.' },
@@ -58,67 +58,68 @@ local options = {
       { key='cat', name='CATcom', desc ='Classic commander blast, that does no damage to other commanders & D-gun kill everything in range except for other commanders, to which they do no damage. Commander health is 3500' },
     },
   },
-  {
+--[[  {
     key = "startingresourcetype",
     name = "Starting Resource Type",
     desc = "Choose the form in which starting resources are given.",
     type = "list",
-    section= 'startconds',    
+    section= 'startconds',
     def = "facplopboost",
     items = {
-      { 
-        key  = "facplop", 
-        name = "Factory Plop", 
+      {
+        key  = "facplop",
+        name = "Factory Plop",
         desc = "First factory is free and built very fast.",
       },
-      { 
-        key  = "facplopboost", 
-        name = "Factory Plop and Boost", 
+      {
+        key  = "facplopboost",
+        name = "Factory Plop and Boost",
         desc = "Commander starts with boost instead of initial resources. First factory is free and built very fast.",
       },
-      { 
-        key  = "boost", 
-        name = "Boost", 
+      {
+        key  = "boost",
+        name = "Boost",
         desc = "Commanders start with boost instead of initial resources, which allows them to build using those resources at increased speed.",
       },
-      { 
-        key  = "limitboost", 
-        name = "Limited Boost", 
+      {
+        key  = "limitboost",
+        name = "Limited Boost",
         desc = "Boost mode only commander cannot boostbuild anything with a weapon (uses normal build instead).",
-      },	  
-      { 
-        key  = "classic", 
-        name = "Classic", 
+      },
+      {
+        key  = "classic",
+        name = "Classic",
         desc = "Classic mode.",
       },
-      { 
-        key  = "facinabox", 
-        name = "Fac-In-A-Box", 
+      {
+        key  = "facinabox",
+        name = "Fac-In-A-Box",
         desc = "A Fac-In-A-Box spawns alongside each commander.",
       },
     },
   },
+  --]]
   {
     key    = "shuffle",
     name   = "Shuffle Start Points",
     desc   = "Shuffles start positions.",
     type   = "list",
-    section= 'startconds',    
+    section= 'startconds',
     def    = "off",
     items  = {
-      { 
-        key  = "off", 
-        name = "Off", 
+      {
+        key  = "off",
+        name = "Off",
         desc = "Do nothing.",
       },
-      { 
-        key  = "box", 
-        name = "Within Boxes", 
+      {
+        key  = "box",
+        name = "Within Boxes",
         desc = "Shuffle start positions within each team's box.",
       },
-      { 
-        key  = "all", 
-        name = "All", 
+      {
+        key  = "all",
+        name = "All",
         desc = "Shuffle start positions of all commanders. Use this in place of random for autohosts.",
       },
       {
@@ -128,7 +129,7 @@ local options = {
       },
     },
   },
-  
+
   {
     key    = 'noceasefire',
     name   = 'Disable ceasefire panel',
@@ -136,7 +137,7 @@ local options = {
     type   = 'bool',
     section = 'diplomacy',
     def    = false,
-  },  
+  },
   {
     key    = 'sharemode',
     name   = 'Share Mode',
@@ -155,7 +156,7 @@ local options = {
     name='Terrain Speed Boost',
     desc='Choose which map Speed Boost to use',
     type='list',
-    section= 'mapsettings',        
+    section= 'mapsettings',
     def='keepequal',
     items = {
       { key='mapdefault', name="Map Default", desc='Use map speed boost' },
@@ -181,7 +182,7 @@ local options = {
     name   = 'Metal Extraction Multiplier',
     desc   = 'Multiplies metal extraction rate. For use in large team games.',
     type   = 'number',
-    section= 'mapsettings',    
+    section= 'mapsettings',
     def    = 1,
     min    = 0,
     max    = 100,
@@ -211,7 +212,7 @@ local options = {
     max    = 20,
     step   = 0.1,  -- quantization is aligned to the def value
                     -- (step <= 0) means that there is no quantization
-  },  
+  },
   {
     key    = 'maxwind',
     name   = 'Maximum Wind',
@@ -223,7 +224,7 @@ local options = {
     max    = 20,
     step   = 0.1,  -- quantization is aligned to the def value
                     -- (step <= 0) means that there is no quantization
-  },  
+  },
   {
     key    = 'experimental',
     name   = 'Experimental Settings',
@@ -235,7 +236,7 @@ local options = {
     name   = 'Terraform Cost Multiplier',
     desc   = 'Multiplies the cost of terraform.',
     type   = 'number',
-    section= 'experimental',    
+    section= 'experimental',
     def    = 1,
     min    = 0.01,
     max    = 100,
@@ -246,7 +247,7 @@ local options = {
     name   = 'Damage Multiplier',
     desc   = 'Multiplies the damage dealt by all weapons, except for D-guns; autoheal; repair; and capture.',
     type   = 'number',
-    section= 'experimental',    
+    section= 'experimental',
     def    = 1,
     min    = 0.01,
     max    = 10,
@@ -262,13 +263,13 @@ local options = {
     min    = 0.01,
     max    = 10,
     step   = 0.01,
-  },  
+  },
   {
     key    = 'cratermult',
     name   = 'Cratering Multiplier',
     desc   = 'Multiplies the depth of craters.',
     type   = 'number',
-    section= 'experimental',    
+    section= 'experimental',
     def    = 1,
     min    = 0,
     max    = 1000,
@@ -282,7 +283,7 @@ local options = {
     section= 'experimental',
     def    = false,
   },
-    
+
   {
     key    = 'doesnotcountmode',
     name   = 'DoesNotCount Mode',
@@ -294,7 +295,7 @@ local options = {
       { key='debug', name="Debug", desc='Does nothing.' },
       { key='destroy', name="Destroy Alliance", desc='Destroys the alliance if they have only "doesnotcount units."' },
       { key='losecontrol', name="Lose Control", desc='Alliance loses control of their units they have only "doesnotcount units" (not yet implemented).' },
-      
+
     },
   },
   {
@@ -310,16 +311,16 @@ local options = {
     name   = 'Stay On Team (Dysfunctional)',
     desc   = 'Players are only removed from a team when they resign/drop. To become a spec, select all units and share them.',
     type   = 'bool',
-    section= 'experimental',    
+    section= 'experimental',
     def    = false,
-  }, 
-  
+  },
+
   {
     key    = 'specialpower',
     name   = 'Special Advanced Powerplants',
     desc   = 'Rather than explode like a nuke, Arm\'s Adv Fusion is a massive EMP and Core\'s is a massive implosion.',
     type   = 'bool',
-    section= 'experimental',    
+    section= 'experimental',
     def    = false,
   },
   {
@@ -327,10 +328,10 @@ local options = {
     name   = 'Special Decloak Behavior',
     desc   = 'Overrides engine\'s decloak. Shows cloaked units only to team that reveals them, also fixes cloak behavior in FFA games with ceasefires.',
     type   = 'bool',
-    section= 'experimental',    
+    section= 'experimental',
     def    = false,
   },
-  
+
   {
     key    = 'fun',
     name   = 'Fun Stuff',
@@ -398,7 +399,7 @@ local options = {
     name   = 'Factory Cost Multiplier',
     desc   = 'Multiplies the cost of factories.',
     type   = 'number',
-    section= 'experimental',    
+    section= 'experimental',
     def    = 1,
     min    = 0.01,
     max    = 100,

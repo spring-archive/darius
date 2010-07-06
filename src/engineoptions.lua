@@ -22,10 +22,10 @@
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 --
---  Example EngineOptions.lua 
+--  Example EngineOptions.lua
 --
 
-local options = 
+local options =
 {
   {
     key    = 'startconds',
@@ -38,35 +38,39 @@ local options =
     name   = 'In-Game Conditions',
     desc   = 'Set up ingame conditions.',
     type   = 'section',
-  },      
-  
+  },
+
   {
     key    = 'GameMode',
     name   = 'Game end condition',
     desc   = 'Determines what condition triggers the defeat of a player',
     type   = 'list',
-    section= 'modifiers',	
-    def    = '0',
-    items  = 
+    section= 'modifiers',
+    def    = '1',
+    items  =
     {
-      { 
+	--[[
+      {
         key  = '0',
         name = 'Kill everything',
         desc = 'The player will lose when all his units have died',
       },
+	--]]
       {
         key  = '1',
         name = 'Commander ends',
         desc = 'The player will lose when his commander dies',
       },
+	--[[
       {
         key  = '2',
         name = 'Commander lineage ends',
         desc = 'This is a stricter form of commander ends\nevery unit will inherit the lineage from the player whom built it\neven if shared, when the commander dies the unit will still die',
       },
+	--]]
     },
   },
-  --[[  
+  --[[
   {
     key    = 'StartMetal',
     name   = 'Starting metal',
@@ -99,7 +103,7 @@ local options =
     name   = 'Max units',
     desc   = 'Determines the ceiling of how many units and buildings a player is allowed to own at the same time (limited by spring to 10000 / (#commanders + 1))',
     type   = 'number',
-    section= 'modifiers',	
+    section= 'modifiers',
     def    = 1500,
     min    = 10,
     max    = 3000,
@@ -112,7 +116,7 @@ local options =
     name   = 'Limit D-Gun range',
     desc   = "The commander's D-Gun weapon will be usable only close to the player's starting location",
     type   = 'bool',
-	section = 'modifiers',	
+	section = 'modifiers',
     def    = false,
   },]]--
   --[[
@@ -145,7 +149,7 @@ local options =
     desc   = 'Limits maximum and minimum speed that the players will be allowed to change to',
     type   = 'section',
   },
-  
+
   {
     key    = 'MinSpeed',
     name   = 'Minimum game speed',
@@ -170,14 +174,14 @@ local options =
     max    = 10,
     step   = 0.1,  -- quantization is aligned to the def value
                     -- (step <= 0) means that there is no quantization
-  },  
- 
+  },
+
   {
     key    = 'mapsettings',
     name   = 'Map Related Settings',
     desc   = 'Configure map related settings.',
     type   = 'section',
-  },  
+  },
   {
     key    = 'DisableMapDamage',
     name   = 'Disable Map Deformations',
@@ -188,7 +192,7 @@ local options =
   },
 --[[
 -- the following options can create problems and were never used by interface programs, thus are commented out for the moment
-  
+
   {
     key    = 'LuaGaia',
     name   = 'Enables gaia',
@@ -196,7 +200,7 @@ local options =
     type   = 'bool',
     def    = true,
   },
-  
+
   {
     key    = 'NoHelperAIs',
     name   = 'Disable helper AIs',
@@ -204,7 +208,7 @@ local options =
     type   = 'bool',
     def    = false,
   },
-  
+
   {
     key    = 'LuaRules',
     name   = 'Enable LuaRules',

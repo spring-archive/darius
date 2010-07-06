@@ -10,7 +10,7 @@ local card = {
     effect     = function(pos)
                     spEcho("HELLO!")
                  end,
-    desc       = "Huh?",
+    desc       = "Huh?"
 }
 
 return card

@@ -8,7 +8,7 @@ local card = {
     damage     = 0,
     greenballs = 0,
     effect     = nil,
-    desc       = "Lightning material card",
+    desc       = "Lightning material card"
 }
 
 return card

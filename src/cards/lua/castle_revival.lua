@@ -1,7 +1,7 @@
 local card = {
-    name       = "Earthquake",
+    name       = "Castle revival",
     type       = "Special",
-    img        = 'cards/images/special/earthquake.png',
+    img        = 'cards/images/special/castle_revival.png',
     health     = 0,
     reloadTime = 0,
     range      = 0,
@@ -10,7 +10,7 @@ local card = {
     effect     = function()
         -- do something
     end,
-    desc       = "Quickly lowers HP of the enemies to 30% of their maximum."
+    desc       = "A so-called panic card. Instantly recovers the HP of the castle to 60% of the maximum."
 }
 
 return card

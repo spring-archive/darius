@@ -1,7 +1,7 @@
 local card = {
-    name       = "Earthquake",
+    name       = "Solar Radiation",
     type       = "Special",
-    img        = 'cards/images/special/earthquake.png',
+    img        = 'cards/images/special/solar_radiation.png',
     health     = 0,
     reloadTime = 0,
     range      = 0,
@@ -10,7 +10,7 @@ local card = {
     effect     = function()
         -- do something
     end,
-    desc       = "Quickly lowers HP of the enemies to 30% of their maximum."
+    desc       = "All enemy units currently in the playfield catch fire and start losing their HP."
 }
 
 return card

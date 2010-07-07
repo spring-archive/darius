@@ -1,7 +1,7 @@
 local card = {
-    name       = "Earthquake",
+    name       = "Quad Damage",
     type       = "Special",
-    img        = 'cards/images/special/earthquake.png',
+    img        = 'cards/images/special/quad_damage.png',
     health     = 0,
     reloadTime = 0,
     range      = 0,
@@ -10,7 +10,7 @@ local card = {
     effect     = function()
         -- do something
     end,
-    desc       = "Quickly lowers HP of the enemies to 30% of their maximum."
+    desc       = "Multiplies damages of all towers by 4 for 30 seconds."
 }
 
 return card

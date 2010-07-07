@@ -1,7 +1,7 @@
 local card = {
-    name       = "Earthquake",
+    name       = "Tower regeneration",
     type       = "Special",
-    img        = 'cards/images/special/earthquake.png',
+    img        = 'cards/images/special/tower_regeneration.png',
     health     = 0,
     reloadTime = 0,
     range      = 0,
@@ -10,7 +10,7 @@ local card = {
     effect     = function()
         -- do something
     end,
-    desc       = "Quickly lowers HP of the enemies to 30% of their maximum."
+    desc       = "Starts recovering HP of the player's all towers slowly to their maximum."
 }
 
 return card

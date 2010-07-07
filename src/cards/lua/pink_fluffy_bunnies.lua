@@ -1,7 +1,7 @@
 local card = {
     name       = "Pink Fluffy Bunnies",
     type       = "Special",
-    img        = 'LuaUI/images/friendly.png',
+    img        = 'cards/images/special/friendly.png',
     health     = 0,
     reloadTime = 0,
     range      = 0,

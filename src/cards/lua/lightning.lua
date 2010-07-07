@@ -1,7 +1,7 @@
 local card = {
     name       = "Lightning",
     type       = "Weapon",
-    img        = 'LuaUI/images/energy.png',
+    img        = 'cards/images/weapon/energy.png',
     health     = 0,
     reloadTime = 0,
     range      = 0,

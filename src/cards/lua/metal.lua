@@ -1,7 +1,7 @@
 local card = {
     name       = "Metal",
     type       = "Material",
-    img        = 'LuaUI/images/ibeam.png',
+    img        = 'cards/images/material/ibeam.png',
     health     = 0,
     reloadTime = 0,
     range      = 0,

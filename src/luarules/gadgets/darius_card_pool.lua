@@ -70,8 +70,6 @@ local function SendDecks()  -- Sends the decks to the instance game manager
 	for i = 1, 2 do
 		Darius:AddCard(table.copy(LoadCardFromFile("Lightning")), 2)
 	end
-	
-	Darius:AddCard(table.copy(LoadCardFromFile("Pink Fluffy Bunnies")), 1)
 
 end
 

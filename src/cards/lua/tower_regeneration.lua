@@ -8,7 +8,7 @@ local card = {
     damage     = 0,
     greenballs = 0,
     effect     = function()
-        -- do something
+        -- some kind of particle aura swings over the castle
     end,
     desc       = "Starts recovering HP of the player's all towers slowly to their maximum."
 }

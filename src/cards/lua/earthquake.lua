@@ -8,7 +8,7 @@ local card = {
     damage     = 0,
     greenballs = 0,
     effect     = function()
-        -- do something
+        -- shake camera for some time
     end,
     desc       = "Quickly lowers HP of the enemies to 30% of their maximum."
 }

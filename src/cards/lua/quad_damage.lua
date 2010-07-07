@@ -8,7 +8,7 @@ local card = {
     damage     = 0,
     greenballs = 0,
     effect     = function()
-        -- do something
+        -- towers partially transparent/blue
     end,
     desc       = "Multiplies damages of all towers by 4 for 30 seconds."
 }

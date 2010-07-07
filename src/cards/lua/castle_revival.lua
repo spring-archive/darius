@@ -8,7 +8,7 @@ local card = {
     damage     = 0,
     greenballs = 0,
     effect     = function()
-        -- do something
+        -- some kind of particle aura swings over the castle
     end,
     desc       = "A so-called panic card. Instantly recovers the HP of the castle to 60% of the maximum."
 }

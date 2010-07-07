@@ -55,7 +55,7 @@ end
 
 local function SendDecks()  -- Sends the decks to the instance game manager
 	
-	for i = 1, 3 do
+	for i = 1, 2 do
 		Darius:AddCard(table.copy(LoadCardFromFile("Stone")), 1)
 	end
 
@@ -63,7 +63,7 @@ local function SendDecks()  -- Sends the decks to the instance game manager
 		Darius:AddCard(table.copy(LoadCardFromFile("Metal")), 1)
 	end
 	
-	for i = 1, 3 do
+	for i = 1, 2 do
 		Darius:AddCard(table.copy(LoadCardFromFile("Fire")), 2)
 	end
 	
@@ -71,6 +71,16 @@ local function SendDecks()  -- Sends the decks to the instance game manager
 		Darius:AddCard(table.copy(LoadCardFromFile("Lightning")), 2)
 	end
 
+    -- just for testing
+	Darius:AddCard(table.copy(LoadCardFromFile("Castle Revival")), 1)
+    Darius:AddCard(table.copy(LoadCardFromFile("Earthquake")), 1)
+    Darius:AddCard(table.copy(LoadCardFromFile("Quad Damage")), 1)
+    Darius:AddCard(table.copy(LoadCardFromFile("Sandstorm")), 1)
+    Darius:AddCard(table.copy(LoadCardFromFile("Solar Radiation")), 2)
+    Darius:AddCard(table.copy(LoadCardFromFile("Temporary Degreelessness")), 2)
+    Darius:AddCard(table.copy(LoadCardFromFile("Tower Invisibility")), 2)
+    Darius:AddCard(table.copy(LoadCardFromFile("Tower Regeneration")), 2)
+    
 end
 
 

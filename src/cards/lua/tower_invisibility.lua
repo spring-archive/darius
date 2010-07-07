@@ -8,7 +8,7 @@ local card = {
     damage     = 0,
     greenballs = 0,
     effect     = function()
-        -- do something
+        -- towers almost completely transparent
     end,
     desc       = "Makes towers invisible for 60 seconds. None on the enemies will attack player's towers during that."
 }

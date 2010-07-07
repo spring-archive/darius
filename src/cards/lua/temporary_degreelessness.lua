@@ -8,7 +8,7 @@ local card = {
     damage     = 0,
     greenballs = 0,
     effect     = function()
-        -- do something
+        -- towers and the castle partially transparent/red
     end,
     desc       = "Turns all towers and the castle completely invulnerable for 30 seconds."
 }

@@ -1,14 +1,14 @@
 local card = {
-    name       = "Metal",
-    type       = "Material",
-    img        = 'cards/images/material/ibeam.png',
-    health     = 0,
-    reloadTime = 0,
-    range      = 0,
-    damage     = 0,
-    greenballs = 0,
-    effect     = nil,
-    desc       = "Metal material card"
+    name = "Metal"
+	type = "Material"
+	img = 'cards/images/material/metal.png'
+	heath = 900
+	reloadTime = 0.3
+	range = 20	
+	damage = 0
+	greenballs = 0
+	effect = nil
+	desc = "Creates sturdy structures with no clear weakness or strength"
 }
 
 return card

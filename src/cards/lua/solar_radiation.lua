@@ -10,7 +10,7 @@ local card = {
     effect     = function()
         -- fire effect (LuPS?) on all enemy units
     end,
-    desc       = "All enemy units currently in the playfield catch fire and start losing their HP."
+    desc       = "All enemy units in the playfield catch fire and start losing their HP."
 }
 
 return card

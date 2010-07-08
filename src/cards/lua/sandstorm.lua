@@ -10,7 +10,7 @@ local card = {
     effect     = function()
         -- particle storm?
     end,
-    desc       = "Movement of all enemies currently in the playfield slows down for 60 seconds."
+    desc       = "Movement speed of all enemies in the playfield slows down for 60 seconds."
 }
 
 return card

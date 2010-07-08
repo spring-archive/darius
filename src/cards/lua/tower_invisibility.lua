@@ -10,7 +10,7 @@ local card = {
     effect     = function()
         -- towers almost completely transparent
     end,
-    desc       = "Makes towers invisible for 60 seconds. None on the enemies will attack player's towers during that."
+    desc       = "Makes all towers invisible for 60 seconds. None on the enemies will attack towers during that."
 }
 
 return card

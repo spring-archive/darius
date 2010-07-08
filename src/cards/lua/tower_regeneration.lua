@@ -1,5 +1,5 @@
 local card = {
-    name       = "Tower regeneration",
+    name       = "Tower Regeneration",
     type       = "Special",
     img        = 'cards/images/special/tower_regeneration.png',
     health     = 0,
@@ -10,7 +10,7 @@ local card = {
     effect     = function()
         -- some kind of particle aura swings over the castle
     end,
-    desc       = "Starts recovering HP of the player's all towers slowly to their maximum."
+    desc       = "Recovers HP of the all built towers slowly to their maximum."
 }
 
 return card

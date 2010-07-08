@@ -10,7 +10,7 @@ local card = {
     effect     = function()
         -- towers partially transparent/blue
     end,
-    desc       = "Multiplies damages of all towers by 4 for 30 seconds."
+    desc       = "Multiplies damages of all towers by four for 30 seconds."
 }
 
 return card

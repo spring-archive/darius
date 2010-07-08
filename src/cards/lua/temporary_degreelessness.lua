@@ -10,7 +10,7 @@ local card = {
     effect     = function()
         -- towers and the castle partially transparent/red
     end,
-    desc       = "Turns all towers and the castle completely invulnerable for 30 seconds."
+    desc       = "Makes all towers and the castle completely invulnerable for 30 seconds."
 }
 
 return card

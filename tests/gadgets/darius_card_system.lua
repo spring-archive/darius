@@ -36,11 +36,18 @@ local exampleCard = {
 	health =   1200,
 	reloadTime = 0.5,
 	range =  50,
-	LOS = 500,
 	damage =  0,
-	weaponVelocity = 0,
+	greenballs = 0,
 	desc = "Creates tall stone towers with decent range and good amount of health,\n" ..
 		"but due to tall design, adds additional weapon reloading time.",
+}
+
+local exampleEffect = {
+	name = "Freeze", 
+	needsPos = false,
+	needsUnit = false,
+	effect = function() effect_called = true end, 
+	desc = "Freezes enemies in place",
 }
 
 -------------------------
@@ -91,8 +98,10 @@ end
 function Script.LuaUI.SetTower(id)
 	tower = id
 end
-function Script.LuaUI.SetCardEffect(arg)
-	effect = arg
+function Script.LuaUI.SetCardEffect(name, desc)
+	effect = {}
+	effect.name = name
+	effect.desc = desc
 end
 function Script.LuaUI.SetCardHand(str)
 	local new_hand = {}
@@ -102,9 +111,9 @@ function Script.LuaUI.SetCardHand(str)
 	end
 	hand = new_hand
 end
-function Script.LuaUI.UpdateCard(id, name, type, img, health, reloadTime, range, LOS, damage, weaponVelocity, desc)
+function Script.LuaUI.UpdateCard(id, name, type, img, health, reloadTime, range, damage, greenballs, desc)
 	card = {id=id, name=name, type=type, img=img, health=health, reloadTime=reloadTime,
-		range=range, LOS=LOS, damage=damage, weaponVelocity=weaponVelocity, desc=desc}
+		range=range, damage=damage, greenballs=greenballs, desc=desc}
 end
 function Script.LuaUI.SetSelectedMaterialCard(id)
 	selectedMaterial = id
@@ -212,8 +221,9 @@ end
 function test_SendingEffect()
 	RunAsUnsynced()
 	gadget:Initialize()
-	syncActions["CardEffect"]("", "Scream")
-	assert_equal("Scream", effect, "Effect not sent properly")
+	syncActions["CardEffect"]("", exampleEffect.name, exampleEffect.desc)
+	assert_equal(exampleEffect.name, effect.name, "Effect not sent properly")
+	assert_equal(exampleEffect.desc, effect.desc, "Effect not sent properly")
 end
 
 function test_SendingSelectedMaterial()
@@ -262,8 +272,8 @@ function test_SendingCard()
 	RunAsUnsynced()
 	gadget:Initialize()
 	syncActions["CardTable"]("", testCard.id, testCard.name, testCard.type, testCard.img,
-		testCard.health, testCard.reloadTime, testCard.range, testCard.LOS,
-		testCard.damage, testCard.weaponVelocity, testCard.desc)
+		testCard.health, testCard.reloadTime, testCard.range,
+		testCard.damage, testCard.greenballs, testCard.desc)
 	assert_not_nil(card, "Card not received")
 	assert_equal(testCard.id, card.id, "Card id mangled")
 	assert_equal(testCard.name, card.name, "Card name mangled")
@@ -272,9 +282,8 @@ function test_SendingCard()
 	assert_equal(testCard.health, card.health, "Card health mangled")
 	assert_equal(testCard.reloadTime, card.reloadTime, "Card reloadTime mangled")
 	assert_equal(testCard.range, card.range, "Card range mangled")
-	assert_equal(testCard.LOS, card.LOS, "Card LOS mangled")
 	assert_equal(testCard.damage, card.damage, "Card damage mangled")
-	assert_equal(testCard.weaponVelocity, card.weaponVelocity, "Card weaponVelocity mangled")
+	assert_equal(testCard.greenballs, card.greenballs, "Card greenballs mangled")
 	assert_equal(testCard.desc, card.desc, "Card description mangled")
 end
 
@@ -285,9 +294,9 @@ function test_UnsyncTower()
 end
 
 function test_UnsyncEffect()
-	GG.Darius:SetEffect("Bunnies Away")
+	GG.Darius:SetEffect(exampleEffect)
 	assert_true(called_SendToUnsynced, "SendToUnsynced not called")
-	assert_equal("Bunnies Away", sentVars["CardEffect"], "Effect not unsynced correctly")
+	assert_equal(exampleEffect.name, sentVars["CardEffect"], "Effect not unsynced correctly")
 end
 
 function test_UnsyncSelectedMaterial()
@@ -401,23 +410,9 @@ function test_SetTower()
 	assert_equal(120, GG.Darius:GetTower(), "Tower ID not handled properly")
 end
 
-function test_SetTowerClearsEffect()
-	GG.Darius:SetEffect("Boom")
-	GG.Darius:SetTower(120)
-	assert_equal(120, GG.Darius:GetTower(), "Tower ID not handled properly")
-	assert_equal(nil, GG.Darius:GetEffect(), "Effect ID not cleared")
-end
-
 function test_SetEffect()
-	GG.Darius:SetEffect("Boom")
-	assert_equal("Boom", GG.Darius:GetEffect(), "Effect ID not handled properly")
-end
-
-function test_SetEffectClearsTower()
-	GG.Darius:SetTower(120)
-	GG.Darius:SetEffect("Boom")
-	assert_equal(nil, GG.Darius:GetTower(), "Tower ID not cleared")
-	assert_equal("Boom", GG.Darius:GetEffect(), "Effect ID not handled properly")
+	GG.Darius:SetEffect(exampleEffect)
+	assert_equal(exampleEffect, GG.Darius:GetEffect(), "Effect not handled properly")
 end
 
 function test_AddGreenballs()

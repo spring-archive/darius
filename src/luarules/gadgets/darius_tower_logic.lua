@@ -51,12 +51,12 @@ function gadget:Initialize()
 end
 
 function gadget:GameFrame(f)
-	if not (Darius) then Darius = GG.Darius end
+	Darius = GG.Darius
 	if not (Darius) then return end
-	
+
 	local material = Darius:GetSelectedMaterial()
 	local weapon = Darius:GetSelectedWeapon()
-	
+
 	if (material and weapon) then
 		Darius:SetTower(getTowerID(material, weapon))
 	else

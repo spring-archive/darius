@@ -49,8 +49,8 @@ Card data skeleton:
 	--		end,
 	--		name = "Greeting",
 	--		desc = "Says Hello",
-	--		display = function(x, y) --This should be run in unsynced code
-	--		end
+	--		cursor = function(x, y) end --This isn't used yet.  This will be run in unsynced code when the effect is selected (x and y are the mouse coords)
+	--		draw = function(pos, unit) end --This isn't used yet.  This will be run in unsynced code when the effect is activated
 	--	}
 
 	desc = "Creates tall stone towers with decent range and good amount of health,\n" ..

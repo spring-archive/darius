@@ -21,6 +21,8 @@ local requiredBallsToDraw = 5
 local spEcho            = Spring.Echo
 local spSendLuaRulesMsg = Spring.SendLuaRulesMsg
 
+--local debug_message = spEcho
+
 ----------------
 -- Local Vars --
 ----------------
@@ -56,8 +58,9 @@ end
 
 local function UnsyncEffect()
 	if (effect) then
-		SendToUnsynced("CardEffect",
-			effect.name, effect.desc)
+		SendToUnsynced("CardEffect", effect.name, effect.desc)
+	else
+		SendToUnsynced("CardEffect", nil, nil)
 	end
 end
 
@@ -133,15 +136,11 @@ end
 
 function Darius:SetTower(arg)
 	tower = arg
-	effect = nil
 	UnsyncTower()
-	UnsyncEffect()
 end
 
 function Darius:SetEffect(arg)
 	effect = arg
-	tower = nil
-	UnsyncTower()
 	UnsyncEffect()
 end
 
@@ -181,10 +180,8 @@ local function SetSelectedMaterial(card)
 		selectedMaterial = card
 	end
 	selectedSpecial = nil
-	effect = nil
 	UnsyncSelectedMaterial()
 	UnsyncSelectedSpecial()
-	UnsyncEffect()
 end
 
 local function SetSelectedWeapon(card)
@@ -195,20 +192,16 @@ local function SetSelectedWeapon(card)
 		selectedWeapon = card
 	end
 	selectedSpecial = nil
-	effect = nil
 	UnsyncSelectedWeapon()
 	UnsyncSelectedSpecial()
-	UnsyncEffect()
 end
 
 local function SetSelectedSpecial(card)
 	--spEcho("Activating card as " .. card.type)
 	if (selectedSpecial == card) then
 		selectedSpecial = nil
-		effect = nil
 	else
 		selectedSpecial = card
-		if (card) then effect = card.effect end
 	end
 	if (selectedSpecial) then
 		selectedMaterial = nil
@@ -217,7 +210,6 @@ local function SetSelectedSpecial(card)
 		UnsyncSelectedWeapon()
 	end
 	UnsyncSelectedSpecial()
-	UnsyncEffect()
 end
 
 -- Requires actual card
@@ -262,7 +254,7 @@ end
 
 function Darius:ClearGame() -- Clears the game session data
 	Darius:SetTower(nil)
-	--Darius:SetEffect(nil) --Unnecessary (set tower clears)
+	Darius:SetEffect(nil)
 	SetSelectedMaterial(nil)
 	SetSelectedWeapon(nil)
 	SetSelectedSpecial(nil)
@@ -286,6 +278,7 @@ function Darius:GetTower()
 end
 
 function Darius:GetEffect()
+	if (debug_message) then debug_message("Darius:GetEffect Called") end	
 	return effect
 end
 

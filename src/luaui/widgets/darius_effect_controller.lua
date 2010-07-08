@@ -19,16 +19,15 @@ function widget:MousePress(x,y,button)
 	if not (WG.Darius) then return end
 
 	if (WG.Darius:GetEffect() ~= nil) then
-		spEcho("Effect valid")
 		-- Converts 2d coordinates of the mouse position to 3d coordinates
 		local _, pos = Spring.TraceScreenRay(x,y,true,false) 
 		local type, unitID = Spring.TraceScreenRay(x,y)
-		if (pos and (pos.x and pos.y and pos.z)) then
-			spEcho("EffectPos:" .. pos.x ..",".. pos.y ..",".. pos.z)
-			spSendLuaRulesMsg("EffectPos:" .. pos.x ..",".. pos.y ..",".. pos.z)
+		if (pos) then
+			--spEcho("EffectPos:" .. tostring(pos[1]) ..",".. tostring(pos[2]) ..",".. tostring(pos[3]))
+			spSendLuaRulesMsg("EffectPos:" .. tostring(pos[1]) ..",".. tostring(pos[2]) ..",".. tostring(pos[3]))
 		end
 		if ((type == "unit") and (unitID)) then
-			spEcho("EffectUnit:" .. unitID)
+			--spEcho("EffectUnit:" .. unitID)
 			spSendLuaRulesMsg("EffectUnit:" .. unitID)
 		end
 	end

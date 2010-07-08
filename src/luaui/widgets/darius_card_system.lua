@@ -256,6 +256,7 @@ local function SetTower(arg)
 end
 
 local function SetEffect(name, desc)
+	if (not name) then effect = nil end
 	effect = {}
 	effect.name = name
 	effect.desc = desc

@@ -32,6 +32,7 @@ local x_dest, y_dest, z_dest
 
 currentRound = 0
 currentWave = 0
+waveFinishedTime = 0
 monsterTeamNumber = 0
 monstersLeftInTheWave = 1 -- hack
 monstersKilledTotal = -1 -- hack

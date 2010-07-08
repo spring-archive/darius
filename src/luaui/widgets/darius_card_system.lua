@@ -42,8 +42,8 @@ RedStr     = "\255\255\170\170"
 local Darius = widget
 WG.Darius = Darius
 
-local tower
-local effect
+local tower = nil
+local effect = nil
 local greenballs = 0
 local hand = {}
 local selectedWeapon = {}
@@ -255,8 +255,10 @@ local function SetTower(arg)
 	tower = arg
 end
 
-local function SetEffect(arg)
-	effect = arg
+local function SetEffect(name, desc)
+	effect = {}
+	effect.name = name
+	effect.desc = desc
 end
 
 local function SetSelectedMaterial(id)

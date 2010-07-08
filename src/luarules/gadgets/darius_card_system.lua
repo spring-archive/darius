@@ -27,11 +27,11 @@ local spSendLuaRulesMsg = Spring.SendLuaRulesMsg
 local Darius = gadget
 GG.Darius = Darius
 
-local tower
-local effect
-local selectedMaterial
-local selectedWeapon
-local selectedSpecial
+local tower = nil
+local effect = nil
+local selectedMaterial = {}
+local selectedWeapon = {}
+local selectedSpecial = {}
 
 local greenballs = 0
 
@@ -55,7 +55,10 @@ local function UnsyncTower()
 end
 
 local function UnsyncEffect()
-	SendToUnsynced("CardEffect", effect)
+	if (effect) then
+		SendToUnsynced("CardEffect",
+			effect.name, effect.desc)
+	end
 end
 
 local function UnsyncSelectedMaterial()
@@ -178,8 +181,10 @@ local function SetSelectedMaterial(card)
 		selectedMaterial = card
 	end
 	selectedSpecial = nil
+	effect = nil
 	UnsyncSelectedMaterial()
 	UnsyncSelectedSpecial()
+	UnsyncEffect()
 end
 
 local function SetSelectedWeapon(card)
@@ -190,16 +195,20 @@ local function SetSelectedWeapon(card)
 		selectedWeapon = card
 	end
 	selectedSpecial = nil
+	effect = nil
 	UnsyncSelectedWeapon()
 	UnsyncSelectedSpecial()
+	UnsyncEffect()
 end
 
 local function SetSelectedSpecial(card)
 	--spEcho("Activating card as " .. card.type)
 	if (selectedSpecial == card) then
 		selectedSpecial = nil
+		effect = nil
 	else
 		selectedSpecial = card
+		if (card) then effect = card.effect end
 	end
 	if (selectedSpecial) then
 		selectedMaterial = nil
@@ -208,6 +217,7 @@ local function SetSelectedSpecial(card)
 		UnsyncSelectedWeapon()
 	end
 	UnsyncSelectedSpecial()
+	UnsyncEffect()
 end
 
 -- Requires actual card
@@ -370,9 +380,9 @@ local function SendCard(_, ...)
 	end
 end
 
-local function SendEffect(_, effect)
+local function SendEffect(_, ...)
 	if (Script.LuaUI('SetCardEffect')) then
-		Script.LuaUI.SetCardEffect(effect)
+		Script.LuaUI.SetCardEffect(...)
 	end
 end
 

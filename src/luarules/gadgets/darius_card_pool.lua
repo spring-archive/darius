@@ -27,7 +27,11 @@ local spEcho = Spring.Echo
 function table.copy(t)
 	local t2 = {}
 	for k,v in pairs(t) do
-		t2[k] = v
+		if (type(v) == "table") then
+			t2[k] = table.copy(v)
+		else
+			t2[k] = v
+		end
 	end
 	return t2
 end

@@ -37,11 +37,21 @@ Card data skeleton:
 	--e.g. Weapon greenball -2 + Material greenball 0 = Towers total greenball cost -2
 
 	effect =  nil,
-	--Not finalized yet can still change.
-	--The effect value in a Special card is a function that performs the cards action. Material and Weapon cards effect is nil
-	--e.g. effect = function(pos)
-	--		spEcho("HELLO!")
-	--	end,
+	--The effect value in a Special card is a table.  For Material and Weapon cards this entry is nil.
+	--The effect table contains a function that performs the card's action.
+	--The table also includes the effect's name and desc.
+	--e.g.
+	--	effect = {
+	--		needsPos = false --If the effect function needs a selected pos
+	--		needsUnit = false --If the effect function needs a selected unit
+	--		effect = function(pos, unit) --This is run in synced code
+	--			spEcho("HELLO!")
+	--		end,
+	--		name = "Greeting",
+	--		desc = "Says Hello",
+	--		display = function(x, y) --This should be run in unsynced code
+	--		end
+	--	}
 
 	desc = "Creates tall stone towers with decent range and good amount of health,\n" ..
 		"but due to tall design, adds additional weapon reloading time.",

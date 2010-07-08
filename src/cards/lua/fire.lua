@@ -1,7 +1,7 @@
 local card = {
     name       = "Fire",
     type       = "Weapon",
-    img        = 'cards/images/weapon/fire.png',
+    img        = 'cards/images/weapon/fire.png',  -- needs graphics
     health     =  -150,
     reloadTime = 0.80,
     range      = 350,

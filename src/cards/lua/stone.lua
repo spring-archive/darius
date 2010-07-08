@@ -1,7 +1,7 @@
 local card = {
     name       = "Stone",
     type       = "Material",
-    img        = 'cards/images/material/stone.png', -- needs graphics
+    img        = 'cards/images/material/stone.png',
     health     = 1200,
     reloadTime = 0.5,
     range      = 50,

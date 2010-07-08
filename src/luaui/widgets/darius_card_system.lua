@@ -141,7 +141,7 @@ function Darius:GetCardButton(card, width, height)
 		},
 		image = image,
 		backImage = backImage,
-
+        
 		UpdateCard = function(button, width, height)
 			local card = button.card
 			
@@ -187,14 +187,14 @@ function Darius:GetCardButton(card, width, height)
 			lbl_greenballs.x = width - 15
 			lbl_greenballs.y = 5
 			lbl_greenballs:Invalidate()
-
+			
 			img_center.file = card.img
-			img_center.x = width/6
-			img_center.y = height/10
-			img_center.width = width*2/3
-			img_center.height = height*2/5
+			img_center.x = width/20
+			img_center.y = height/2.75
+			img_center.width = width*9/10
+			img_center.height = height*3/5
 			img_center:Invalidate()
-
+            
 			img_background.file = getCardBackground(card.type)
 			img_background.width = width
 			img_background.height = height

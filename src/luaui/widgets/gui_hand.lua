@@ -1,4 +1,3 @@
------- -- -
 function widget:GetInfo()
 	return {
 		name = "Card Hand GUI",
@@ -125,7 +124,7 @@ local function UpdateHand()
 			button.OnMouseUp = {function(self) ActivateCard(self) end}
 			table.insert(stack_hand.children, button)
 		else
-			--stack_hand.children[index].card = card
+			stack_hand.children[index].card = card
 			stack_hand.children[index]:UpdateCard(settings.cardsize_x, settings.cardsize_y)
 		end
 	end

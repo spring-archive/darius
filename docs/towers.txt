@@ -1,5 +1,3 @@
-
-CA's towers which are licensed under GPL or similar:
 ---------------------------------------------------------------------------------
 IDENTIFIER		TOWER TYPE				ORG. FACTION	MODEL FORMAT*	USABILITY
 ---------------------------------------------------------------------------------
@@ -16,14 +14,14 @@ corhlt			heavy laser				core			3do				OK
 corllt			light laser				core			s3o				OK
 corrl			light missile			core			3do				OK
 screamer		anti-air-missile		core			3do				OK
-armnanotc		nanoturret				arm				3do				[builds, no use case in td]
-cornanotc		nanoturret				core			3do				[builds, no use case in td]
+
+13 towers total
+
+
+
+REMOVED:
+armnanotc		nanoturret				arm				3do				[builds new stuff, no use case in td]
+cornanotc		nanoturret				core			3do				[builds new stuff, no use case in td]
 armanni			annihilator				arm				3do				[requires enemy artillery]
 armdl			depthcharge launcher	arm				3do				[requires underwater units]
 cordl			depthcharge launcher	core			3do				[requires underwater units]
-
-
-
-*
-3do:	Original Total Annihilation
-s3o:	Spring's own

@@ -37,8 +37,9 @@ monsterTeamNumber = 0
 monstersLeftInTheWave = 1 -- hack
 monstersKilledTotal = -1 -- hack
 timeToTheNextWave = -1
-	
-	
+waveFinishedTime = 0
+
+
 
 ----------------------
 -- Synced Functions --
@@ -49,49 +50,49 @@ if (gadgetHandler:IsSyncedCode()) then
 
 function CreateWave(monsters)
 	local wave = {class = "wave"}
-	
+
 	if not (type(monsters) == "table" and #monsters > 0) then
 		spEcho("Spawner: Wave does not have any monsters")
 		return nil
 	end
-	
+
 	local a = #monsters
-	
+
 	for i = 1, a do
 		m = monsters[i]
-		
+
 		if not (#m == 3 and type(m[1]) == "string" and type(m[2]) == "number" and type(m[3] == "number")) then
 			spEcho("Spawner: Wave definition is not valid")
 			return nil
 		end
-		
+
 		wave[i] = {m[1], m[2], m[3]}
 	end
-	
+
 	return wave
 end
 
 function CreateRound(waves)
 	local round = {class = "round"}
-	
+
 	if not (type(waves) == "table" and #waves > 0) then
 		spEcho("Spawner: Round does not have any waves")
 		return nil
 	end
-	
+
 	local a = #waves
-	
+
 	for i = 1,a do
 		w = waves[i]
-		
+
 		if not (w["class"] == "wave") then
 			spEcho("Spawner: Round defition is not valid")
 			return nil
 		end
-		
+
 		round[i] = w
 	end
-	
+
 	return round
 end
 
@@ -100,67 +101,67 @@ function InitRoundsAndWaves()
 	local wave1 = CreateWave({
 		{"chicken", 2, 3},
 	})
-	
+
 	local wave2 = CreateWave({
 		{"corthud", 2, 3},
 	})
-	
+
 	local wave3 = CreateWave({
-		{"armpw", 2, 3}, 		  
+		{"armpw", 2, 3},
 	})
-	
+
 	local wave4 = CreateWave({
 		{"arm_venom", 2, 3},
 	})
-	
+
 	local wave5 = CreateWave({
 		{"corstorm", 2, 3},
 	})
-	
+
 	local wave6 = CreateWave({
-		{"corpyro", 2, 3},  
+		{"corpyro", 2, 3},
 	})
-	
+
 	local wave7 = CreateWave({
 		{"armsptk", 2, 3},
 	})
-	
+
 	local wave8 = CreateWave({
 		{"chickena", 2, 3},
 	})
-	
+
 	local wave9 = CreateWave({
 		{"chicken_dodo", 2, 3},
 	})
-	
+
 	local wave10 = CreateWave({
 		{"chicken_leaper", 2, 3},
 	})
-	
+
 	local wave11 = CreateWave({
 		{"chicken_sporeshooter", 2, 3},
 	})
-	
+
 	local wave12 = CreateWave({
 		{"cormortgold", 2, 3},
 	})
-	
+
 	local wave13 = CreateWave({
 		{"armwar", 2, 3},
 	})
-	
+
 	local wave14 = CreateWave({
 		{"chickenc", 2, 3},
 	})
-	
+
 	local wave15 = CreateWave({
 		{"armorco", 2, 3},
 	})
-	
+
 	local wave16 = CreateWave({
 		{"chickenq", 2, 3},
 	})
-	
+
 	local round1 = CreateRound({wave1, wave2, wave3, wave4, wave5, wave6, wave7, wave8, wave9, wave10, wave11, wave12, wave13, wave14, wave15, wave16 })
 	rounds = {round1}
 end
@@ -201,10 +202,10 @@ end
 function StartNewRound()
 	currentRound = currentRound + 1
 	spSetGameRulesParam("currentRound", currentRound)
-	
+
 	currentWave = 0
 	spSetGameRulesParam("currentWave", currentWave)
-	
+
 	waveUnfinished = false
 	roundUnfinished = true
 	--spEcho("New round started")
@@ -236,7 +237,7 @@ function UpdateGameStatus()
 		end
 		roundUnfinished = false -- next round
 	end
-	
+
 	waveUnfinished = false -- next wave
 end
 
@@ -260,9 +261,9 @@ end
 
 function gadget:Initialize()
 	InitRoundsAndWaves()
-	
+
 	spSetGameRulesParam("gameWon", 0)
-	
+
 	spSetGameRulesParam("monstersLeftInTheWave", monstersLeftInTheWave)
 	spSetGameRulesParam("monstersTeam", monsterTeamNumber)
 	spSetGameRulesParam("monstersKilledTotal", monstersKilledTotal)
@@ -281,9 +282,9 @@ function gadget:GameStart()
 	spSendCommands("cheat")
 	spSendCommands("globallos")
 	spEcho("Darius spawner: Enabled cheats to get rid of the Fog of War")
-	
+
 	SetSpawingAndGoalLocations();
-	
+
 	gameUnfinished = true
 	roundUnfinished = false
 end
@@ -296,7 +297,7 @@ function gadget:UnitDestroyed(unitID, unitDefID, teamID, _)
 	if teamID == monsterTeamNumber then
 		UpdateStats()
 	end
-	
+
 	if (monstersLeftInTheWave == 0) then
 		UpdateGameStatus()
 	end

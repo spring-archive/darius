@@ -16,17 +16,22 @@ end
 ----------------------
 if (gadgetHandler:IsSyncedCode()) then
 
-
+--Speed ups
 spEcho = Spring.Echo
+spGetTeamUnits = Spring.GetTeamUnits
+spGetUnitDefID = Spring.GetUnitDefID
 
+playerTeam = 1
+monsterTeam = 0
+commanderHealth = 2000
 
 local function GetCommanders(teamID) --Finds the commander IDs for the given team
 
-	local units = Spring.GetTeamUnits(teamID)
+	local units = spGetTeamUnits(teamID)
 	local commanders = {}
 
 	for _,unitID in ipairs(units) do
-		if (UnitDefs[Spring.GetUnitDefID(unitID)].isCommander) then
+		if (UnitDefs[spGetUnitDefID(unitID)].isCommander) then
 			--checks if the isCommander attribute is true in current unit's unitDef -file
 			commanders[#commanders + 1] = unitID
 		end
@@ -55,11 +60,16 @@ function gadget:GameFrame(f)
 
 
 	if f < 100 then
-		DisableUnit(GetCommanders(0)[1])
+		DisableUnit(GetCommanders(monsterTeam)[1])-- We assume that there is only one commander
+	end
+
+	if f == 7 then
+		Spring.SetUnitMaxHealth(GetCommanders(playerTeam)[1], commanderHealth)
+		Spring.SetUnitHealth(GetCommanders(playerTeam)[1], {health = commanderHealth})
 	end
 
 	if(f > 100) then
-		gadgetHandler:RemoveGadget()
+		gadgetHandler:RemoveGadget()-- Disable this gadget after it has done it's job
 		return
 	end
 

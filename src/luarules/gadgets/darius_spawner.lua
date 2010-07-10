@@ -34,8 +34,8 @@ currentRound = 0
 currentWave = 0
 waveFinishedTime = 0
 monsterTeamNumber = 0
-monstersLeftInTheWave = 1 -- hack
-monstersKilledTotal = -1 -- hack
+monstersLeftInTheWave = 0
+monstersKilledTotal = 0
 timeToTheNextWave = -1
 waveFinishedTime = 0
 
@@ -161,8 +161,9 @@ function InitRoundsAndWaves()
 	local wave16 = CreateWave({
 		{"chickenq", 2, 3},
 	})
-
-	local round1 = CreateRound({wave1, wave2, wave3, wave4, wave5, wave6, wave7, wave8, wave9, wave10, wave11, wave12, wave13, wave14, wave15, wave16 })
+	
+--wave 10 doesn't work properly, so it's removed for now	
+	local round1 = CreateRound({wave1, wave2, wave3, wave4, wave5, wave6, wave7, wave8, wave9, wave11, wave12, wave13, wave14, wave15, wave16 })
 	rounds = {round1}
 end
 
@@ -290,9 +291,12 @@ function gadget:GameStart()
 end
 
 function gadget:UnitDestroyed(unitID, unitDefID, teamID, _)
+	--I think this can be removed now
+	--[[
 	if unitDefID == 54 then -- start point?? gets destroyed at start
 			return
 	end
+	--]]
 
 	if teamID == monsterTeamNumber then
 		UpdateStats()

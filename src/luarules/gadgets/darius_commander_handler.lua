@@ -64,6 +64,7 @@ function gadget:GameFrame(f)
 	end
 
 	if f == 7 then
+		--Sets the health amount for the players commander
 		Spring.SetUnitMaxHealth(GetCommanders(playerTeam)[1], commanderHealth)
 		Spring.SetUnitHealth(GetCommanders(playerTeam)[1], {health = commanderHealth})
 	end

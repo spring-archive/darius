@@ -22,6 +22,7 @@ local spGiveOrderToUnit = Spring.GiveOrderToUnit
 local spGetGameSeconds = Spring.GetGameSeconds
 local spSetGameRulesParam = Spring.SetGameRulesParam
 local spSendCommands = Spring.SendCommands
+local spDestroyUnit = Spring.DestroyUnit
 
 ----------------
 -- Local Vars --
@@ -161,8 +162,8 @@ function InitRoundsAndWaves()
 	local wave16 = CreateWave({
 		{"chickenq", 2, 3},
 	})
-	
---wave 10 doesn't work properly, so it's removed for now	
+
+--wave 10 doesn't work properly, so it's removed for now
 	local round1 = CreateRound({wave1, wave2, wave3, wave4, wave5, wave6, wave7, wave8, wave9, wave11, wave12, wave13, wave14, wave15, wave16 })
 	rounds = {round1}
 end
@@ -198,6 +199,11 @@ end
 
 function GameVictory()
 	spSetGameRulesParam("gameWon", 1);
+
+	--Kill all AI units, so that the player will win the game
+	for _, unit in ipairs(spGetTeamUnits(monsterTeamNumber)) do
+		spDestroyUnit(unit, false, true)
+	end
 end
 
 function StartNewRound()

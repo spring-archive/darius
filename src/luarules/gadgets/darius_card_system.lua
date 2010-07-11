@@ -13,7 +13,7 @@ end
 ---------------
 -- Game Vars -- Should be loaded from elsewhere?
 ---------------
-local requiredBallsToDraw = 5
+local requiredBallsToDraw = 1
 
 --------------
 -- Speed Up --

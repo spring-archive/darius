@@ -14,7 +14,7 @@ end
 ---------------
 -- Game Vars -- Should be loaded from elsewhere (gadget?)
 ---------------
-local requiredBallsToDraw = 5
+local requiredBallsToDraw = 1
 
 --------------
 -- Speed Up --
@@ -53,9 +53,9 @@ local cards = {} -- The in-game card pool (not the player's full card collection
 
 local function getCardBackground(type)
 	if (type == "Material") then
-		return 'LuaUI/images/stone.png' --Awaiting task 5#10
+		return 'cards/images/stone.png' --Awaiting task 5#10
 	elseif (type == "Weapon") then
-		return 'LuaUI/images/fire.png' --Awaiting task 5#12
+		return 'cards/images/fire.png' --Awaiting task 5#12
 	elseif (type == "Special") then
 		return nil --Awaiting task 30#5
 	end
@@ -121,9 +121,13 @@ function Darius:GetCardButton(card, width, height)
 	if not (Image) then Image = WG.Chili.Image end
 
 	local lbl_name = Label:New{valign = "top"}
-	local lbl_greenballs = Label:New{valign = "top", align = "right"}
 	local img_center = Image:New{keepAspect = false}
 	local img_background= Image:New{keepAspect = false}
+	local lbl_health = Label:New{}
+	local lbl_reloadTime = Label:New{}
+	local lbl_range = Label:New{}
+	local lbl_damage = Label:New{}
+	local lbl_greenballs = Label:New{valign = "top"}
 
 	lbl_name:SetCaption("")
 	lbl_greenballs:SetCaption("")
@@ -137,14 +141,25 @@ function Darius:GetCardButton(card, width, height)
 			lbl_name,
 			lbl_greenballs,
 			img_center,
+			lbl_health,
+			lbl_reloadTime,
+			lbl_range,
+			lbl_damage,
 			img_background,
 		},
-		image = image,
-		backImage = backImage,
-        
+
 		UpdateCard = function(button, width, height)
+			--Prepare card data (Formatting/Validation)
 			local card = button.card
-			
+			card.name       = card.name       or "Unknown"
+			card.type       = card.type       or "Unknown"
+			card.health     = card.health     or 0
+			card.reloadTime = string.format("%.3f", card.reloadTime or 0)
+			card.range      = card.range      or 0
+			card.damage     = card.damage     or 0
+			card.greenballs = card.greenballs or 0
+			card.desc       = card.desc       or ""
+
 			button.width = width
 			button.height = height
 
@@ -152,20 +167,13 @@ function Darius:GetCardButton(card, width, height)
 			height = height - 10
 
 			--Create tooltip
-			local name       = card.name       or "Unknown"
-			local type       = card.type       or "Unknown"
-			local health     = card.health     or 0
-			local reloadTime = card.reloadTime or 0
-			local range      = card.range      or 0
-			local damage     = card.damage     or 0
-			local desc = card.desc or ""
-			local tooltip = WhiteStr  .. "Name: "        .. name         .. "\n" ..
-					    GreyStr   .. "Type: "        .. type         .. "\n" ..
-					    GreenStr  .. "Health: "      .. health       .. "\n" ..
-					    YellowStr .. "Reload Time: " .. reloadTime   .. "s\n" ..
-					    OrangeStr .. "Range: "       .. range        .. "\n" ..
-					    RedStr    .. "Damage: "      .. damage       .. "\n" ..
-					    WhiteStr  .. "Desc:\n"       .. desc
+			tooltip =   WhiteStr  .. "Name: "        .. card.name         .. "\n" ..
+					GreyStr   .. "Type: "        .. card.type         .. "\n" ..
+					GreenStr  .. "Health: "      .. card.health       .. "\n" ..
+					YellowStr .. "Reload Time: " .. card.reloadTime   .. "s\n" ..
+					OrangeStr .. "Range: "       .. card.range        .. "\n" ..
+					RedStr    .. "Damage: "      .. card.damage       .. "\n" ..
+					WhiteStr  .. "Desc:\n"       .. card.desc
 			button.tooltip = tooltip
 	
 			--Determine highlighting
@@ -181,20 +189,66 @@ function Darius:GetCardButton(card, width, height)
 			lbl_name:SetCaption(card.name)
 			lbl_name.x = 5
 			lbl_name.y = 5
+			lbl_name.font.size = 13
+			while (lbl_name.font:GetTextWidth(lbl_name.caption) > width - 15) do
+				lbl_name.font.size = lbl_name.font.size - 1
+			end
 			lbl_name:Invalidate()
 
 			lbl_greenballs:SetCaption(card.greenballs)
-			lbl_greenballs.x = width - 15
+			lbl_greenballs.x = width - 10
 			lbl_greenballs.y = 5
+			lbl_greenballs.font.color = color.black
+			if (card.greenballs < 0) then
+				lbl_greenballs.font.color = color.red
+			elseif (card.greenballs > 0) then
+				lbl_greenballs.font.color = color.green
+			end
 			lbl_greenballs:Invalidate()
-			
+
 			img_center.file = card.img
-			img_center.x = width/20
-			img_center.y = height/2.75
-			img_center.width = width*9/10
-			img_center.height = height*3/5
+			img_center.x = width/6
+			img_center.y = height/10
+			img_center.width = width*2/3
+			img_center.height = height*2/5
 			img_center:Invalidate()
-            
+
+			lbl_health:SetCaption(GreenStr .. "Health: " .. card.health)
+			lbl_health.font.size = height/15
+			while (lbl_health.font:GetTextWidth(lbl_health.caption) > width - 15) do
+				lbl_health.font.size = lbl_health.font.size - 1
+			end
+			lbl_health.x = 5
+			lbl_health.y = height/10 + height*2/5 + 5
+			lbl_health:Invalidate()
+
+			lbl_reloadTime:SetCaption(YellowStr .. "Reload: " .. card.reloadTime)
+			lbl_reloadTime.font.size = height/15
+			while (lbl_reloadTime.font:GetTextWidth(lbl_reloadTime.caption) > width - 15) do
+				lbl_reloadTime.font.size = lbl_reloadTime.font.size - 1
+			end
+			lbl_reloadTime.x = 5
+			lbl_reloadTime.y = lbl_health.y + lbl_health.font.size
+			lbl_reloadTime:Invalidate()
+
+			lbl_range:SetCaption(OrangeStr .. "Range: " .. card.range)
+			lbl_range.font.size = height/15
+			while (lbl_range.font:GetTextWidth(lbl_range.caption) > width - 15) do
+				lbl_range.font.size = lbl_range.font.size - 1
+			end
+			lbl_range.x = 5
+			lbl_range.y = lbl_reloadTime.y + lbl_reloadTime.font.size
+			lbl_range:Invalidate()
+
+			lbl_damage:SetCaption(RedStr .. "Damage: " .. card.damage)
+			lbl_damage.font.size = height/15
+			while (lbl_damage.font:GetTextWidth(lbl_damage.caption) > width - 15) do
+				lbl_damage.font.size = lbl_damage.font.size - 1
+			end
+			lbl_damage.x = 5
+			lbl_damage.y = lbl_range.y + lbl_range.font.size
+			lbl_damage:Invalidate()
+
 			img_background.file = getCardBackground(card.type)
 			img_background.width = width
 			img_background.height = height

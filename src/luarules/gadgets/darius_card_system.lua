@@ -345,6 +345,12 @@ function gadget:RecvLuaMsg(msg, playerID)
 	end
 end
 
+function gadget:UnitDestroyed(unitID, unitDefID, teamID, attackerID)
+	if teamID == 0 then
+		Darius:AddGreenballs(1)
+	end
+end
+
 ------------------------------------------------
 else --unsynced
 ------------------------------------------------

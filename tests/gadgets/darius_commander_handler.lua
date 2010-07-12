@@ -2,30 +2,23 @@ Spring = {}
 Spring.MoveCtrl = {}
 gadgetHandler = {}
 Game = {}
+gadget = {}
 
 
 module( "enhanced", package.seeall, lunit.testcase )
-
-function setup()
-end
-
-function teardown()
-end
 
 --Setting up the Spring environment with dummies:
 function spEcho()
 end
 
-
-
-function spGetTeamUnits(teamID)
+function Spring.GetTeamUnits(teamID)
 	if teamID == 3 then
 		return {100, 200, 300}
 	else return {}
 	end
 end
 
-function spGetUnitDefID(unitID)
+function Spring.GetUnitDefID(unitID)
 	if unitID % 100 == 0 then
 		return 1
 	elseif unitID % 7 == 0 then
@@ -39,10 +32,14 @@ function gadgetHandler:IsSyncedCode()
 	return true
 end
 
-UnitDefs = {true, false, false}
+
+
+UnitDefs = {{isCommander = true}, {isCommander = false}, {isCommander = false}}
+Game.mapSizeX = 0
+Game.mapSizeZ = 0
 
 local calls = 0
-local function inc()
+local function inc(...)
 	calls = calls + 1
 end
 
@@ -61,22 +58,35 @@ function gadgetHandler:RemoveGadget()
 	gadgetRemoved = true
 end
 
-local maxHealthSet = 0
-function Spring.SetUnitMaxHealth(health)
+maxHealthSet = 0
+function Spring.SetUnitMaxHealth(unit, health)
 	maxHealthSet = health
 end
 
-local healthSet = 0
-function Spring.SetUnitHealth(array)
-	healthSet = array[health]
+healthSet = 0
+function Spring.SetUnitHealth(unit, a)
+	if a.health then
+		healthSet = a.health
+	end
 end
 
 
+--Setup the file
+function setup()
+	dofile("../src/luarules/gadgets/darius_commander_handler.lua")
+end
+
+function teardown()
+end
 
 --Actual tests
+
+--[[
+--To run the following tests are for local functions, so if you want to run them you'll need to manually change the source file
+
 function test_disable_Unit()
 	DisableUnit()
-	assert_equal(calls, 9)
+	assert_equal(8, calls)
 	calls = 0
 end
 
@@ -86,11 +96,15 @@ function test_get_commanders()
 	assert_equal(commanders[2], 200)
 	assert_equal(commanders[3], 300)
 end
+--]]
 
 function test_game_frame()
-
-	assert_equal(gadgetRemoved, true)
-	assert_equal(calls, 9)
+	gadget:GameFrame(7)
+	assert_equal(8, calls)
+	calls = 0
 	assert_equal(maxHealthSet, healthSet)
+
+	gadget:GameFrame(101)
+	assert_equal(gadgetRemoved, true)
 end
 

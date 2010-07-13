@@ -40,6 +40,7 @@ local cards_in_hand = {}
 -- local functions --
 ---------------------
 local function AdjustWindow()
+	vsx, vsy, _, _ = Spring.GetViewGeometry()
 	if not (window_hand) then return end
 	stack_hand.width = window_hand.width
 	stack_hand.height = window_hand.height
@@ -50,6 +51,19 @@ local function AdjustWindow()
 	if (settings.cardsize_x > max_width) then
 		settings.cardsize_x = max_width
 		settings.cardsize_y = max_width / 0.6
+	end
+
+	if (window_hand.x < 0) then
+		window_hand.x = 0
+	end
+	if (window_hand.y < 0) then
+		window_hand.y = 0
+	end
+	if (window_hand.x > vsx - window_hand.width) then
+		window_hand.x = vsx - window_hand.width
+	end
+	if (window_hand.y > vsy - window_hand.height) then
+		window_hand.y = vsy - window_hand.height
 	end
 
 	-- Force redraw

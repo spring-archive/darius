@@ -6,40 +6,23 @@ function gadget:GetInfo()
 		date      = "June 2010",
 		license   = "GNU GPL, v2 or later",
 		layer     = 0,
-		enabled   = true,  --  loaded by default?
+		enabled   = true,  --  loaded by default
 	}
 end
-
-
 
 --------------
 -- Speed Up --
 --------------
-
 local spEcho = Spring.Echo
-
-
-
----------------------
--- Local Variables --
----------------------
-
-local allPossibleCards = {
-	material = {},
-	weapon = {},
-	special = {}
-}
-
-
 
 ---------------------
 -- Table Functions --
 ---------------------
-
 function table.copy(t)
+	if (t == nil) then return nil end
 	local t2 = {}
 	for k,v in pairs(t) do
-		if (type(v) == "table") then
+		if (type(v) == "table") then --Next level needed for effects
 			t2[k] = table.copy(v)
 		else
 			t2[k] = v
@@ -48,40 +31,60 @@ function table.copy(t)
 	return t2
 end
 
+------------------------------------------------
+if (gadgetHandler:IsSyncedCode()) then -- synced
+------------------------------------------------
 
+---------------------
+-- Local Variables --
+---------------------
+local cardData = {}
 
-----------------------
--- Synced Functions --
-----------------------
+local test = 0
+local pool = {}
+local deck = {} --Collection of decks
+deck[1] = {} --Deck 1; Stores the card tables themselves (for the cards in the deck)
+deck[2] = {} --Deck 2; Stores the card tables themselves (for the cards in the deck)
 
-if (not gadgetHandler:IsSyncedCode()) then
-	return false -- no unsynced code
-end
-
-
+---------------------
+-- Local Functions --
+---------------------
 local function LoadCardsFromFiles()
+	pool = {}
+	deck[1] = {}
+	deck[2] = {}
+	deck[3] = {} -- Fake deck
 	local materialFiles = VFS.DirList('cards/lua/material', '*.lua')
 	local weaponFiles = VFS.DirList('cards/lua/weapon', '*.lua')
 	local specialFiles = VFS.DirList('cards/lua/special', '*.lua')
-	
+
 	for i=1, #materialFiles do
-		allPossibleCards.material[i] = VFS.Include(materialFiles[i])
+		local card = VFS.Include(materialFiles[i])
+		table.insert(cardData, card)
+		table.insert(pool, card) --Temporary (player gets one of each card)
+		table.insert(deck[1], card) --Temporary (puts the card into a deck once)
 	end
-	
+
 	for i=1, #weaponFiles do
-		allPossibleCards.weapon[i] = VFS.Include(weaponFiles[i])
+		local card = VFS.Include(weaponFiles[i])
+		table.insert(cardData, card)
+		table.insert(pool, card) --Temporary (player gets one of each card)
+		table.insert(deck[2], card) --Temporary (puts the card into a deck once)
 	end
-	
+
 	for i=1, #specialFiles do
-		allPossibleCards.special[i] = VFS.Include(specialFiles[i])
+		local card = VFS.Include(specialFiles[i])
+		table.insert(cardData, card)
+		table.insert(pool, card) --Temporary (player gets one of each card)
+		table.insert(deck[3], card) --Temporary (puts the card into a deck once)
 	end
 end
 
 
-local function GetCardByTypeAndName(cardType, cardName)
-	for i=1, #allPossibleCards[cardType] do
-		if allPossibleCards[cardType][i].name == cardName then
-			return allPossibleCards[cardType][i]
+local function GetCardDataByName(cardName)
+	for i=1, #cardData do
+		if cardData[i].name == cardName then
+			return cardData[i]
 		end
 	end
 	return nil
@@ -89,30 +92,11 @@ end
 
 
 local function SendDecks()  -- Sends the decks to the instance game manager
-	for i = 1, 2 do
-		Darius:AddCard(GetCardByTypeAndName("material", "Stone"), 1)
+	for i=1, #deck do
+		for j=1, #deck[i] do
+			Darius:AddCard(table.copy(deck[i][j]), i) --Card table must be copied to create unique instance
+		end
 	end
-	
-	for i = 1, 2 do
-		Darius:AddCard(GetCardByTypeAndName("material", "Metal"), 1)
-	end
-	
-	for i = 1, 2 do
-		Darius:AddCard(GetCardByTypeAndName("weapon", "Fire"), 2)
-	end
-	
-	for i = 1, 2 do
-		Darius:AddCard(GetCardByTypeAndName("weapon", "Lightning"), 2)
-	end
-
-	Darius:AddCard(GetCardByTypeAndName("special", "Castle Revival"), 1)
-    Darius:AddCard(GetCardByTypeAndName("special", "Earthquake"), 1)
-    Darius:AddCard(GetCardByTypeAndName("special", "Quad Damage"), 1)
-    Darius:AddCard(GetCardByTypeAndName("special", "Sandstorm"), 1)
-    Darius:AddCard(GetCardByTypeAndName("special", "Solar Radiation"), 2)
-    Darius:AddCard(GetCardByTypeAndName("special", "Temporary Degreelessness"), 2)
-    Darius:AddCard(GetCardByTypeAndName("special", "Tower Invisibility"), 2)
-    Darius:AddCard(GetCardByTypeAndName("special", "Tower Regeneration"), 2)
 end
 
 
@@ -125,13 +109,60 @@ local function StartGame()
 	Darius = GG.Darius
 	Darius:ClearGame()
 	
-	LoadCardsFromFiles()
 	SendDecks()
 	
-	Darius:AddGreenballs(40)
+	Darius:AddGreenballs(20)
+	spEcho("Test = "..test)
 end
 
-
+--------------------
+-- Synced Callins --
+--------------------
 function gadget:Initialize()
+	if (debug_message) then debug_message("Initiallizing Card Pool System") end
+	LoadCardsFromFiles()
 	StartGame()
 end
+
+function gadget:SaveData()
+	if (debug_message) then debug_message("Saving Player Data") end
+	data = {}
+	data.pool = {}
+	for i=1, #pool do
+		table.insert(data.pool, pool[i].name) --Get the names of the cards
+	end
+	data.deck = {}
+	for i=1, #deck do
+		data.deck[i] = {}
+		for j=1, #deck[i] do
+			table.insert(data.deck[i], deck[i][j].name) --Get the names of the cards
+		end
+	end
+	data.test = test
+
+	return data
+end
+
+function gadget:LoadData(data)
+	pool = {}
+	deck = {}
+	if (debug_message) then debug_message("Loading Player Data") end
+	if (data and type(data) == 'table') then
+		for i=1, #data.pool do
+			table.insert(pool, GetCardDataByName(data.pool[i])) --Get the cards by name
+		end
+		for i=1, #data.deck do
+			deck[i] = {}
+			for j=1, #data.deck[i] do
+				table.insert(deck[i], GetCardDataByName(data.deck[i][j])) --Get the cards by name
+			end
+		end
+		test = data.test
+	end
+end
+
+------------------------------------------------
+else --unsynced
+------------------------------------------------
+
+end -- End synced check

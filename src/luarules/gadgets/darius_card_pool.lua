@@ -84,17 +84,6 @@ local function LoadCardsFromFiles()
 	end
 end
 
-
-local function GetCardDataByName(cardName)
-	for i=1, #cardData do
-		if cardData[i].name == cardName then
-			return cardData[i]
-		end
-	end
-	return nil
-end
-
-
 local function SendDecks()  -- Sends the decks to the instance game manager
 	for i=1, #deck do
 		for j=1, #deck[i] do
@@ -122,31 +111,54 @@ function gadget:StartGame()
 	if(debug_message) then debug_message("Test = "..test) end
 end
 
+-------------------
+-- Communication --
+-------------------
 
-
-
-local function SendCardPoolToUnsynced()
+local function UnsyncCardPool()
 end
 
-local function SendDecsToUnsynced()
+local function UnsyncDecks()
 end
 
 local function ParseDeck()
 end
 
+-- Requires actual card
+local function UnsyncCard(card)
+	if not (card) then return end
+	if (debug_message) debug_message("Unsyncing card [" .. card.id .. "]")
+	SendToUnsynced("CardTable",
+		card.id,
+		card.name,
+		card.type,
+		card.img,
+		card.health,
+		card.reloadTime,
+		card.range,
+		card.damage,
+		card.greenballs,
+		card.desc
+	)
+end
+
 -------------------------
 -- Card pool functions --
 -------------------------
-function CardPool:AddCardToPlayer(cardName, amount)
+function gadget:AddCardToPlayer(cardName, amount)
 end
 
-function CardPool:RemoveCardFromPlayer(cardName, amount)
+function gadget:RemoveCardFromPlayer(cardName, amount)
 end
 
-function CardPool:GetCardDataByName(cardName)
+function gadget:GetCardDataByName(cardName)
+	for i=1, #cardData do
+		if cardData[i].name == cardName then
+			return cardData[i]
+		end
+	end
+	return nil
 end
-
-
 
 --------------------
 -- Synced Callins --
@@ -209,13 +221,15 @@ end
 function gadget:RecvLuaMsg(message, playerID)--Messaging between Deck Editor and the card pool
 
 	if message == "get card pool" then
-		SendCardPoolToUnsynced()
+		UnsyncCardPool()
 
-	elseif message == "get decs" then
-		SendDecsToUnsynced()
+	elseif message == "get decks" then
+		UnsyncDecks()
 
-	elseif message == "get card data by name" then--FIXME separate card name from the message
-		SendCardDataToUnsynced()
+	elseif string.find(msg, "UnsyncCard:") then --Unsync Card data by name
+		cardName = msg:gsub("UnsyncCard:","")
+		card = gadget:GetCardDataByName(cardName)
+		UnsyncCard(card)
 
 	elseif message == "deck coming through..." then --FIXME separate the message from the deck data
 		ParseDeck(message)

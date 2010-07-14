@@ -38,6 +38,10 @@ if (gadgetHandler:IsSyncedCode()) then -- synced
 ---------------------
 -- Local Variables --
 ---------------------
+local CardPool = gadget
+GG.CardPool = CardPool
+
+
 local cardData = {}
 
 local test = 0
@@ -105,15 +109,41 @@ local function StartGame()
 		spEcho("Game failed to load properly")
 		return
 	end
-	
+
 	Darius = GG.Darius
 	Darius:ClearGame()
-	
+
 	SendDecks()
-	
+
 	Darius:AddGreenballs(20)
 	spEcho("Test = "..test)
 end
+
+
+
+
+local function SendCardPoolToUnsynced()
+end
+
+local function SendDecsToUnsynced()
+end
+
+local function ParseDeck()
+end
+
+-------------------------
+-- Card pool functions --
+-------------------------
+function CardPool:AddCardToPlayer(cardName, amount)
+end
+
+function CardPool:RemoveCardFromPlayer(cardName, amount)
+end
+
+function CardPool:GetCardDataByName(cardName)
+end
+
+
 
 --------------------
 -- Synced Callins --
@@ -159,6 +189,24 @@ function gadget:LoadData(data)
 		end
 		test = data.test
 	end
+end
+
+function gadget:RecvLuaMsg(message, playerID)--Messaging between Deck Editor and the card pool
+
+	if message == "get card pool" then
+		SendCardPoolToUnsynced()
+
+	elseif message == "get decs" then
+		SendDecsToUnsynced()
+
+	elseif message == "get card data by name" then--FIXME separate card name from the message
+		SendCardDataToUnsynced()
+
+	elseif message == "deck coming through..." then --FIXME separate the message from the deck data
+		ParseDeck(message)
+
+	end
+
 end
 
 ------------------------------------------------

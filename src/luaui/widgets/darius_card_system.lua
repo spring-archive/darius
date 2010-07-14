@@ -123,10 +123,10 @@ function Darius:GetCardButton(card, width, height)
 	local lbl_name = Label:New{valign = "top"}
 	local img_center = Image:New{keepAspect = false}
 	local img_background= Image:New{keepAspect = false}
-	local lbl_health = Label:New{}
-	local lbl_reloadTime = Label:New{}
-	local lbl_range = Label:New{}
-	local lbl_damage = Label:New{}
+	local lbl_health = Label:New{x=5}
+	local lbl_reloadTime = Label:New{x=5}
+	local lbl_range = Label:New{x=5}
+	local lbl_damage = Label:New{x=5}
 	local lbl_greenballs = Label:New{valign = "top"}
 
 	lbl_name:SetCaption("")
@@ -213,39 +213,56 @@ function Darius:GetCardButton(card, width, height)
 			img_center.height = height*2/5
 			img_center:Invalidate()
 
-			lbl_health:SetCaption(GreenStr .. "Health: " .. card.health)
-			lbl_health.font.size = height/15
-			while (lbl_health.font:GetTextWidth(lbl_health.caption) > width - 15) do
-				lbl_health.font.size = lbl_health.font.size - 1
+			--Card data display
+			if (card.health ~= 0) then
+				lbl_health:SetCaption(GreenStr .. "Health: " .. card.health)
+				lbl_health.font.size = height/15
+				while (lbl_health.font:GetTextWidth(lbl_health.caption) > width - 15) do
+					lbl_health.font.size = lbl_health.font.size - 1
+				end
+			else
+				lbl_health:SetCaption("")
+				lbl_health.font.size = 0
 			end
-			lbl_health.x = 5
 			lbl_health.y = height/10 + height*2/5 + 5
 			lbl_health:Invalidate()
 
-			lbl_reloadTime:SetCaption(YellowStr .. "Reload: " .. card.reloadTime)
-			lbl_reloadTime.font.size = height/15
-			while (lbl_reloadTime.font:GetTextWidth(lbl_reloadTime.caption) > width - 15) do
-				lbl_reloadTime.font.size = lbl_reloadTime.font.size - 1
+			if (card.reloadTime ~= 0) then
+				lbl_reloadTime:SetCaption(YellowStr .. "Reload: " .. card.reloadTime)
+				lbl_reloadTime.font.size = height/15
+				while (lbl_reloadTime.font:GetTextWidth(lbl_reloadTime.caption) > width - 15) do
+					lbl_reloadTime.font.size = lbl_reloadTime.font.size - 1
+				end
+			else
+				lbl_reloadTime:SetCaption("")
+				lbl_reloadTime.font.size = 0
 			end
-			lbl_reloadTime.x = 5
 			lbl_reloadTime.y = lbl_health.y + lbl_health.font.size
 			lbl_reloadTime:Invalidate()
 
-			lbl_range:SetCaption(OrangeStr .. "Range: " .. card.range)
-			lbl_range.font.size = height/15
-			while (lbl_range.font:GetTextWidth(lbl_range.caption) > width - 15) do
-				lbl_range.font.size = lbl_range.font.size - 1
+			if (card.range ~= 0) then
+				lbl_range:SetCaption(OrangeStr .. "Range: " .. card.range)
+				lbl_range.font.size = height/15
+				while (lbl_range.font:GetTextWidth(lbl_range.caption) > width - 15) do
+					lbl_range.font.size = lbl_range.font.size - 1
+				end
+			else
+				lbl_range:SetCaption("")
+				lbl_range.font.size = 0
 			end
-			lbl_range.x = 5
 			lbl_range.y = lbl_reloadTime.y + lbl_reloadTime.font.size
 			lbl_range:Invalidate()
 
-			lbl_damage:SetCaption(RedStr .. "Damage: " .. card.damage)
-			lbl_damage.font.size = height/15
-			while (lbl_damage.font:GetTextWidth(lbl_damage.caption) > width - 15) do
-				lbl_damage.font.size = lbl_damage.font.size - 1
+			if (card.damage ~= 0) then
+				lbl_damage:SetCaption(RedStr .. "Damage: " .. card.damage)
+				lbl_damage.font.size = height/15
+				while (lbl_damage.font:GetTextWidth(lbl_damage.caption) > width - 15) do
+					lbl_damage.font.size = lbl_damage.font.size - 1
+				end
+			else
+				lbl_damage:SetCaption("")
+				lbl_damage.font.size = 0
 			end
-			lbl_damage.x = 5
 			lbl_damage.y = lbl_range.y + lbl_range.font.size
 			lbl_damage:Invalidate()
 

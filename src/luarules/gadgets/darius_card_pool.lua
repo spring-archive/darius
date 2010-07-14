@@ -103,20 +103,23 @@ local function SendDecks()  -- Sends the decks to the instance game manager
 	end
 end
 
+----------------------
+-- Member Functions --
+----------------------
 
-local function StartGame()
+function gadget:StartGame()
 	if (not GG.Darius) then
 		spEcho("Game failed to load properly")
 		return
 	end
 
 	Darius = GG.Darius
-	Darius:ClearGame()
+	Darius:ClearGame() --Clear any previous/current game
 
 	SendDecks()
 
 	Darius:AddGreenballs(20)
-	spEcho("Test = "..test)
+	if(debug_message) then debug_message("Test = "..test) end
 end
 
 
@@ -149,9 +152,9 @@ end
 -- Synced Callins --
 --------------------
 function gadget:Initialize()
-	if (debug_message) then debug_message("Initiallizing Card Pool System") end
+	if (debug_message) then debug_message("Initializing Card Pool System") end
 	LoadCardsFromFiles()
-	StartGame()
+	gadget:StartGame()
 end
 
 function gadget:SaveData()
@@ -170,25 +173,37 @@ function gadget:SaveData()
 	end
 	data.test = test
 
-	return data
+	--TODO: save Table
 end
 
-function gadget:LoadData(data)
+function gadget:LoadData()
+	--TODO: get Table
+	data = {}
 	pool = {}
 	deck = {}
 	if (debug_message) then debug_message("Loading Player Data") end
 	if (data and type(data) == 'table') then
-		for i=1, #data.pool do
-			table.insert(pool, GetCardDataByName(data.pool[i])) --Get the cards by name
-		end
-		for i=1, #data.deck do
-			deck[i] = {}
-			for j=1, #data.deck[i] do
-				table.insert(deck[i], GetCardDataByName(data.deck[i][j])) --Get the cards by name
+		if (type(data.pool) == 'table') then
+			for i=1, #data.pool do
+				table.insert(pool, GetCardDataByName(data.pool[i])) --Get the cards by name
 			end
 		end
-		test = data.test
+		if (type(data.deck) == 'table') then
+			for i=1, #data.deck do
+				if (type(data.deck[i]) == 'table') then
+					deck[i] = {}
+					for j=1, #data.deck[i] do
+						table.insert(deck[i], GetCardDataByName(data.deck[i][j])) --Get the cards by name
+					end
+				end
+			end
+		end
+		test = data.test or 0
 	end
+end
+
+function gadget:Shutdown()
+	data = gadget:SaveData() --TODO: Save data correctly
 end
 
 function gadget:RecvLuaMsg(message, playerID)--Messaging between Deck Editor and the card pool

@@ -1,12 +1,12 @@
 [MAP]
 {
-	description=Darius map;
+	description=First map;
+	maphardness=0;
 	tidalstrength=0;
+	maxmetal=0;
+	extractorradius=0;
+	autoshowmetal=0;
 	gravity=40;
-	maxmetal=100;
-	extractorradius=2;
-	maphardness=70;
-	autoshowmetal=1;
 	[ATMOSPHERE]
 	{
 		FogColor=0 0 0;
@@ -17,17 +17,7 @@
 		CloudDensity=0.8;
 		MinWind=30;
 		MaxWind=30;
-		Skybox=CorePrime.dds;
-	}
-	[WATER]
-	{
-		WaterSurfaceColor=1 1 1;
-		WaterPlaneColor=0 0 0;
-		WaterBaseColor=0 0 0;
-		WaterAbsorb=0 0 0.37;
-		WaterMinColor=0 0 0;
-		WaterDamage=0;
-		watertexture=black.jpg;
+		//Skybox=skybox.dds;
 	}
 	[LIGHT]
 	{
@@ -39,15 +29,6 @@
 		UnitSunColor=1 1 1;
 		UnitShadowDensity=1.5;
 		SpecularSunColor=1 1 1;
-	}
-	[TERRAINTYPE0]
-	{
-		name=default;
-		hardness=1;
-		tankmovespeed=1;
-		kbotmovespeed=1;
-		hovermovespeed=1;
-		shipmovespeed=1;
 	}
 	[TEAM0]
 	{

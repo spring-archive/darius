@@ -92,6 +92,8 @@ local function SendDecks()  -- Sends the decks to the instance game manager
 	end
 end
 
+local function SetActiveDecks(deck1, deck2) --Sets the decks the user wishes to use
+end
 ----------------------
 -- Member Functions --
 ----------------------
@@ -119,15 +121,52 @@ local function UnsyncCardPool()
 end
 
 local function UnsyncDecks()
+--[[
+The string syntax for a deck is:
+{,cardName1,,cardName2,,cardName3,,cardName2,}{,,cardName3,,cardName2,,cardName5,}
+
+That string would represent two different decks of which the first has 4 cards and the second has three.
+--]]
+
+	local deckString = ""
+
+	for i = 1, #deck do --Iterate all the decks
+		deckString = deckString .. "{"
+
+		for j = 1, #deck[i] do --Iterate all the cards in one deck
+			deckString = deckString .. "," .. deck[i][j].name .. ","
+		end
+
+		deckString = deckString .. "}"
+	end
+
+	SendToUnsynced("deckCollection", deckString)
+
 end
 
-local function ParseDeck()
+local function ParseDeck(deckString)
+
+	local newDeck = {}
+	local pattern = "%,(%w+)%," --hopefully this will work...
+
+	for cardName in deckString:gmatch(pattern) do
+		table.insert(newDeck, gadget:GetCardDataByName(cardName)) --FIXME: ridiculously inefficient...
+	end
+
+	return newDeck
 end
 
 -- Requires actual card
 local function UnsyncCard(card)
-	if not (card) then return end
-	if (debug_message) debug_message("Unsyncing card [" .. card.id .. "]")
+
+	if not (card) then
+		return
+	end
+
+	if (debug_message) then
+		debug_message("Unsyncing card [" .. card.id .. "]")
+	end
+
 	SendToUnsynced("CardTable",
 		card.id,
 		card.name,
@@ -164,7 +203,11 @@ end
 -- Synced Callins --
 --------------------
 function gadget:Initialize()
-	if (debug_message) then debug_message("Initializing Card Pool System") end
+
+	if (debug_message) then
+		debug_message("Initializing Card Pool System")
+	end
+
 	LoadCardsFromFiles()
 	gadget:StartGame()
 end
@@ -220,20 +263,27 @@ end
 
 function gadget:RecvLuaMsg(message, playerID)--Messaging between Deck Editor and the card pool
 
-	if message == "get card pool" then
+	if message == "GetCardPool" then
 		UnsyncCardPool()
 
-	elseif message == "get decks" then
+	elseif message == "GetDecks" then
 		UnsyncDecks()
 
-	elseif string.find(msg, "UnsyncCard:") then --Unsync Card data by name
-		cardName = msg:gsub("UnsyncCard:","")
-		card = gadget:GetCardDataByName(cardName)
+	elseif string.find(message, "UnsyncCard:") then --Unsync Card data by name
+		local cardName = message:gsub("UnsyncCard:","")
+		local card = gadget:GetCardDataByName(cardName)
 		UnsyncCard(card)
 
-	elseif message == "deck coming through..." then --FIXME separate the message from the deck data
-		ParseDeck(message)
+	elseif string.find(message, "SendingDeck:") then
+		message = message:gsub("SendingDeck:", "")
+		deck[#deck + 1] = ParseDeck(message) --FIXME: the position of the deck in the deck Collection?
 
+	elseif string.find(message, "SetActiveDecks:") then --Sets which decks the player wants to use in the game
+		message = message:gsub("SetActiveDecks:", "")
+		local separatorIndex = message:find(",")
+		local deckIndex1 = tonumber(message:sub(1, separatorIndex - 1))
+		local deckIndex2 = tonumber(message:sub(separatorIndex + 1))
+		SetActiveDecks(deckIndex1, deckIndex2)
 	end
 
 end

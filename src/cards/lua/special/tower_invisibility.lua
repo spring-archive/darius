@@ -1,7 +1,7 @@
 local card = {
-    name       = "Tower Invisibility",
+    name       = "Invisibility",
     type       = "Special",
-    img        = 'cards/images/special/tower_invisibility.png',
+    img        = 'cards/images/special/invisibility.png',
     health     = 0,
     reloadTime = 0,
     range      = 0,

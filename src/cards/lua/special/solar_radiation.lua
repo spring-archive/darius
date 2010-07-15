@@ -1,7 +1,7 @@
 local card = {
-    name       = "Solar Radiation",
+    name       = "Radiation",
     type       = "Special",
-    img        = 'cards/images/special/solar_radiation.png',
+    img        = 'cards/images/special/radiation.png',
     health     = 0,
     reloadTime = 0,
     range      = 0,

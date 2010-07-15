@@ -1,7 +1,7 @@
 local card = {
-    name       = "Castle revival",
+    name       = "Revival",
     type       = "Special",
-    img        = 'cards/images/special/castle_revival.png',
+    img        = 'cards/images/special/revival.png',
     health     = 0,
     reloadTime = 0,
     range      = 0,

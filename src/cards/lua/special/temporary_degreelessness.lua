@@ -1,7 +1,7 @@
 local card = {
-    name       = "Temporary Degreelessness",
+    name       = "IDDQD",
     type       = "Special",
-    img        = 'cards/images/special/temporary_degreelessness.png',
+    img        = 'cards/images/special/degreelessness.png',
     health     = 0,
     reloadTime = 0,
     range      = 0,
@@ -10,7 +10,7 @@ local card = {
     effect     = function()
         -- towers and the castle partially transparent/red
     end,
-    desc       = "Makes all towers and the castle completely invulnerable for 30 seconds."
+    desc       = "Activates the god mode... for 30 seconds."
 }
 
 return card

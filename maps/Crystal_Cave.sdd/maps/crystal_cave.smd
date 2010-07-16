@@ -1,6 +1,6 @@
 [MAP]
 {
-	description=small colorful cave map;
+	description=Small colorful cave map;
 	tidalstrength=0;
 	gravity=40;
 	maxmetal=0;
@@ -49,12 +49,12 @@
 	}
 	[TEAM0]
 	{
-		startposx=950;
-		startposz=100;
+		startposx=850;
+		startposz=200;
 	}
 	[TEAM1]
 	{
 		startposx=50;
-		startposz=950;
+		startposz=900;
 	}
 }

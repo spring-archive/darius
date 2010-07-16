@@ -1,7 +1,7 @@
 [MAP]
 {
 	description=Dunes;
-	maphardness=20;
+	maphardness=0;
 	tidalstrength=0;
 	maxmetal=0;
 	extractorradius=0;
@@ -37,7 +37,7 @@
 	}
 	[TEAM1]
 	{
-		StartPosX=40;
-		StartPosZ=575;
+		StartPosX=20;
+		StartPosZ=600;
 	}
 }

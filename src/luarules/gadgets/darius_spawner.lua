@@ -187,7 +187,7 @@ function SpawnWaveMonsters()
 	if monsters ~= nil then
 		for i, monster in ipairs(monsters) do
 			if monster[3] > 0 then
-				local unit = spCreateUnit(monster[1], x_src + i * 200, y_src, z_src, "south", monsterTeamNumber, false)
+				local unit = spCreateUnit(monster[1], x_src + i * 20, y_src, z_src, "south", monsterTeamNumber, false)
 				spGiveOrderToUnit(unit, CMD.MOVE, {x_dest, y_dest, z_dest}, {})
 				monstersLeftInTheWave = monstersLeftInTheWave + 1
 				spSetGameRulesParam("monstersLeftInTheWave", monstersLeftInTheWave)

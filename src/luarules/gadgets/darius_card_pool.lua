@@ -50,6 +50,9 @@ local deck = {} --Collection of decks
 deck[1] = {} --Deck 1; Stores the card tables themselves (for the cards in the deck)
 deck[2] = {} --Deck 2; Stores the card tables themselves (for the cards in the deck)
 
+local deckIndex1 = 1 --The index of the first deck the players wants to use
+local deckIndex2 = 2 --      --||--     second       --||--
+
 ---------------------
 -- Local Functions --
 ---------------------
@@ -85,14 +88,20 @@ local function LoadCardsFromFiles()
 end
 
 local function SendDecks()  -- Sends the decks to the instance game manager
-	for i=1, #deck do
-		for j=1, #deck[i] do
-			Darius:AddCard(table.copy(deck[i][j]), i) --Card table must be copied to create unique instance
-		end
+
+	for i=1, #deck[deckIndex1] do
+		Darius:AddCard(table.copy(deck[deckIndex1][i]), i) --Card table must be copied to create unique instance
 	end
+
+	for i=1, #deck[deckIndex2] do
+		Darius:AddCard(table.copy(deck[deckIndex2][i]), i)
+	end
+
 end
 
 local function SetActiveDecks(deck1, deck2) --Sets the decks the user wishes to use
+	deckIndex1 = deck1
+	deckINdex2 = deck2
 end
 ----------------------
 -- Member Functions --
@@ -280,10 +289,10 @@ function gadget:RecvLuaMsg(message, playerID)--Messaging between Deck Editor and
 
 	elseif string.find(message, "SetActiveDecks:") then --Sets which decks the player wants to use in the game
 		message = message:gsub("SetActiveDecks:", "")
-		local separatorIndex = message:find(",")
-		local deckIndex1 = tonumber(message:sub(1, separatorIndex - 1))
-		local deckIndex2 = tonumber(message:sub(separatorIndex + 1))
-		SetActiveDecks(deckIndex1, deckIndex2)
+		local separatorIndex = message:find(",") -- The deck numbers should be separated by a ,
+		local index1 = tonumber(message:sub(1, separatorIndex - 1))
+		local index2 = tonumber(message:sub(separatorIndex + 1))
+		SetActiveDecks(index1, index2)
 	end
 
 end

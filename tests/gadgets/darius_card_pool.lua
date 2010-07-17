@@ -9,18 +9,21 @@ GG.Darius = {}
 ---------------------
 -- Table Functions --
 ---------------------
-function table.copy(t)
-	local t2 = {}
-	for k,v in pairs(t) do
-		t2[k] = v
-	end
-	return t2
-end
+function table.copy(t) end --Defined in darius_card_pool
+function table.tostring(t) end --Defined in darius_card_pool
+function string.totable(s) end --Defined in darius_card_pool
 
 function table.compare(t1, t2)
+	if (t1 == t2) then return true end
+	if (type(t1) ~= "table") then return false end
+	if (type(t2) ~= "table") then return false end
 	if (#t1 ~= #t2) then return false end
 	for k,v in pairs(t1) do
-		if (t2[k] ~= v) then return false end
+		if (type(v) == "table") then
+			if not (table.compare(v, t2[k])) then return false end
+		else
+			if (t2[k] ~= v) then return false end
+		end
 	end
 	return true
 end
@@ -80,6 +83,7 @@ local synced = true
 local messages = {}
 local cards = {}
 local greenballs = 0
+local savedTable = nil
 
 local VFSdirlist_called = false
 local VFSinclude_called = false
@@ -88,6 +92,10 @@ local cleargame_called = false
 ---------------------
 -- Spoof functions --
 ---------------------
+function table.save(t, file, header)
+	savedTable = table.copy(t)
+end
+
 function gadgetHandler:IsSyncedCode() return synced end
 
 function Spring.Echo(msg) table.insert(messages, msg) end
@@ -130,6 +138,7 @@ function teardown()
 	messages = {}
 	cards = {}
 	greenballs = 0
+	savedTable = nil
 
 	VFSdirlist_called = false
 	VFSinclude_called = false
@@ -144,6 +153,70 @@ end
 ----------------------------
 ------ Test functions ------
 ----------------------------
+
+---------------------
+-- Table functions --
+---------------------
+function test_StringToTable_Empty()
+	tableString = "{}"
+	expected = {}
+	t = string.totable(tableString)
+	assert_equal("table", type(t))
+	assert_equal(0, #t, table.tostring(messages))
+	assert_true(table.compare(expected, t), table.tostring(t))
+end
+
+function test_StringToTable_Simple()
+	tableString = "{Hello}"
+	expected = {"Hello"}
+	t = string.totable(tableString)
+	assert_equal("table", type(t))
+	assert_equal(1, #t, table.tostring(messages))
+	assert_equal("Hello", t[1], table.tostring(messages))
+	assert_true(table.compare(expected, t), table.tostring(t))
+end
+
+function test_StringToTable_Two()
+	tableString = "{First,Second}"
+	expected = {"First","Second"}
+	t = string.totable(tableString)
+	assert_equal("table", type(t))
+	assert_equal(2, #t, table.tostring(messages))
+	assert_equal("First", t[1], table.tostring(messages))
+	assert_equal("Second", t[2], table.tostring(messages))
+	assert_true(table.compare(expected, t), table.tostring(t))
+end
+
+function test_StringToTable_Explicit()
+	tableString = "{hello = Hello}"
+	expected = {hello = "Hello"}
+	t = string.totable(tableString)
+	assert_equal("table", type(t))
+	assert_equal("Hello", t['hello'], table.tostring(t))
+	assert_true(table.compare(expected, t), table.tostring(t))
+end
+
+function test_StringToTable_Nested()
+	tableString = "{{first},{second}}"
+	expected = {{"first"},{"second"}}
+	t = string.totable(tableString)
+	assert_equal("table", type(t))
+	assert_equal(2, #t, table.tostring(messages))
+	assert_equal("table", type(t[1]), table.tostring(messages))
+	assert_equal("table", type(t[2]), table.tostring(messages))
+	assert_true(table.compare(expected, t), table.tostring(t))
+end
+
+function test_StringToTable_ExplicitNested()
+	tableString = "{{first = first},{first = second}}"
+	expected = {{first = "first"},{first = "second"}}
+	t = string.totable(tableString)
+	assert_equal("table", type(t))
+	assert_equal(2, #t, table.tostring(messages))
+	assert_equal("table", type(t[1]), tostring(t[1]))
+	assert_equal("table", type(t[2]), tostring(t[2]))
+	assert_true(table.compare(expected, t), table.tostring(t))
+end
 
 --------------------
 -- Initialization --
@@ -175,27 +248,33 @@ end
 -- StartGame --
 ---------------
 
-function test_ClearOldGame()
+function test_ClearsOldGame()
 	gadget:StartGame()
 	assert_true(cleargame_called, "Old Game not cleared")
 end
 
-function test_SetGreenballs()
+function test_DeckSending_NoDecks()
 	gadget:StartGame()
-	assert_equal(20, greenballs)
+	assert_equal(0, #cards, "Should not have cards to send")
 end
 
-function test_DeckSending()
+function test_DeckSending_ValidDecks()
+	gadget:Initialize() --Loads data
 	gadget:StartGame()
-	assert_equal(0, #cards, "Should not have games to send")
+	gadget:ParseDecks("{{Fire,},{Stone,},}")
+	assert_equal(2, #cards, "Should have cards to send")
 end
 
-function test_DeckSending_Loaded()
-	gadget:Initialize()
-	assert_equal(3, #cards, "Wrong number of cards sent")
-	assert_equal(1, cards[1].deck, "Material Card not added to deck correctly")
-	assert_equal(2, cards[2].deck, "Weapon Card not added to deck correctly")
-	assert_equal(3, cards[3].deck, "Special Card not added to deck correctly")
+function test_Greenballs_NoDecks()
+	gadget:StartGame()
+	assert_equal(0, greenballs, table.tostring(messages))
+end
+
+function test_Greenballs_ValidDecks()
+	gadget:Initialize() --Loads data
+	gadget:StartGame()
+	gadget:ParseDecks("{{Fire,},{Stone,},}")
+	assert_equal(20, greenballs, table.tostring(messages))
 end
 
 --------------------
@@ -203,10 +282,14 @@ end
 --------------------
 
 function test_SavePlayerData()
+	RunAsUnsynced()
 	gadget:SaveData()
+	assert_equal("Saving Player Data", messages[1])
+	assert_equal("Saving to LuaUI/Config/Darius_data.lua", messages[2])
 end
 
 function test_LoadPlayerData()
+	RunAsUnsynced()
 	gadget:LoadData()
 end
 

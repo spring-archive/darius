@@ -16,7 +16,7 @@ end
 local spEcho            = Spring.Echo
 local spSendLuaRulesMsg = Spring.SendLuaRulesMsg
 
-local debug_message = spEcho
+--local debug_message = spEcho
 
 ---------------------
 -- Table Functions --
@@ -39,9 +39,9 @@ function table.tostring(t)
 	i = 0
 	for k,v in pairs(t) do
 		if (type(v) == "table") then --Next level needed for effects
-			str = str .. k.. " = " .. table.tostring(v) .. ", "
+			str = str .. k.. " = '" .. table.tostring(v) .. "', "
 		else
-			str = str .. k.. " = " .. v .. ", "
+			str = str .. k.. " = '" .. v .. "', "
 		end
 	end
 	str = str .. "}"
@@ -49,35 +49,38 @@ function table.tostring(t)
 end
 
 function string.totable(s) --Incomplete
---	t = {}
---	for tablestr in s:gmatch("%{(%w+)%}") do --Get Subtables
---		table.insert(t, string.totable(tablestr))
---	end
---	for word in s:gmatch("(%w+)%,") do --Get
---		table.insert(t, word)
---	end
---	return t
-	--Remove outer brackets
-	if (s:sub(1) == '{') then s = s:sub(2) end
-	if (s:sub(-1) == ',') then s = s:sub(-2, 1) end
-	if (s:sub(-1) == '{') then s = s:sub(-2, 1) end
-	s = s .. ','        -- ending comma
 	local t = {}        -- table to collect fields
+	if (not s) then return t end
+	--Strip outer brackets
+	if (s:sub(1,1) == '{') then s = s:sub(2) end
+	while (s:sub(-1,-1) == ',') do s = s:sub(1, -2) end
+	if (s:sub(-1,-1) == "}") then s = s:sub(1, -2) end
+	while (s:sub(-1,-1) == ',') do s = s:sub(1, -2) end
+	s = s .. ','        -- add ending comma
+	if (debug_message) then debug_message("String to Table: " .. s) end
 	local fieldstart = 1
 	while (fieldstart < string.len(s)) do
-		-- next field is table? (start with '{'?)
-		if (s[fieldstart] == '{') then
+		-- next field is table? (starts with '{'?)
+		if (s:sub(fieldstart, fieldstart) == '{') then
 			local i
 			-- find closing bracket
-			i = string.find(s, '}', fieldstart+1) --NOTE: second table inside causes problems
+			i = s:find("}", fieldstart+1) --NOTE: second table inside causes problems
 			if not i then error('unmatched bracket') end
 
-			local f = string.sub(s, fieldstart+1, i-1)
+			local f = s:sub(fieldstart+1, i-1)
 			table.insert(t, string.totable(f))
-			fieldstart = string.find(s, ',', i) + 1
+			fieldstart = s:find(",", i) + 1
 		else -- find next comma
-			local nexti = string.find(s, ',', fieldstart)
-			table.insert(t, string.sub(s, fieldstart, nexti-1))
+			local nexti = s:find(',', fieldstart)
+			local f = s:sub(fieldstart, nexti-1)
+			local k, v = f:match("(%w+) = (%w+)")
+			if not v then
+				if (debug_message) then debug_message("field: " .. f) end
+				if (f ~= "") then table.insert(t, f) end --TODO: Trim string
+			else
+				if (debug_message) then debug_message("field: " .. f .. "=>" .. tostring(k) .. " = " .. tostring(v)) end
+				t[k] = v -- => t['str'] = val.  TODO: Remove ''s
+			end
 			fieldstart = nexti + 1
 		end
 	end
@@ -186,11 +189,11 @@ local function SendDecksToSession()  -- Sends the decks to the instance game man
 	if (not decks[deck2Index]) then return false end
 
 	for i=1, #decks[deck1Index] do
-		Darius:AddCard(table.copy(decks[deck1Index][i]), i) --Card table must be copied to create unique instance
+		Darius:AddCard(table.copy(decks[deck1Index][i]), 1) --Card table must be copied to create unique instance
 	end
 
 	for i=1, #decks[deck2Index] do
-		Darius:AddCard(table.copy(decks[deck2Index][i]), i)
+		Darius:AddCard(table.copy(decks[deck2Index][i]), 2)
 	end
 
 	return true
@@ -214,7 +217,6 @@ local function SetActiveDeckIndexes(index1, index2) --Sets and checks the decks 
 
 		else -- Increase the count of this card
 			cardsUsed[cardName] = cardsUsed[cardName] + 1
-
 		end
 	end
 
@@ -260,25 +262,6 @@ local function SetActiveDeckIndexes(index1, index2) --Sets and checks the decks 
 
 	return true
 end
-----------------------
--- Member Functions --
-----------------------
-
-function gadget:StartGame()
-	if (not GG.Darius) then
-		spEcho("Game failed to load properly")
-		return
-	end
-
-	Darius = GG.Darius
-	Darius:ClearGame() --Clear any previous/current game
-
-	if (SendDecksToSession()) then
-		Darius:AddGreenballs(20)
-	else
-		spEcho("Could not start game, decks are not valid ("..deck1Index..", "..deck2Index..")")
-	end
-end
 
 -------------------
 -- Communication --
@@ -291,7 +274,6 @@ end
 
 local function ParsePool(poolString)
 	local newPool = string.totable(poolString)
-	newPool = {"Stone", "Fire",}
 	pool = {}
 	for i = 1, #newPool do
 		table.insert(pool, gadget:GetCardDataByName(newPool[i]))
@@ -303,15 +285,17 @@ local function UnsyncDecks()
 	SendToUnsynced("decksCollection", decksString)
 end
 
-local function ParseDecks(decksString)
+function gadget:ParseDecks(decksString)
 	local newDecks = string.totable(decksString) -- => "local newDecks = {{..,},{..,},..,}"
-	newDecks = {{"Stone",},{"Fire",},}
 	decks = {}
 	for i = 1, #newDecks do
-		decks[i] = {}
+		if (debug_message) then debug_message("Creating deck " .. i .. ".") end
+		deck = {}
 		for j = 1, #newDecks[i] do
-			table.insert(decks[i], gadget:GetCardDataByName(newDecks[i][j]))
+			if (debug_message) then debug_message("Adding card " .. newDecks[i][j] .. " to deck " .. i .. ".") end
+			table.insert(deck, gadget:GetCardDataByName(newDecks[i][j]))
 		end
+		decks[i] = deck
 	end
 end
 
@@ -336,6 +320,23 @@ end
 -------------------------
 -- Card pool functions --
 -------------------------
+function gadget:StartGame()
+	if (not GG.Darius) then
+		spEcho("Game failed to load properly")
+		return
+	end
+
+	Darius = GG.Darius
+	Darius:ClearGame() --Clear any previous/current game
+
+	if not (SendDecksToSession()) then
+		spEcho("Could not start game, decks are not valid ("..deck1Index..", "..deck2Index..")")
+		return false
+	end
+	Darius:AddGreenballs(20)
+	return true
+end
+
 function gadget:AddCardToPlayer(cardName, amount)
 
 	--If no amount was given, add one card
@@ -420,7 +421,8 @@ function gadget:RecvLuaMsg(message, playerID)--Messaging between Deck Editor and
 
 	elseif string.find(message, "SetDecks:") then
 		message = message:gsub("SetDecks:", "")
-		ParseDecks(message)
+		if (debug_message) then debug_message("Received SetDecks:"..message) end
+		gadget:ParseDecks(message)
 
 	elseif string.find(message, "SetActiveDecks:") then --Sets which decks the player wants to use in the game by index
 		message = message:gsub("SetActiveDecks:", "")
@@ -446,14 +448,9 @@ VFS.Include(LUAUI_DIRNAME .. 'savetable.lua')
 pool = {} -- Stores names only
 decks = {} -- Stores names only
 
-----------------------
--- Unsynced Callins --
-----------------------
-
-function gadget:Initialize() -- I believe that this is guaranteed to run after its synced side counterpart
-	gadget:LoadData()
-	spSendLuaRulesMsg("StartNewGame")
-end
+-------------------------------
+-- Unsynced Member Functions --
+-------------------------------
 
 function gadget:LoadData()
 	if (debug_message) then debug_message("Loading Player Data") end
@@ -474,6 +471,7 @@ function gadget:LoadData()
 			decksString = CreateDecksString(data.decks)
 			spSendLuaRulesMsg("SetDecks:"..decksString)
 			if (debug_message) then debug_message("Decks = " .. table.tostring(data.decks)) end
+			if (debug_message) then debug_message("SetDecks:"..decksString) end
 			decks = data.decks --Unsynced side
 		end
 	end
@@ -487,6 +485,15 @@ function gadget:SaveData()
 	if (debug_message) then debug_message("Saving to "..GAMEDATA_FILENAME) end
 	--Save Table as script file
 	table.save(data, GAMEDATA_FILENAME, '-- Darius Game Data')
+end
+
+----------------------
+-- Unsynced Callins --
+----------------------
+
+function gadget:Initialize() -- I believe that this is guaranteed to run after its synced side counterpart
+	gadget:LoadData()
+	spSendLuaRulesMsg("StartNewGame")
 end
 
 function gadget:Shutdown()

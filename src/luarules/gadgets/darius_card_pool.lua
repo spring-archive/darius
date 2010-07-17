@@ -57,7 +57,7 @@ function string.totable(s) --Incomplete
 	if (s:sub(-1,-1) == "}") then s = s:sub(1, -2) end
 	while (s:sub(-1,-1) == ',') do s = s:sub(1, -2) end
 	s = s .. ','        -- add ending comma
-	if (debug_message) then debug_message("String to Table: " .. s) end
+	--if (debug_message) then debug_message("String to Table: " .. s) end
 	local fieldstart = 1
 	while (fieldstart < string.len(s)) do
 		-- next field is table? (starts with '{'?)
@@ -75,10 +75,10 @@ function string.totable(s) --Incomplete
 			local f = s:sub(fieldstart, nexti-1)
 			local k, v = f:match("(%w+) = (%w+)")
 			if not v then
-				if (debug_message) then debug_message("field: " .. f) end
+				--if (debug_message) then debug_message("field: " .. f) end
 				if (f ~= "") then table.insert(t, f) end --TODO: Trim string
 			else
-				if (debug_message) then debug_message("field: " .. f .. "=>" .. tostring(k) .. " = " .. tostring(v)) end
+				--if (debug_message) then debug_message("field: " .. f .. "=>" .. tostring(k) .. " = " .. tostring(v)) end
 				t[k] = v -- => t['str'] = val.  TODO: Remove ''s
 			end
 			fieldstart = nexti + 1
@@ -462,7 +462,7 @@ function gadget:LoadData()
 	--Get table by executing script file
 
 	--TODO: Make sure exists
-	if not (file_exists) then return false end
+	if not (VFS.FileExists(GAMEDATA_FILENAME)) then return false end
 
 	if (debug_message) then debug_message("Loading " .. GAMEDATA_FILENAME) end
 	data = VFS.Include(GAMEDATA_FILENAME)

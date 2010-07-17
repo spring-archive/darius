@@ -196,9 +196,69 @@ local function SendDecksToSession()  -- Sends the decks to the instance game man
 	return true
 end
 
-local function SetActiveDeckIndexes(index1, index2) --Sets the decks the user wishes to use
+local function SetActiveDeckIndexes(index1, index2) --Sets and checks the decks the user wishes to use
+
+	if not (index1 and index2) then
+		return false
+	end
+
+	local cardsUsed = {} --A table of (card name, amount) pairs
+
+	--Count the amount of cards in the decks
+	for i = 1, #decks[index1] do
+
+		local cardName = decks[index1].name
+
+		if cardsUsed[cardName] == nil then --The first instance of this card in the deck
+			cardsUsed[cardName] = 1
+
+		else -- Increase the count of this card
+			cardsUsed[cardName] = cardsUsed[cardName] + 1
+
+		end
+	end
+
+	-- Do exactly the same for the second deck
+	for i = 1, #decks[index2] do
+
+		local cardName = decks[index2].name
+
+		if cardsUsed[cardName] == nil then
+			cardsUsed[cardName] = 1
+
+		else
+			cardsUsed[cardName] = cardsUsed[cardName] + 1
+
+		end
+	end
+
+	--Check that the pool has atleast as many instances of a certain card as the cardsUsed-table
+	for i = 1, #pool do
+
+		local cardName = pool[i].name
+
+		if cardsUsed[cardName] == nil then
+			--The card is not used in the decks => do nothing
+
+		else
+			--The card is used => decrease the count (this way the cardsUsed-table tells us how many instances of that card we still need)
+			cardsUsed[cardName] = cardsUsed[cardName] - 1
+		end
+	end
+
+	--And finally check that there is no over use of a certain card in the cardsUsed-table
+	for _, amount in pairs(cardsUsed) do
+
+		if amount > 0 then --There are more instances of the card in the decks than in the pool
+			return false
+		end
+	end
+
+	--Decks passed the test => they can be supported by the card pool
 	deck1Index = index1
 	deck2Index = index2
+
+	return true
 end
 ----------------------
 -- Member Functions --
@@ -252,7 +312,7 @@ local function ParseDecks(decksString)
 		for j = 1, #newDecks[i] do
 			table.insert(decks[i], gadget:GetCardDataByName(newDecks[i][j]))
 		end
-	end	
+	end
 end
 
 -- Requires actual card
@@ -277,10 +337,38 @@ end
 -- Card pool functions --
 -------------------------
 function gadget:AddCardToPlayer(cardName, amount)
+
+	--If no amount was given, add one card
+	amount = amount or 1
+
+	for i = 1, amount do
+		table.insert(pool, GetCardDataByName(cardName))
+	end
+
 	UnsyncCardPool()
 end
 
 function gadget:RemoveCardFromPlayer(cardName, amount)
+
+	--If no amount was given, remove one card
+	amount = amount or 1
+
+	--Index for the last seen instance of the card
+	local previousInstance = 1
+
+	--
+	for i = 1, amount do
+
+		for j = previousInstance, #pool do --We don't need to loop the whole pool, it's enough to continue from the last instance
+
+			if pool[j].name == cardName then
+				table.remove(pool, j)
+				previousInstance = j
+				break --Breaks the inner loop
+			end
+		end
+	end
+
 	UnsyncCardPool()
 end
 
@@ -336,7 +424,7 @@ function gadget:RecvLuaMsg(message, playerID)--Messaging between Deck Editor and
 
 	elseif string.find(message, "SetActiveDecks:") then --Sets which decks the player wants to use in the game by index
 		message = message:gsub("SetActiveDecks:", "")
-		local separatorIndex = message:find(",") -- The deck numbers should be separated by a ,
+		local separatorIndex = message:find(",") -- The deck numbers should be separated by a comma
 		local index1 = tonumber(message:sub(1, separatorIndex - 1))
 		local index2 = tonumber(message:sub(separatorIndex + 1))
 		SetActiveDeckIndexes(index1, index2)

@@ -87,9 +87,9 @@ function string.totable(s) --Incomplete
 	return t
 end
 
----------------------------
--- Table to String Funcs --
----------------------------
+-----------------------
+-- Table Conversions -- (Decks and pool)
+-----------------------
 --[[
 The string syntax for the decks collection is:
 {{cardName1,cardName2,cardName3,cardName2,},{,cardName3,cardName2,cardName5,},}
@@ -278,6 +278,7 @@ local function ParsePool(poolString)
 	for i = 1, #newPool do
 		table.insert(pool, gadget:GetCardDataByName(newPool[i]))
 	end
+	return pool
 end
 
 local function UnsyncDecks()
@@ -297,6 +298,7 @@ function gadget:ParseDecks(decksString)
 		end
 		decks[i] = deck
 	end
+	return decks
 end
 
 -- Requires actual card
@@ -394,6 +396,11 @@ function gadget:Initialize()
 	LoadCardsFromFiles()
 end
 
+function gadget:GameFrame(f) --This is a temporary thing for testing
+	UnsyncCardPool()
+	UnsyncDecks()
+end
+
 function gadget:Shutdown()
 end
 
@@ -441,9 +448,7 @@ else --unsynced
 ---------------------
 -- Unsynced Locals --
 ---------------------
-local LUAUI_DIRNAME = 'LuaUI/'
-local GAMEDATA_FILENAME = LUAUI_DIRNAME .. 'Config/Darius_data.lua'
-VFS.Include(LUAUI_DIRNAME .. 'savetable.lua')
+local GAMEDATA_FILENAME = 'LuaUI/Config/Darius_data.lua'
 
 pool = {} -- Stores names only
 decks = {} -- Stores names only
@@ -455,7 +460,10 @@ decks = {} -- Stores names only
 function gadget:LoadData()
 	if (debug_message) then debug_message("Loading Player Data") end
 	--Get table by executing script file
-	--TODO: Make sure exists (Minor issue, as it fails gently)
+
+	--TODO: Make sure exists
+	if not (file_exists) then return false end
+
 	if (debug_message) then debug_message("Loading " .. GAMEDATA_FILENAME) end
 	data = VFS.Include(GAMEDATA_FILENAME)
 
@@ -475,29 +483,40 @@ function gadget:LoadData()
 			decks = data.decks --Unsynced side
 		end
 	end
+	return true
 end
 
-function gadget:SaveData()
-	if (debug_message) then debug_message("Saving Player Data") end
-	data = {}
-	data.pool = pool
-	data.decks = decks
-	if (debug_message) then debug_message("Saving to "..GAMEDATA_FILENAME) end
-	--Save Table as script file
-	table.save(data, GAMEDATA_FILENAME, '-- Darius Game Data')
+-- Unsynced
+
+local function RecvCardPool(_, str)
+	if (debug_message) then debug_message("Unsynced:Receiving Pool: " .. str) end
+	pool = string.totable(str)
+	if (Script.LuaUI('SaveGameData')) then
+		Script.LuaUI.SaveGameData(pool, decks)
+	end
+end
+
+local function RecvDecks(_, str)
+	if (debug_message) then debug_message("Unsynced:Receiving Decks: " .. str) end
+	decks = string.totable(str)
+	if (Script.LuaUI('SaveGameData')) then
+		Script.LuaUI.SaveGameData(pool, decks)
+	end
 end
 
 ----------------------
 -- Unsynced Callins --
 ----------------------
 
-function gadget:Initialize() -- I believe that this is guaranteed to run after its synced side counterpart
+function gadget:Initialize() -- I believe that this is guaranteed to run after its synced side counterpart (though it might run concurrently)
+	gadgetHandler:AddSyncAction("cardpool", RecvCardPool)
+	gadgetHandler:AddSyncAction("decksCollection", RecvDecks)
+
 	gadget:LoadData()
 	spSendLuaRulesMsg("StartNewGame")
 end
 
 function gadget:Shutdown()
-	gadget:SaveData()
 end
 
 end -- End synced check

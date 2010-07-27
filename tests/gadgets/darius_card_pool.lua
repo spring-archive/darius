@@ -1,6 +1,6 @@
 -- System spoof --
 gadget = {}
-Spring = {} 
+Spring = {}
 gadgetHandler = {}
 VFS = {}
 GG = {}
@@ -33,8 +33,8 @@ end
 ------------------
 
 local exampleMaterial = {
-	name = "Stone", 
-	type = "Material", 
+	name = "Stone",
+	type = "Material",
 	img = 'cards/images/stone.png',
 	health =   1200,
 	reloadTime = 0.5,
@@ -45,8 +45,8 @@ local exampleMaterial = {
 }
 
 local exampleWeapon = {
-	name = "Fire", 
-	type = "Weapon", 
+	name = "Fire",
+	type = "Weapon",
 	img = 'cards/images/fire.png',
 	health =   1200,
 	reloadTime = 0.5,
@@ -60,14 +60,14 @@ local exampleWeapon = {
 local exampleEffect = {
 	needsPos = false,
 	needsUnit = false,
-	effect = function() effect_called = true end, 
+	effect = function() effect_called = true end,
 	display = function() end,
 	desc = "Freezes enemies in place",
 }
 
 local exampleSpecial = {
-	name = "Freeze", 
-	type = "Special", 
+	name = "Freeze",
+	type = "Special",
 	img = 'cards/images/freeze.png',
 	greenballs = 0,
 	effect = exampleEffect,
@@ -88,6 +88,8 @@ local savedTable = nil
 local VFSdirlist_called = false
 local VFSinclude_called = false
 local cleargame_called = false
+
+local lastLuaMessage = "" --Strores the lastest message sent with SendToUnsynced()
 
 ---------------------
 -- Spoof functions --
@@ -122,6 +124,12 @@ function GG.Darius:AddCard(card, deckID)
 	table.insert(cards, card)
 end
 
+function SendToUnsynced(name, message, ...)
+	name = name or "nil"
+	message = message or "nil"
+
+	lastLuaMessage = name .. message
+end
 ----------------
 -- Test Setup --
 ----------------
@@ -291,6 +299,62 @@ end
 function test_LoadPlayerData()
 	RunAsUnsynced()
 	gadget:LoadData()
+end
+
+
+-----------------------
+-- Interface Testing --
+-----------------------
+
+function test_AddCardToPlayer()
+	gadget:Initialize()
+	gadget:AddCardToPlayer(exampleMaterial.name)
+	assert_true(string.find(lastLuaMessage, exampleMaterial.name) >= 0) --Checks that the unsynced card pool contains the card name
+end
+
+function test_AddManyCardsToPlayer()
+	local amount = 10 --amount of cards to add
+	local lastInstance = 1
+
+	gadget:Initialize()
+	gadget:AddCardToPlayer(exampleWeapon.name, amount)
+
+	for i = 1, amount do
+		lastInstance = string.find(lastLuaMessage, exampleWeapon.name, lastInstance)
+		assert_true(lastInstance >= 0)
+	end
+
+end
+
+function test_RemoveCardFromPLayer()
+	gadget:Initialize()
+	gadget:RemoveCardFromPlayer(exampleMaterial.name)
+	gadget:RemoveCardFromPlayer(exampleWeapon.name)
+	gadget:RemoveCardFromPlayer(exampleSpecial.name)
+	gadget:RemoveCardFromPlayer(exampleEffect.name)
+
+	assert_equal(lastLuaMessage, "cardpool{}")
+end
+
+function test_GetCardDataByName()
+	gadget:Initialize()
+	assert_equal(gadget:GetCardDataByName(exampleMaterial.name), exampleMaterial)
+end
+
+
+
+function test_Messaging()
+	gadget:Initialize()
+
+	gadget:RecvLuaMsg("UnsyncCardPool", 1)
+	assert_true(string.find(lastLuaMessage, "cardpool") >= 0)
+
+	gadget:RecvLuaMsg("UnsyncDecks", 1)
+	assert_true(string.find(lastLuaMessage, "decksCollection") >= 0)
+
+	gadget:RecvLuaMsg("UnsyncCard:" .. exampleWeapon.name, 1)
+	assert_true(string.find(lastLuaMessage, "CardTable") >= 0)
+
 end
 
 --------------

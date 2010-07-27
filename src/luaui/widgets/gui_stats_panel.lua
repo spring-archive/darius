@@ -6,7 +6,7 @@ function widget:GetInfo()
 		date      = "July 1, 2010",
 		license   = "GNU GPL, v2 or later",
 		layer     = 100,
-		enabled   = true -- enabled by default
+		enabled   = true
 	}
 end
 
@@ -148,7 +148,7 @@ local function CreatePanel()
 		dockable = true,
 		draggable = true,
 		resizable = true,
-		parent = screen0,
+		parent = Screen0,
 		children = {
 			-- static labels
 			Label:New { caption = 'Time survived:',             textColor = color.sub_fg, y=0  },
@@ -174,8 +174,6 @@ end
 
 -- inits Chili-stuff, creates the panel and gets initial stats
 function widget:Initialize()
-	spEcho("Darius in-game stats panel enabled")
-
 	-- if chili is not loaded, disable this widget
 	if not WG.Chili then
 		widgetHandler:RemoveWidget(widget)
@@ -186,11 +184,13 @@ function widget:Initialize()
 	Chili = WG.Chili
 	Window = Chili.Window
 	Label = Chili.Label
-	screen0 = Chili.Screen0
+	Screen0 = Chili.Screen0
 
 	-- create the panel and get initial stats
 	CreatePanel()
 	UpdateStats()
+	
+	spEcho("Darius in-game stats panel enabled")
 end
 
 
@@ -223,12 +223,12 @@ end
 
 
 function widget:Shutdown()
-	spEcho("Darius in-game stats panel disabled")
-
 	-- delete the window
 	if (windowStats) then
-		screen0:RemoveChild(windowStats) -- remove window
+		Screen0:RemoveChild(windowStats) -- remove window
 		windowStats:Dispose() -- free the resources
 		windowStats = nil
 	end
+	
+	spEcho("Darius in-game stats panel disabled")
 end

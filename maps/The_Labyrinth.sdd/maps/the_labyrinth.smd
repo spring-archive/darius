@@ -1,7 +1,7 @@
 [MAP]
 {
 	description=Original TD-like map;
-	maphardness=0;
+	maphardness=1000;
 	tidalstrength=0;
 	maxmetal=0;
 	extractorradius=0;

@@ -1,12 +1,12 @@
 [MAP]
 {
 	description=Small colorful cave map;
+	maphardness=1000;
 	tidalstrength=0;
-	gravity=40;
 	maxmetal=0;
 	extractorradius=0;
-	maphardness=70;
 	autoshowmetal=0;
+	gravity=40;
 	[ATMOSPHERE]
 	{
 		FogColor=0 0 0;

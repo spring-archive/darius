@@ -53,11 +53,11 @@ local cards = {} -- The in-game card pool (not the player's full card collection
 
 local function getCardBackground(type)
 	if (type == "Material") then
-		return 'cards/images/stone.png' --Awaiting task 5#10
+		return 'cards/images/background/material.png'
 	elseif (type == "Weapon") then
-		return 'cards/images/fire.png' --Awaiting task 5#12
+		return 'cards/images/background/weapon.png'
 	elseif (type == "Special") then
-		return nil --Awaiting task 30#5
+		return 'cards/images/background/special.png'
 	end
 end
 

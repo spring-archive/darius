@@ -2,7 +2,7 @@ return {
 	PlayerName = "Darius",
 	MapName = "dunes.smf",
 
-	GameMode = 2,
+	GameMode = 1,
 	 -- 0 for "Kill everything"
 	 -- 1 for "Kill all factories"
 	 -- 2 for "Kill the Commander"
@@ -11,7 +11,7 @@ return {
 		return [[
 			[GAME]
 			{
-				GameType = Darius Tower Defense; //Complete Annihilation stable-7761
+				GameType = Darius Tower Defense 0.0; //Complete Annihilation stable-7761
 				Mapname = ]]..self.MapName..[[;
 
 				[MODOPTIONS]
@@ -25,7 +25,7 @@ return {
 
 					// Irrelevant for Darius:
 					StartMetal = 0;
-					StartEnergy = 0;
+					StartEnergy = 1000;
 					LauncherName = Darius Game Launcher;
 					LauncherVersion = 0.1;
 				}
@@ -53,7 +53,7 @@ return {
 				// List of AI controlled players:
 				[AI0]
 				{
-					Name = Invaders;
+					name = Invaders;
 					ShortName = NullAI;
 					Team = 0;
 					Host = 0;// Number of the PLAYER hosting the AI
@@ -66,7 +66,7 @@ return {
 					AllyTeam = 0;
 					Handicap = 0;
 					Side=random;
-					RGBColor = 0 0 1;
+					RGBColor = 1 0 0;
 					AIDLL=NullAI 0.1;
 					RemoveUnits = 1; //Not sure what this does
 					RemoveFeatures = 1; //Not sure what this does

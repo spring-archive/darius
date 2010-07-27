@@ -29,7 +29,7 @@
 
 local options = {
   {
-    key    = 'camode',
+    key    = 'dariusmode',
     name   = 'Game Mode',
     desc   = 'Change the game mode.',
     type   = 'list',

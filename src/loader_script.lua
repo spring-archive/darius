@@ -2,7 +2,7 @@ return {
 	PlayerName = "Darius",
 	MapName = "dunes.smf",
 
-	GameMode = 4,
+	GameMode = 2,
 	 -- 0 for "Kill everything"
 	 -- 1 for "Kill all factories"
 	 -- 2 for "Kill the Commander"
@@ -18,7 +18,7 @@ return {
 				{
 					GameMode = ]]..self.GameMode..[[;
 					ghostedbuildings = 1;
-					fixedallies = 0;
+					fixedallies = 1;
 					MaxUnits = 512;
 					MinSpeed = 0.1;
 					MaxSpeed=10;

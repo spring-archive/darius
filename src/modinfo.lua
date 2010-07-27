@@ -9,13 +9,13 @@
 --------------------------------------------------------------------------------
 
 return {
+  game='Darius Tower Defense',
+  shortgame='DTD',
   name='Darius Tower Defense',
-  description='Darius Tower Defense',
   shortname='DTD',
+  description='Darius Tower Defense',
   version='0.0',
   mutator='',
-  game='',
-  shortGame='',
   modtype=1,
   depend = {
     'Spring content v1',

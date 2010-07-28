@@ -8,9 +8,9 @@
 --------------------------------------------------------------------------------
 
 return {
-  game='Darius Tower Defense',
-  shortgame='DTD',
+  name='Darius Tower Defense',
   description='Darius Tower Defense',
+  shortname='DTD',
   version='0.1',
   mutator='',
   modtype=1,

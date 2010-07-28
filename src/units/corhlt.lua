@@ -97,7 +97,7 @@ unitDef = {
       },
 
       duration                = 0.05,
-      energypershot           = 27,
+      energypershot           = 0,
       explosionGenerator      = [[custom:BEAMWEAPON_HIT_YELLOW]],
       fireStarter             = 90,
       heightMod               = 1,

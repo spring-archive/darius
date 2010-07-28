@@ -29,7 +29,7 @@ unitDef = {
   idleTime               = 1800,
   levelGround            = false,
   mass                   = 45,
-  maxDamage              = 785,
+  maxDamage              = 7850,
   maxSlope               = 36,
   maxVelocity            = 0,
   maxWaterDepth          = 0,
@@ -85,7 +85,7 @@ unitDef = {
       },
 
       duration                = 0.02,
-      energypershot           = 0.1,
+      energypershot           = 0,
       explosionGenerator      = [[custom:BEAMWEAPON_HIT_RED]],
       fireStarter             = 30,
       heightMod               = 1,

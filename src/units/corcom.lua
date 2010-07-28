@@ -172,7 +172,7 @@ unitDef = {
         commanders = [[1]],
       },
 
-      energypershot           = 300,
+      energypershot           = 0,
       explosionGenerator      = [[custom:DGUNTRACE]],
       impulseBoost            = 0,
       impulseFactor           = 0,

@@ -87,7 +87,7 @@ unitDef = {
         subs    = 100,
       },
 
-      energypershot           = 300,
+      energypershot           = 0,
       explosionGenerator      = [[custom:lrpc_expl]],
       holdtime                = [[1]],
       impulseBoost            = 0.5,

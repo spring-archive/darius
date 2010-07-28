@@ -75,7 +75,7 @@ unitDef = {
       },
 
       edgeEffectiveness       = 0.25,
-      energypershot           = 80,
+      energypershot           = 0,
       explosionGenerator      = [[custom:MISSILE_HIT_SPHERE_120]],
       fireStarter             = 90,
       flightTime              = 4,
@@ -85,7 +85,7 @@ unitDef = {
       impulseFactor           = 0,
       interceptedByShieldType = 1,
       lineOfSight             = true,
-      metalpershot            = 80,
+      metalpershot            = 0,
       model                   = [[wep_m_avalanche.s3o]],
       noSelfDamage            = true,
       range                   = 2400,

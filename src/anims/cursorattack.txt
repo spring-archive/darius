@@ -1,2 +1,2 @@
 hotspot topleft
-frame  anims/ca_static/cursorattack_0.png  0.100
+frame  anims/cursorattack_0.png  0.100

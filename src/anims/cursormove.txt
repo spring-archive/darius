@@ -1,2 +1,2 @@
 hotspot topleft
-frame  anims/ca_static/cursormove_0.png  5 
+frame  anims/cursormove_0.png  5 

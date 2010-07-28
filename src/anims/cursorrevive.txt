@@ -1,2 +1,2 @@
 hotspot topleft
-frame  anims/ca_static/cursorrevive.png  0.3
+frame  anims/cursorrevive.png  0.3

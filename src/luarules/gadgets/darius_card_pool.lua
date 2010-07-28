@@ -345,7 +345,7 @@ function gadget:AddCardToPlayer(cardName, amount)
 	amount = amount or 1
 
 	for i = 1, amount do
-		table.insert(pool, GetCardDataByName(cardName))
+		table.insert(pool, gadget:GetCardDataByName(cardName))
 	end
 
 	UnsyncCardPool()

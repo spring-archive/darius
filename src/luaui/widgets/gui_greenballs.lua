@@ -37,7 +37,7 @@ function widget:Initialize()
 	Image = Chili.Image
 	screen0 = Chili.Screen0
 	
-	lblBallAmount = Label:New { y=5, x=40, width=60, autosize="false", align="right", textColor = color.game_fg, caption = '0', autosize=true, fontSize=20, valign='center' }
+	lblBallAmount = Label:New { y=5, x=40, width=60, autosize="false", align="right", textColor = color.game_fg, caption = '0', autosize=true, fontSize=30, valign='center' }
 	imgBall = Image:New { width=30, height=30, file = 'bitmaps/greenball.png' }
 	imgBall:Invalidate()
 	

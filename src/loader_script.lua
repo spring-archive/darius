@@ -11,7 +11,7 @@ return {
 		return [[
 			[GAME]
 			{
-				GameType = Darius Tower Defense 0.0; //Complete Annihilation stable-7761
+				GameType = Darius Tower Defense 0.1; //Complete Annihilation stable-7761
 				Mapname = ]]..self.MapName..[[;
 
 				[MODOPTIONS]

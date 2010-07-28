@@ -53,8 +53,8 @@ include("savetable.lua")
 
 
 local gl = gl
-local ORDER_FILENAME     = LUAUI_DIRNAME .. 'Config/CA_order.lua'
-local CONFIG_FILENAME    = LUAUI_DIRNAME .. 'Config/CA_data.lua'
+local ORDER_FILENAME     = LUAUI_DIRNAME .. 'Config/Darius_UI_order.lua'
+local CONFIG_FILENAME    = LUAUI_DIRNAME .. 'Config/Darius_UI_data.lua'
 local WIDGET_DIRNAME     = LUAUI_DIRNAME .. 'Widgets/'
 
 local SELECTOR_BASENAME = 'selector.lua'
@@ -74,11 +74,11 @@ local ipairs = ipairs
 local localWidgetsFirst = false
 local localWidgets = false
 
-if VFS.FileExists("LuaUI/Config/CA_data.lua") then
-  local cadata = include("Config/CA_data.lua")
-  if cadata["Local Widgets Config"] then
-    localWidgetsFirst = cadata["Local Widgets Config"].localWidgetsFirst
-    localWidgets = cadata["Local Widgets Config"].localWidgets
+if VFS.FileExists('Config/Darius_UI_data.lua') then
+  local data = include('Config/Darius_UI_data.lua')
+  if data["Local Widgets Config"] then
+    localWidgetsFirst = data["Local Widgets Config"].localWidgetsFirst
+    localWidgets = data["Local Widgets Config"].localWidgets
   end
 end
 

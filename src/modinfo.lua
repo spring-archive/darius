@@ -10,10 +10,8 @@
 return {
   game='Darius Tower Defense',
   shortgame='DTD',
-  name='Darius Tower Defense',
-  shortname='DTD',
   description='Darius Tower Defense',
-  version='0.0',
+  version='0.1',
   mutator='',
   modtype=1,
   depend = {

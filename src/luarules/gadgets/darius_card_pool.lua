@@ -286,6 +286,25 @@ local function UnsyncDecks()
 	SendToUnsynced("decksCollection", decksString)
 end
 
+local function UnsyncCard(card)
+	if not (card) then
+		return
+	end
+
+	SendToUnsynced("UnsyncingCard",
+		card.id,
+		card.name,
+		card.type,
+		card.img,
+		card.health,
+		card.reloadTime,
+		card.range,
+		card.damage,
+		card.greenballs,
+		card.desc
+	)
+end
+
 function gadget:ParseDecks(decksString)
 	local newDecks = string.totable(decksString) -- => "local newDecks = {{..,},{..,},..,}"
 	decks = {}
@@ -299,24 +318,6 @@ function gadget:ParseDecks(decksString)
 		decks[i] = deck
 	end
 	return decks
-end
-
--- Requires actual card
-local function UnsyncCard(card)
-	if not (card) then return end
-	--if (debug_message) then debug_message("Unsyncing card [" .. card.id .. "]") end
-	SendToUnsynced("CardTable",
-		card.id,
-		card.name,
-		card.type,
-		card.img,
-		card.health,
-		card.reloadTime,
-		card.range,
-		card.damage,
-		card.greenballs,
-		card.desc
-	)
 end
 
 -------------------------
@@ -397,8 +398,8 @@ function gadget:Initialize()
 end
 
 function gadget:GameFrame(f) --This is a temporary thing for testing
-	UnsyncCardPool()
-	UnsyncDecks()
+	--UnsyncCardPool()
+	--UnsyncDecks()
 end
 
 function gadget:Shutdown()
@@ -486,31 +487,52 @@ function gadget:LoadData()
 	return true
 end
 
--- Unsynced
 
+-------------------------------------
+-- Sending data to the widget side --
+-------------------------------------
 local function RecvCardPool(_, str)
 	if (debug_message) then debug_message("Unsynced:Receiving Pool: " .. str) end
+
 	pool = string.totable(str)
+
 	if (Script.LuaUI('SaveGameData')) then
 		Script.LuaUI.SaveGameData(pool, decks)
 	end
+
+	if (Script.LuaUI('SetDeckEditorCardPool')) then
+		Script.LuaUI.SetDeckEditorCardPool(pool)--The name of the widget registered global
+	end
+
 end
 
 local function RecvDecks(_, str)
 	if (debug_message) then debug_message("Unsynced:Receiving Decks: " .. str) end
+
 	decks = string.totable(str)
+
 	if (Script.LuaUI('SaveGameData')) then
 		Script.LuaUI.SaveGameData(pool, decks)
+	end
+
+	if (Script.LuaUI('SetDeckEditorDecks')) then
+		Script.LuaUI.SetDeckEditorDecks(decks)
+	end
+end
+
+local function RecvCard(_, ...)
+	if Script.LuaUI('SetDeckEditorActiveCard') then
+		Script.LuaUI.SetDeckEditorActiveCard(...)
 	end
 end
 
 ----------------------
 -- Unsynced Callins --
 ----------------------
-
 function gadget:Initialize() -- I believe that this is guaranteed to run after its synced side counterpart (though it might run concurrently)
-	gadgetHandler:AddSyncAction("cardpool", RecvCardPool)
+	gadgetHandler:AddSyncAction("cardpool", RecvCardPool)--This is the one that gets called on the SendToUnsynced
 	gadgetHandler:AddSyncAction("decksCollection", RecvDecks)
+	gadgetHandler:AddSyncAction("UnsyncingCard", RecvCard)
 
 	gadget:LoadData()
 	spSendLuaRulesMsg("StartNewGame")

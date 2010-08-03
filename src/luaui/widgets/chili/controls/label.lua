@@ -9,7 +9,7 @@ Label = Control:Inherit{
   padding = {0,0,0,0},
 
   autosize = true,
-  autoObeyLineHeight = false, --// (needs autosize) if true, autosize will obey the lineHeight (-> texts with the same line count will have the same height) 
+  autoObeyLineHeight = false, --// (needs autosize) if true, autosize will obey the lineHeight (-> texts with the same line count will have the same height)
 
   align    = "left",
   valign   = "center",
@@ -30,12 +30,15 @@ end
 --//=============================================================================
 
 function Label:SetCaption(newcaption)
-  if (self.caption == newcaption) then return end 
+  if (self.caption == newcaption) then return end
   self.caption = newcaption
   self:UpdateLayout()
   self:Invalidate()
 end
 
+function Label:HitTest()
+  return self
+end
 
 function Label:UpdateLayout()
 if (self.debug) then

@@ -181,6 +181,8 @@ local function LoadCardsFromFiles()
 		table.insert(pool, card) --Temporary (player gets one of each card)
 		table.insert(decks[3], card) --Temporary (puts the card into a deck once)
 	end
+
+	Spring.SetGameRulesParam("maximumcardamount", #pool) -- Used by the deck editor. DO NOT remove
 end
 
 local function SendDecksToSession()  -- Sends the decks to the instance game manager

@@ -15,28 +15,49 @@ local spSendLuaRulesMsg = Spring.SendLuaRulesMsg
 local spEcho = Spring.Echo
 
 -- Data Storage
-local cardPool = {}
-local decks = {}--Cards are stored only by card name
-local latestCard = {}--Cache for the latest card fetched from the pool
-local drawCardButton = false --Used by the UpdateDeckEditorUI to see when the card button needs to be drawn for the first time
+local cardPool = {}         -- Card pool is stored as (cardName, amount) -pairs e.g. cardPool["Fire"] = 5 The pool has five fire cards
+
+local decks = {}            -- Decks are stored as ana array of (cardName, amount) -pairs e.g. decks[2]["Fire"] = 3 Deck number 2 has 3 fore cards
+
+local latestCard = {}       --Cache for the latest card fetched from the pool
+
+local drawCardButton = false--Used by the UpdateDeckEditorUI to see when the card button needs to be drawn for the first time
+
 local maxCardAmount = 0
+local selectedCardName = ""  -- Name of the latest selected card
+local selectedDeckIndex = 1   -- Index of the deck that is currently under edit
 
 -- UI handles
 local deckEditorStack = nil
 local deckEditorWindow = nil
 local cardPoolLabels = {}
+local selectedDeckLabels = {}
 
 -- Data flags
-local poolReceived = false
-local decksReceived = false
+local poolHasChanged = false
+local decksHaveChanged = false
 
+
+-- Colours are pwetty!
 local VFSMODE      = VFS.RAW_FIRST
 local file = LUAUI_DIRNAME .. "Configs/crudemenu_conf.lua"
 local confdata = VFS.Include(file, nil, VFSMODE)
 local color = confdata.color
 
 
-
+function table.tostring(t)
+	str = "{"
+	i = 0
+	for k,v in pairs(t) do
+		if (type(v) == "table") then --Next level needed for effects
+			str = str .. k.. " = '" .. table.tostring(v) .. "', "
+		else
+			str = str .. k.. " = '" .. v .. "', "
+		end
+	end
+	str = str .. "}"
+	return str
+end
 function table.isempty(t)
 	for k, v in pairs(t) do
 		return false
@@ -97,7 +118,7 @@ local function GenerateOccuranceTable(t)
 	for i = 1, #t do
 
 		if occuranceTable[t[i]] == nil then
-			--This is the first occurance of this card
+			--This is the first occurance => set amount to 1
 			occuranceTable[t[i]] = 1
 		else
 			--Not the first occurance => increase the counter
@@ -118,13 +139,10 @@ local function GenerateDecksString()
 
 		decksString = decksString .. "{"
 
-		for j = 1, #decks[i] do
+		for cardName, amount in pairs(decks[i]) do
 
-			if decks[i][j] == nil then
-				--The card name is nil => it has been removed from the deck => no operations required
-			else
-				--We have a card => append it to the deck string
-				decksString = decksString .. decks[i][j] .. ","
+			for j = 1, amount do
+				decksString = decksString .. cardName
 			end
 		end
 
@@ -162,14 +180,16 @@ end
 
 
 local function SetDecks(deckCollection)
-	decks = deckCollection
-	decksReceived = true
+
+	for i = 1, #deckCollection do
+		table.insert(decks, i, GenerateOccuranceTable(deckCollection[i]))
+	end
+
+	decksHaveChanged = true
 end
 local function SetCardPool(pool)
 	cardPool = GenerateOccuranceTable(pool)
-	spEcho("!!!!!!!!!!Current card pool")
-	spEcho(cardPool)
-	poolReceived = true
+	poolHasChanged = true
 end
 
 local function SetActiveCard(id, name, type, img, health, reloadTime, range, damage, greenballs, desc)
@@ -192,29 +212,38 @@ end
 -----------------------
 -- Deck Manipulation --
 -----------------------
-local function AddCardToDeck(cardName, deckID)
-	--Add the card to the last place in the deck
-	--decks[deckID][#decks[deckID] + 1] = cardName
-	table.insert(decks[deckID], cardName)
+local function AddCardToDeck(cardName, deckID, amount)
+	amount = amount or 1
+
+	if decks[deckID][cardName] then
+		-- Thare is already atleast one card of this type in the deck => increase it's amount
+		decks[deckID][cardName] = decks[deckID][cardName] + amount
+
+	else
+		-- This is the first card of this kind to be added to the deck => insert it
+		decks[deckID][cardName] = amount
+	end
+
+	-- Re-draw decks
+	decksHaveChanged = true
 end
 
-local function RemoveCardFromDeck(cardName, deckID)
-	for i = 1, #decks[deckID] do
-		--Loops the cards in the specified deck
+local function RemoveCardFromDeck(cardName, deckID, amount)
+	amount = amount or 1
 
-		if decks[deckID][i] == cardName then
-			--The card to be removed was found => set the "card name" as nil
-			decks[deckID][i] = nil
-			break
+	if decks[deckID][cardName] then
+		-- The card is in the deck => decrease it's counter
+		decks[deckID][cardName] = decks[deckID][cardName] - amount
+
+		-- If the amount falls below zero remove the card all together
+		if decks[deckID][cardName] <= 0 then
+			decks[deckID][cardName] = nil
 		end
 	end
+
+	-- Re-draw decks
+	decksHaveChanged = true
 end
-
-
-
-
-
-
 
 ----------------
 -- UI helpers --
@@ -230,37 +259,6 @@ local function GenerateCardLabelString(cardName, amount, space)
 	s = s .. amount
 
 	return s
-end
-
-local function GenerateUIDeckString(deckID)
-
-	local maxNameLenght = 0 --The length of the longest card name in the deck
-	local deckString = ""
-	local separatingSpaces = 5 --The amount of space between the cardname and amount
-	local occuranceTable = GenerateOccuranceTable(decks[deckID]) --Stores (cardName, amount) pairs
-
-	--Find the longest card name:
-	for k, _ in pairs(occuranceTable) do
-		if string.len(k) > maxNameLenght then
-			maxNameLenght = string.len(k)
-		end
-	end
-
-	--TODO sort the occurance table alphabetically
-
-
-	--Generate the actual string:
-	for cardName, amount in pairs(occuranceTable) do
-		deckString = deckString .. cardName
-
-		for i = string.len(cardName), maxNameLenght + separatingSpaces do
-			deckString = deckString .. " "
-		end
-
-		deckString = deckString .. amount .. "\n"
-	end
-
-	return deckString
 end
 
 local function SetUpHandles()
@@ -285,33 +283,45 @@ end
 ------------------
 -- UI functions --
 ------------------
-local function TestFunction(i)
+local function RunOnCardPoolLabelClick(i)
 
 	for i = 1, #cardPoolLabels do
+		-- Remove the colouring from the other labels
 		cardPoolLabels[i].font:SetColor(color.game_fg)
-
-
 	end
-	sep = string.find(cardPoolLabels[i].caption, " ")
-	GetCard(string.sub(cardPoolLabels[i].caption, 1, sep - 1))
 
+	-- Extract the card name from the label caption
+	local sep = string.find(cardPoolLabels[i].caption, " ")
+	local cardName = string.sub(cardPoolLabels[i].caption, 1, sep - 1)
 
+	-- Fetch the card from the pool
+	GetCard(cardName)
+
+	-- Color the label (current color is orange)
 	cardPoolLabels[i].font:SetColor({1,0.5,0,1})
+
+	-- Set the card as active
+	selectedCardName = cardName
+end
+
+local function RunOnCardButtonClick(button)
+	AddCardToDeck(button.card.name, selectedDeckIndex, 4)
 end
 
 local function MakeDeckEditorUI()
 
 	local vsx, vsy = widgetHandler:GetViewSizes()
-	local windowWidth = 400
-	local windowHeight = 400
+	local windowWidth = 500
+	local windowHeight = 500
 	local posX = 300
 	local posY = 300
 
 	local labelFontSize = 10
 
 	local label = nil
-	local i = 1 -- The index of the label in the cardPoolLabels-array
 
+
+	-- Generate the card pool labels
 	for i = 1, maxCardAmount do
 
 		label = Label:New{
@@ -321,60 +331,80 @@ local function MakeDeckEditorUI()
 					valign = "left",
 					fontSize = labelFontSize,
 
-					OnMouseUp = { function () --We must use a wrapper because we need to use parameters
-									TestFunction(i)
+					OnMouseUp = {function () --We must use a wrapper because we need to use i as a parameter
+									RunOnCardPoolLabelClick(i)
 								end},
 					}
 
 		table.insert(cardPoolLabels, i, label)
-
-		i = i + 1
 	end
 
-	cardPoolStack = StackPanel:New{
+	-- Generate the card labels for the activated deck
+	for i = 1, maxCardAmount do
+
+		label = Label:New{
+					caption = "",
+					textColor = color.sub_fg,
+					align = "left",
+					valign = "left",
+					fontSize = labelFontSize,
+
+					OnMouseUp = {function()
+
+								end},
+					}
+
+		table.insert(selectedDeckLabels, i, label)
+	end
+
+
+	cardPoolLabelStack = StackPanel:New{
 		x = 1,
 		y = 1,
+		width = '100%',
 		height = maxCardAmount * labelFontSize,
-		name = 'cardPoolstack',
-		orientation = 'vertical',
-
-		children = cardPoolLabels,
+		bottom = '50%',
+		resizeItems = true,
+		autosize = true,
+		preserveChildrenOrder=true,
+		children = cardPoolLabels
 	}
 
-	selectedDeckStack = StackPanel:New{
-		name = 'selectedDeckStack',
-		orientation = 'vertical',
-
-		children = {-- TODO add card labels for the cards in the deck
-		},
+	selectedDeckLabelStack = StackPanel:New{
+		x = 1,
+		y = '50%',
+		width = '100%',
+		height = maxCardAmount * labelFontSize,
+		resizeItems = true,
+		autosize = true,
+		preserveChildrenOrder = true,
+		children = selectedDeckLabels
 	}
 
 	cardLabelStack = StackPanel:New{
 		x = 1,
 		y = 1,
-		name = 'cardLabelStack',
-		orientation = 'vertical',
+		width = '50%',
+		height = '100%',
+		resizeItems = true,
+		autosize = true,
+		preserveChildrenOrder = true,
 
-		children = {
-		},
+		children = {cardPoolLabelStack, selectedDeckLabelStack,},
 	}
-	cardLabelStack:AddChild(cardPoolStack)
-	cardLabelStack:AddChild(cardLabelStack)
 
 	deckEditorStack = StackPanel:New{
+		x = 1,
+		y = 1,
 		name='deckEditorStack',
 		orientation = 'horizontal',
-		width = windowWidth,
-		height = windowHeight,
+		width = '100%',
+		height = '100%',
 		resizeItems = true,
-		padding = {0,10,0,0},
-		itemPadding = {0,0,0,0},
-		itemMargin = {0,0,0,0},
-		children = {
-		}
+
+		children = {cardLabelStack,},
 
 	}
-	deckEditorStack:AddChild(cardLabelStack)
 
 	deckEditorWindow = Window:New {
 		caption="Deck Editor",
@@ -396,12 +426,11 @@ end
 
 local function UpdateDeckEditorUI()
 
-	if decksReceived and poolReceived then -- Both the deck and pool data have arrived => finish the UI
+	if poolHasChanged then -- Pool data has arrived => finish the UI
 
-		decksReceived = false
-		poolReceived = false
+		poolHasChanged = false
 
-		i = 1 -- Used to index the cardPoolLabels-array
+		local i = 1 -- Used to index the cardPoolLabels-array
 
 		for cardName, amount in pairs(cardPool) do
 
@@ -409,6 +438,22 @@ local function UpdateDeckEditorUI()
 
 			i = i + 1
 		end
+
+	end
+
+	if decksHaveChanged then -- Rewrite the deck data
+
+		decksHaveChanged = false
+
+		local i = 1
+
+		for cardName, amount in pairs(decks[selectedDeckIndex]) do
+
+			selectedDeckLabels[i]:SetCaption(GenerateCardLabelString(cardName, amount))
+
+			i = i + 1
+		end
+
 
 	end
 
@@ -438,9 +483,15 @@ local function UpdateDeckEditorUI()
 		end
 
 		if drawCardButton then
-			--The first time the card button needs to be drawn for the first time
+			-- The first card has been activated => generate the card button
 			drawCardButton = false
 			local cardButton = Darius:GetCardButton(latestCard, 240, 400)
+
+			cardButton.OnMouseUp = {function(self)
+										RunOnCardButtonClick(self)
+									end
+			}
+
 			deckEditorStack:AddChild(cardButton)
 		end
 	end
@@ -475,12 +526,12 @@ function widget:Initialize()
 	SetUpHandles()
 	MakeDeckEditorUI()
 
-	AdjustWindow()
+	--AdjustWindow()
 	--UpdateDeckEditorUI()
 end
 
 function widget:Update()
-	AdjustWindow()
+	--AdjustWindow()
 	UpdateDeckEditorUI()
 end
 

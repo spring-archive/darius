@@ -24,7 +24,8 @@ local latestCard = {}       --Cache for the latest card fetched from the pool
 local drawCardButton = false--Used by the UpdateDeckEditorUI to see when the card button needs to be drawn for the first time
 
 local maxCardAmount = 0
-local selectedCardName = ""  -- Name of the latest selected card
+local activatedPoolcard = ""  -- Name of the latest selected card in the pool
+local activatedDeckCard = ""  -- Name of tha öatest selected card in the selected deck
 local selectedDeckIndex = 1   -- Index of the deck that is currently under edit
 
 -- UI handles
@@ -43,6 +44,7 @@ local VFSMODE      = VFS.RAW_FIRST
 local file = LUAUI_DIRNAME .. "Configs/crudemenu_conf.lua"
 local confdata = VFS.Include(file, nil, VFSMODE)
 local color = confdata.color
+local orange = {1,0.5,0,1}
 
 
 function table.tostring(t)
@@ -234,11 +236,6 @@ local function RemoveCardFromDeck(cardName, deckID, amount)
 	if decks[deckID][cardName] then
 		-- The card is in the deck => decrease it's counter
 		decks[deckID][cardName] = decks[deckID][cardName] - amount
-
-		-- If the amount falls below zero remove the card all together
-		if decks[deckID][cardName] <= 0 then
-			decks[deckID][cardName] = nil
-		end
 	end
 
 	-- Re-draw decks
@@ -280,32 +277,66 @@ local function SetUpHandles()
 end
 
 
+local function GetLabelByCaption(labelArray, caption)
+
+	for i = 1, #labelArray do
+
+		if string.find(labelArray[i].caption, caption) then
+			return labelArray[i]
+		end
+	end
+
+	return nil
+end
 ------------------
 -- UI functions --
 ------------------
-local function RunOnCardPoolLabelClick(i)
+local function RunOnCardPoolLabelClick(label)
 
-	for i = 1, #cardPoolLabels do
+	for j = 1, #cardPoolLabels do
 		-- Remove the colouring from the other labels
-		cardPoolLabels[i].font:SetColor(color.game_fg)
+		cardPoolLabels[j].font:SetColor(color.game_fg)
 	end
 
 	-- Extract the card name from the label caption
-	local sep = string.find(cardPoolLabels[i].caption, " ")
-	local cardName = string.sub(cardPoolLabels[i].caption, 1, sep - 1)
+	local sep = string.find(label.caption, " ")
+	local cardName = string.sub(label.caption, 1, sep - 1)
 
 	-- Fetch the card from the pool
 	GetCard(cardName)
 
 	-- Color the label (current color is orange)
-	cardPoolLabels[i].font:SetColor({1,0.5,0,1})
+	label.font:SetColor(orange)
 
 	-- Set the card as active
-	selectedCardName = cardName
+	activatedPoolcard = cardName
+end
+
+local function RunOnSelectedDeckLabelClick(label)
+
+	if label.caption == "" then
+		return
+	end
+
+	for j = 1, #selectedDeckLabels do
+		-- Remove colouring from the other labels
+		selectedDeckLabels[j].font:SetColor(color.game_fg)
+	end
+
+	-- Add colouring for the selected label
+	label.font:SetColor(orange)
+
+	-- Extract the card name from the label caption
+	local sep = string.find(label.caption, " ")
+	local cardName = string.sub(label.caption, 1, sep - 1)
+
+	-- Set the card as beign active
+	activatedDeckCard = cardName
 end
 
 local function RunOnCardButtonClick(button)
-	AddCardToDeck(button.card.name, selectedDeckIndex, 4)
+	-- Change the number to set the amount of cards to add
+	AddCardToDeck(button.card.name, selectedDeckIndex, 1)
 end
 
 local function MakeDeckEditorUI()
@@ -314,7 +345,7 @@ local function MakeDeckEditorUI()
 	local windowWidth = 500
 	local windowHeight = 500
 	local posX = 300
-	local posY = 300
+	local posY = 10
 
 	local labelFontSize = 10
 
@@ -331,8 +362,8 @@ local function MakeDeckEditorUI()
 					valign = "left",
 					fontSize = labelFontSize,
 
-					OnMouseUp = {function () --We must use a wrapper because we need to use i as a parameter
-									RunOnCardPoolLabelClick(i)
+					OnMouseUp = {function (self)
+									RunOnCardPoolLabelClick(self)
 								end},
 					}
 
@@ -349,8 +380,8 @@ local function MakeDeckEditorUI()
 					valign = "left",
 					fontSize = labelFontSize,
 
-					OnMouseUp = {function()
-
+					OnMouseUp = {function(self)
+									RunOnSelectedDeckLabelClick(self)
 								end},
 					}
 
@@ -362,23 +393,53 @@ local function MakeDeckEditorUI()
 		x = 1,
 		y = 1,
 		width = '100%',
-		height = maxCardAmount * labelFontSize,
+		height = '50%',
 		bottom = '50%',
 		resizeItems = true,
 		autosize = true,
-		preserveChildrenOrder=true,
+		preserveChildrenOrder = true,
+
 		children = cardPoolLabels
 	}
 
 	selectedDeckLabelStack = StackPanel:New{
 		x = 1,
-		y = '50%',
+		y = '56%',
 		width = '100%',
-		height = maxCardAmount * labelFontSize,
+		height = '50%',
 		resizeItems = true,
 		autosize = true,
 		preserveChildrenOrder = true,
+
 		children = selectedDeckLabels
+	}
+
+	addCardToDeckBUtton = Button:New{
+		x = 1,
+		y = '51%',
+
+		width = '30%',
+		height = '5%',
+
+		caption = "Add",
+
+		OnMouseUp = {function()
+						AddCardToDeck(activatedPoolcard, selectedDeckIndex, 1)
+					end,},
+	}
+
+	removeCardFromDeckButton = Button:New{
+		x = '32%',
+		y = '51%',
+
+		width = '30%',
+		height = '5%',
+
+		caption = "remove",
+
+		OnMouseUp = {function()
+						RemoveCardFromDeck(activatedDeckCard, selectedDeckIndex, 1)
+					end,},
 	}
 
 	cardLabelStack = StackPanel:New{
@@ -390,7 +451,7 @@ local function MakeDeckEditorUI()
 		autosize = true,
 		preserveChildrenOrder = true,
 
-		children = {cardPoolLabelStack, selectedDeckLabelStack,},
+		children = {cardPoolLabelStack, addCardToDeckBUtton, removeCardFromDeckButton, selectedDeckLabelStack,},
 	}
 
 	deckEditorStack = StackPanel:New{
@@ -416,10 +477,9 @@ local function MakeDeckEditorUI()
 		clientHeight = windowHeight,
 		draggable = true,
 		resizable = true,
-		children = {
-			deckEditorStack,
-		}
+		children = {deckEditorStack,}
 	}
+
 	screen0:AddChild(deckEditorWindow)
 end
 
@@ -445,16 +505,38 @@ local function UpdateDeckEditorUI()
 
 		decksHaveChanged = false
 
-		local i = 1
-
 		for cardName, amount in pairs(decks[selectedDeckIndex]) do
 
-			selectedDeckLabels[i]:SetCaption(GenerateCardLabelString(cardName, amount))
+			local label = GetLabelByCaption(selectedDeckLabels, cardName)
 
-			i = i + 1
+			if label then
+				-- This card allready has a label, it's enough to just update it
+
+				if amount > 0 then
+					-- Update the new amount
+					label:SetCaption(GenerateCardLabelString(cardName, amount))
+				else
+					-- The card has been completely removed from the deck
+					label:SetCaption("")
+				end
+
+			else
+				-- We need to make a new label
+
+				if amount > 0 then
+					-- The card has an amount => it has not been removed from the deck
+
+					for i = 1, #selectedDeckLabels do
+						-- Find an empty label
+
+						if selectedDeckLabels[i].caption == "" then
+							selectedDeckLabels[i]:SetCaption(GenerateCardLabelString(cardName, amount))
+							break
+						end
+					end
+				end
+			end
 		end
-
-
 	end
 
 

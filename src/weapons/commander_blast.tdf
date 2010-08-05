@@ -14,7 +14,7 @@
   rendertype=4;
   shakeduration=5;
   shakemagnitude=600;
-  soundstart=otaunit/largegun;
+  soundstart=weapons/largegun;
   turret=1;
   weaponvelocity=250;
   [DAMAGE]
@@ -39,7 +39,7 @@
   rendertype=4;
   shakeduration=5;
   shakemagnitude=600;
-  soundstart=otaunit/largegun;
+  soundstart=weapons/largegun;
   turret=1;
   weaponvelocity=250;
   [DAMAGE]
@@ -64,7 +64,7 @@
   rendertype=4;
   shakeduration=5;
   shakemagnitude=600;
-  soundstart=otaunit/largegun;
+  soundstart=weapons/largegun;
   turret=1;
   weaponvelocity=250;
   [DAMAGE]
@@ -91,7 +91,7 @@
   rendertype=4;
   shakeduration=5;
   shakemagnitude=600;
-  soundstart=otaunit/largegun;
+  soundstart=weapons/largegun;
   turret=1;
   weaponvelocity=250;
   [DAMAGE]

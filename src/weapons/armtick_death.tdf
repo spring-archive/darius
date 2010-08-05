@@ -17,8 +17,8 @@
   range=600;
   reloadtime=0.3;
   rendertype=4;
-  soundhit=otaunit/EMGPULS1;
-  soundstart=otaunit/bombrel;
+  soundhit=weapons/emgpuls1;
+  soundstart=weapons/bombrel;
   tolerance=7000;
   turret=1;
   [DAMAGE]

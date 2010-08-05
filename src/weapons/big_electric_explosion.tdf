@@ -30,8 +30,8 @@
   shakemagnitude=50;
   smokedelay=0.1;
   smoketrail=1;
-  soundhit=otaunit/xplomed4;
-  soundstart=otaunit/misicbm1;
+  soundhit=weapons/xplomed4;
+  soundstart=weapons/misicbm1;
   startsmoke=1;
   stockpile=1;
   targetable=1;

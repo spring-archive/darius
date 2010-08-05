@@ -12,8 +12,8 @@
   range=480;
   reloadtime=3.6;
   rendertype=4;
-  soundhit=otaunit/xplosml1;
-  soundstart=otaunit/largegun;
+  soundhit=weapons/xplosml1;
+  soundstart=weapons/largegun;
   weaponvelocity=250;
   [DAMAGE]
   {

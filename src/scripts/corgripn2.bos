@@ -18,7 +18,7 @@ static-var  Static_Var_1, gun_3, firing, sound_index;
 
 Sounds()
 {
-	play-sound("OTAunit/lghthvy1", 10);
+	play-sound("weapons/lghthvy1", 10);
 }
 
 SmokeUnit(healthpercent, sleeptime, smoketype)

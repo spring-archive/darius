@@ -22,7 +22,7 @@ static-var  gun_2, statechg_DesiredState, statechg_StateChanging, firing;
 
 Sounds()
 {
-	play-sound("OTAunit/build2", 10);
+	play-sound("weapons/build2", 10);
 }
 
 activatescr()

@@ -16,8 +16,8 @@
   rendertype=4;
   shakeduration=0;
   shakemagnitude=0;
-  soundhit=otaunit/xplonuk3;
-  soundstart=otaunit/largegun;
+  soundhit=weapons/xplonuk3;
+  soundstart=weapons/largegun;
   weaponvelocity=400;
   [DAMAGE]
   {

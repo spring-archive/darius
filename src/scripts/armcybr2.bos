@@ -24,8 +24,8 @@ static-var  Static_Var_1, statechg_DesiredState, statechg_StateChanging, firing,
 
 Sounds()
 {
-	play-sound("OTAunit/lasrmas1", 10);
-	play-sound("OTAunit/build2", 10);
+	play-sound("weapons/lasrmas1", 10);
+	play-sound("weapons/build2", 10);
 }
 
 activatescr()

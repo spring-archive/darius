@@ -12,8 +12,8 @@
   range=240;
   reloadtime=3.6;
   rendertype=4;
-  soundhit=otaunit/xplosml1;
-  soundstart=otaunit/largegun;
+  soundhit=weapons/xplosml1;
+  soundstart=weapons/largegun;
   weaponvelocity=250;
   [DAMAGE]
   {
@@ -36,8 +36,8 @@
   range=240;
   reloadtime=3.6;
   rendertype=4;
-  soundhit=otaunit/xplosml1;
-  soundstart=otaunit/largegun;
+  soundhit=weapons/xplosml1;
+  soundstart=weapons/largegun;
   weaponvelocity=250;
   [DAMAGE]
   {
@@ -60,8 +60,8 @@
   range=260;
   reloadtime=3.6;
   rendertype=4;
-  soundhit=otaunit/xplosml1;
-  soundstart=otaunit/largegun;
+  soundhit=weapons/xplosml1;
+  soundstart=weapons/largegun;
   weaponvelocity=250;
   [DAMAGE]
   {
@@ -83,8 +83,8 @@
   range=110;
   reloadtime=3.6;
   rendertype=4;
-  soundhit=otaunit/xplosml1;
-  soundstart=otaunit/largegun;
+  soundhit=weapons/xplosml1;
+  soundstart=weapons/largegun;
   weaponvelocity=250;
   [DAMAGE]
   {

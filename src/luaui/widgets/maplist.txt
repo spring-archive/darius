@@ -1,0 +1,29 @@
+MapsList = {}
+
+local function CutOrAddMapSuffix(name)
+	local version=tonumber(string.match(Game.version,"^(%d+%.%d+)"))+(string.match(Game.version,"^[%d%.]+(%+)") and 0.009 or 0)
+	local hasSuffix=string.lower(string.sub(name,-4))==".smf"
+	if version<0.815 then
+		if hasSuffix then
+			return name
+		else
+			return name..".smf"
+		end
+	else
+		if hasSuffix then
+			return string.sub(name,1,-5)
+		else
+			return name
+		end
+	end
+end
+
+local function AddMap(Weight,ClearName,ShortName,ExternalFileName,InternalFileName,MaxPlayers)
+	table.insert(MapsList,{ClearName=ClearName,ShortName=ShortName,ExternalFileName=ExternalFileName,InternalFileName=CutOrAddMapSuffix(InternalFileName),MaxPlayers=MaxPlayers,Weight=Weight})
+end
+
+
+AddMap(7,	"Dunes",				"Dn",		"mods/maps/Dunes.sdd",				"dunes.smf",			2,	2)
+AddMap(7,	"The Labyrinth",		"TL",		"mods/maps/The_Labyrinth.sdd",		"the_labyrinth.smf",	2,	2)
+AddMap(7,	"Crystal Cave",			"CC",		"mods/maps/Crystal_Cave.sdd",		"crystal_cave.smf",		2,	2)
+AddMap(7,	"King of the Hill",		"KOTH",		"mods/maps/King_of_the_Hill.sdd",	"king_of_the_hill.smf",	2,	2)

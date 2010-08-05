@@ -53,6 +53,7 @@ function table.tostring(t)
 	for k,v in pairs(t) do
 		if (type(v) == "table") then --Next level needed for effects
 			str = str .. k.. " = '" .. table.tostring(v) .. "', "
+		elseif (type(v) == "function") then --kap89: needed to add this line because I couldn't run maps in main menu
 		else
 			str = str .. k.. " = '" .. v .. "', "
 		end

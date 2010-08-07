@@ -17,7 +17,7 @@ local spEcho = Spring.Echo
 -- Data Storage
 local cardPool = {}         -- Card pool is stored as (cardName, amount) -pairs e.g. cardPool["Fire"] = 5 The pool has five fire cards
 
-local decks = {}            -- Decks are stored as ana array of (cardName, amount) -pairs e.g. decks[2]["Fire"] = 3 Deck number 2 has 3 fore cards
+local decks = {}            -- Decks are stored as ana array of (cardName, amount) -pairs e.g. decks[2]["Fire"] = 3 Deck number 2 has 3 fire cards
 
 local latestCard = {}       --Cache for the latest card fetched from the pool
 
@@ -25,19 +25,23 @@ local drawCardButton = false--Used by the UpdateDeckEditorUI to see when the car
 
 local maxCardAmount = 0
 local activatedPoolcard = ""  -- Name of the latest selected card in the pool
-local activatedDeckCard = ""  -- Name of tha öatest selected card in the selected deck
-local selectedDeckIndex = 1   -- Index of the deck that is currently under edit
+local activatedDeckCard = ""  -- Name of tha latest selected card in the selected deck
+local selectedDeckIndex = 0   -- Index of the deck that is currently under edit
+local cardLabelSpaceCount = 5
 
 -- UI handles
 local deckEditorStack = nil
 local deckEditorWindow = nil
+local cardPoolLabelStack = nil
+local decksLabelStack = nil
 local cardPoolLabels = {}
 local selectedDeckLabels = {}
+local decksLabels = {}
 
 -- Data flags
 local poolHasChanged = false
 local decksHaveChanged = false
-
+local deckSelectingview = true -- Tells which view to draw: the deck selection view (true) or the deck editing view(false)
 
 -- Colours are pwetty!
 local VFSMODE      = VFS.RAW_FIRST
@@ -45,6 +49,7 @@ local file = LUAUI_DIRNAME .. "Configs/crudemenu_conf.lua"
 local confdata = VFS.Include(file, nil, VFSMODE)
 local color = confdata.color
 local orange = {1,0.5,0,1}
+local activeColour = "\255\255\128\10"
 
 
 function table.tostring(t)
@@ -292,54 +297,231 @@ end
 ------------------
 -- UI functions --
 ------------------
-local function RunOnCardPoolLabelClick(label)
-
-	for j = 1, #cardPoolLabels do
-		-- Remove the colouring from the other labels
-		cardPoolLabels[j].font:SetColor(color.game_fg)
-	end
-
-	-- Extract the card name from the label caption
-	local sep = string.find(label.caption, " ")
-	local cardName = string.sub(label.caption, 1, sep - 1)
-
-	-- Fetch the card from the pool
-	GetCard(cardName)
-
-	-- Color the label (current color is orange)
-	label.font:SetColor(orange)
-
-	-- Set the card as active
-	activatedPoolcard = cardName
-end
-
-local function RunOnSelectedDeckLabelClick(label)
-
-	if label.caption == "" then
-		return
-	end
-
-	for j = 1, #selectedDeckLabels do
-		-- Remove colouring from the other labels
-		selectedDeckLabels[j].font:SetColor(color.game_fg)
-	end
-
-	-- Add colouring for the selected label
-	label.font:SetColor(orange)
-
-	-- Extract the card name from the label caption
-	local sep = string.find(label.caption, " ")
-	local cardName = string.sub(label.caption, 1, sep - 1)
-
-	-- Set the card as beign active
-	activatedDeckCard = cardName
-end
-
 local function RunOnCardButtonClick(button)
 	-- Change the number to set the amount of cards to add
 	AddCardToDeck(button.card.name, selectedDeckIndex, 1)
 end
 
+local function UpdateDeckEditorUI()
+
+	if deckSelectingview then
+
+		-- Only update the deck labels when in deck selection view
+		for i = 1, #decksLabels do
+
+			-- Check that the deck has not been removed
+			if decks[i] then
+
+				if i == selectedDeckIndex then
+					-- add colour for the active deck
+					decksLabels[i].font:SetColor(orange)
+				else
+					decksLabels[i].font:SetColor(color.game_fg)
+				end
+
+				decksLabels[i]:SetCaption("" .. i)
+			else
+				decksLabels[i]:SetCaption("")
+			end
+
+			-- FIXME better text, deck names?
+		end
+	end
+
+
+	if poolHasChanged then -- Pool data has arrived => finish the UI
+
+		poolHasChanged = false
+
+		-- Remove old text
+		for i = 1, #cardPoolLabels do
+			cardPoolLabels[i].caption = ""
+		end
+
+		local i = 1 -- Used to index the cardPoolLabels-array
+
+		for cardName, amount in pairs(cardPool) do
+
+			if amount > 0 then
+				if activatedPoolcard == cardName then
+					-- Add colour for the active card
+					cardPoolLabels[i]:SetCaption(activeColour .. GenerateCardLabelString(cardName, amount, cardLabelSpaceCount))
+				else
+					cardPoolLabels[i]:SetCaption(GenerateCardLabelString(cardName, amount, cardLabelSpaceCount))
+				end
+
+				i = i + 1
+			end
+		end
+
+	end
+
+	if decksHaveChanged and selectedDeckIndex then -- Rewrite the deck data
+
+		decksHaveChanged = false
+
+		-- Remove old captions
+		for i = 1, #selectedDeckLabels do
+			selectedDeckLabels[i]:SetCaption("")
+		end
+
+		--Check that the deck actually exists
+		if decks[selectedDeckIndex] then
+
+			-- Used for indexing the deck label array
+			i = 1
+
+			for cardName, amount in pairs(decks[selectedDeckIndex]) do
+
+				-- Check that the card has not been removed from the deck
+				if amount > 0 then
+
+					if not deckSelectingview and cardName == activatedDeckCard then
+						-- Add color for the active card only in the deck editing view
+						selectedDeckLabels[i]:SetCaption(activeColour .. GenerateCardLabelString(cardName, amount, cardLabelSpaceCount))
+					else
+						selectedDeckLabels[i]:SetCaption(GenerateCardLabelString(cardName, amount, cardLabelSpaceCount))
+					end
+
+					i = i + 1
+				end
+			end
+		end
+	end
+
+
+	if table.isempty(latestCard) then
+
+		GetCard("Fire")
+		drawCardButton = true
+
+	else
+		for i = 1, #deckEditorStack.children do
+
+			if deckEditorStack.children[i].card then
+				-- The child has a card => we assume this is the card button
+
+				if deckEditorStack.children[i].card.name ~= latestCard.name then
+					-- The name in the button is different from the one in the activated card => a new card has been activated and it needs to be updated
+
+						deckEditorStack.children[i].card = latestCard
+						deckEditorStack.children[i]:UpdateCard(240, 400)
+
+				else
+					-- The names are the same => the active card has not changed => it's enough to update the old button
+					deckEditorStack.children[i]:UpdateCard(240, 400)
+				end
+			end
+		end
+
+		if drawCardButton then
+			-- The first card has been activated => generate the card button
+			drawCardButton = false
+			local cardButton = Darius:GetCardButton(latestCard, 240, 400)
+
+			cardButton.OnMouseUp = {function(self)
+										RunOnCardButtonClick(self)
+									end
+			}
+
+			deckEditorStack:AddChild(cardButton)
+		end
+	end
+
+	if deckEditorWindow then
+		deckEditorWindow:Invalidate()
+	end
+end
+
+local function ChangeDeckEditorView()
+
+	-- Remove the old view (yes, it is necessary to remove the children individually)
+	cardLabelStack:RemoveChild(decksLabelStack)
+	cardLabelStack:RemoveChild(startDeckEditingButton)
+	cardLabelStack:RemoveChild(selectedDeckLabelStack)
+	cardLabelStack:RemoveChild(cardPoolLabelStack)
+	cardLabelStack:RemoveChild(addCardToDeckButton)
+	cardLabelStack:RemoveChild(removeCardFromDeckButton)
+	cardLabelStack:RemoveChild(startDeckSelectionButton)
+	cardLabelStack:RemoveChild(createNewDeckButton)
+	cardLabelStack:RemoveChild(deleteDeckButton)
+
+	if deckSelectingview then
+		-- Add the stuff required for the deck selection view
+		cardLabelStack:AddChild(decksLabelStack)
+		cardLabelStack:AddChild(startDeckEditingButton)
+		cardLabelStack:AddChild(selectedDeckLabelStack)
+		cardLabelStack:AddChild(createNewDeckButton)
+		cardLabelStack:AddChild(deleteDeckButton)
+
+		selectedDeckIndex = 0
+		decksHaveChanged = true
+	else
+		-- Add the stuff for the deck editing view
+		cardLabelStack:AddChild(cardPoolLabelStack)
+		cardLabelStack:AddChild(addCardToDeckButton)
+		cardLabelStack:AddChild(removeCardFromDeckButton)
+		cardLabelStack:AddChild(startDeckSelectionButton)
+		cardLabelStack:AddChild(selectedDeckLabelStack)
+
+		activatedPoolcard = ""
+		activatedDeckCard = ""
+		poolHasChanged = true
+		decksHaveChanged = true
+	end
+
+	cardLabelStack:Invalidate() -- FIXME is this needed?
+	UpdateDeckEditorUI()
+end
+local function RunOnCardPoolLabelClick(label)
+	-- Extract the card name from the label caption
+	local sep = string.find(label.caption, "     ")
+	local cardName = string.sub(label.caption, 1, sep - 1)
+
+	-- Fetch the card from the pool
+	GetCard(cardName)
+
+	-- Set the card as active
+	activatedPoolcard = cardName
+
+	poolHasChanged = true
+
+	UpdateDeckEditorUI()
+end
+
+local function RunOnSelectedDeckLabelClick(label)
+
+	if label and  label.caption ~= "" and not deckSelectingview  then
+
+		-- Extract the card name from the label caption
+		local sep = string.find(label.caption, "     ")
+		local cardName = string.sub(label.caption, 1, sep - 1)
+
+		-- Set the card as beign active
+		activatedDeckCard = cardName
+		decksHaveChanged = true
+
+		UpdateDeckEditorUI()
+	end
+end
+
+local function RunOnDecksLabelClick(label)
+	if label.caption and label.caption ~= "" then
+		selectedDeckIndex = tonumber(label.caption)
+
+		decksHaveChanged = true
+	end
+end
+
+local function RunOnRemoveCardFromDeckButtonClick()
+	-- Checks that we have a card to remove, a selected deck, that the decks actually exists and that we have actually cards to remove in the deck
+	if activatedDeckCard ~= "" and selectedDeckIndex and decks[selectedDeckIndex] and decks[selectedDeckIndex][activatedDeckCard] and decks[selectedDeckIndex][activatedDeckCard] >= 1 then
+		RemoveCardFromDeck(activatedDeckCard, selectedDeckIndex, 1)
+	end
+
+	selectedDeckLabelStack:Invalidate()
+	UpdateDeckEditorUI()
+end
 local function MakeDeckEditorUI()
 
 	local vsx, vsy = widgetHandler:GetViewSizes()
@@ -389,6 +571,36 @@ local function MakeDeckEditorUI()
 		table.insert(selectedDeckLabels, i, label)
 	end
 
+	-- Generate the deck labels for all the decks
+	for i = 1, 10 do --FIXME the actual amount of decks?
+
+		label = Label:New{
+					caption = "",
+					textColor = color.sub_fg,
+					align = "left",
+					valign = "left",
+					fontSize = labelFontSize,
+
+					OnMouseUp = {function(self)
+									RunOnDecksLabelClick(self)
+								end},
+
+		}
+		table.insert(decksLabels, label)
+	end
+
+	decksLabelStack = StackPanel:New{
+		x = 1,
+		y = 1,
+		width = '100%',
+		height = '50%',
+		bottom = '50%',
+		resizeItems = true,
+		autosize = true,
+		preserveChildrenOrder = true,
+
+		children = decksLabels,
+	}
 
 	cardPoolLabelStack = StackPanel:New{
 		x = 1,
@@ -415,7 +627,7 @@ local function MakeDeckEditorUI()
 		children = selectedDeckLabels
 	}
 
-	addCardToDeckBUtton = Button:New{
+	addCardToDeckButton = Button:New{
 		x = 1,
 		y = '51%',
 
@@ -425,7 +637,10 @@ local function MakeDeckEditorUI()
 		caption = "Add",
 
 		OnMouseUp = {function()
-						AddCardToDeck(activatedPoolcard, selectedDeckIndex, 1)
+						if activatedPoolcard ~= "" and selectedDeckIndex and decks[selectedDeckIndex] then
+							AddCardToDeck(activatedPoolcard, selectedDeckIndex, 1)
+							UpdateDeckEditorUI()
+						end
 					end,},
 	}
 
@@ -439,8 +654,84 @@ local function MakeDeckEditorUI()
 		caption = "remove",
 
 		OnMouseUp = {function()
-						RemoveCardFromDeck(activatedDeckCard, selectedDeckIndex, 1)
+						RunOnRemoveCardFromDeckButtonClick()
 					end,},
+	}
+
+	startDeckSelectionButton = Button:New{
+		x = '62%',
+		y = '51%',
+
+		width = '30%',
+		height = '5%',
+
+		caption = "Done",
+
+		OnMouseUp = {function()
+						deckSelectingview = true --Set the mode for deck selection view
+						ChangeDeckEditorView()
+					end},
+	}
+
+	startDeckEditingButton = Button:New{
+		x = 1,
+		y = '51%',
+
+		width = '30%',
+		height = '5%',
+
+		caption = "Edit deck",
+
+		OnMouseUp = {function()
+						if selectedDeckIndex and decks[selectedDeckIndex] then
+							deckSelectingview = false -- Set the mode for deck editing view
+							ChangeDeckEditorView()
+						end
+					end},
+	}
+
+	createNewDeckButton = Button:New{
+		x = '33%',
+		y = '51%',
+
+		width = '30%',
+		height = '5%',
+
+		caption = "New deck",
+
+		OnMouseUp = {function()
+						-- Create a new deck to the decks table
+						selectedDeckIndex = #decks + 1
+						decks[selectedDeckIndex] = {}
+
+						-- Chnage the view to the deck editing view
+						deckSelectingview = false
+						ChangeDeckEditorView()
+					end},
+	}
+
+	deleteDeckButton = Button:New{
+		x = '64%',
+		y = '51%',
+
+		width = '32%',
+		height = '5%',
+
+		caption = "Delete deck",
+
+		OnMouseUp = {function()
+						if selectedDeckIndex and decks[selectedDeckIndex] then
+							-- remove the deck
+							table.remove(decks, selectedDeckIndex)
+
+							-- remove deck selection
+							selectedDeckIndex = 0
+
+							-- Redraw
+							decksHaveChanged = true
+							UpdateDeckEditorUI()
+						end
+					end},
 	}
 
 	cardLabelStack = StackPanel:New{
@@ -452,8 +743,11 @@ local function MakeDeckEditorUI()
 		autosize = true,
 		preserveChildrenOrder = true,
 
-		children = {cardPoolLabelStack, addCardToDeckBUtton, removeCardFromDeckButton, selectedDeckLabelStack,},
+		children = {},
 	}
+
+	-- Load the beginning view
+	ChangeDeckEditorView()
 
 	deckEditorStack = StackPanel:New{
 		x = 1,
@@ -482,106 +776,6 @@ local function MakeDeckEditorUI()
 	}
 
 	screen0:AddChild(deckEditorWindow)
-end
-
-
-local function UpdateDeckEditorUI()
-
-	if poolHasChanged then -- Pool data has arrived => finish the UI
-
-		poolHasChanged = false
-
-		local i = 1 -- Used to index the cardPoolLabels-array
-
-		for cardName, amount in pairs(cardPool) do
-
-			cardPoolLabels[i]:SetCaption(GenerateCardLabelString(cardName, amount))
-
-			i = i + 1
-		end
-
-	end
-
-	if decksHaveChanged then -- Rewrite the deck data
-
-		decksHaveChanged = false
-
-		for cardName, amount in pairs(decks[selectedDeckIndex]) do
-
-			local label = GetLabelByCaption(selectedDeckLabels, cardName)
-
-			if label then
-				-- This card allready has a label, it's enough to just update it
-
-				if amount > 0 then
-					-- Update the new amount
-					label:SetCaption(GenerateCardLabelString(cardName, amount))
-				else
-					-- The card has been completely removed from the deck
-					label:SetCaption("")
-				end
-
-			else
-				-- We need to make a new label
-
-				if amount > 0 then
-					-- The card has an amount => it has not been removed from the deck
-
-					for i = 1, #selectedDeckLabels do
-						-- Find an empty label
-
-						if selectedDeckLabels[i].caption == "" then
-							selectedDeckLabels[i]:SetCaption(GenerateCardLabelString(cardName, amount))
-							break
-						end
-					end
-				end
-			end
-		end
-	end
-
-
-	if table.isempty(latestCard) then
-
-		GetCard("Fire")
-		drawCardButton = true
-
-	else
-		for i = 1, #deckEditorStack.children do
-
-			if deckEditorStack.children[i].card then
-				-- The child has a card => we assume this is the card button
-
-				if deckEditorStack.children[i].card.name ~= latestCard.name then
-					-- The name in the button is different from the one in the activated card => a new card has been activated and it needs a new button
-
-						deckEditorStack.children[i].card = latestCard
-						deckEditorStack.children[i]:UpdateCard(240, 400)
-
-				else
-					-- The names are the same => the active card has not changed => it's enough to update the old button
-					deckEditorStack.children[i]:UpdateCard(240, 400)
-				end
-			end
-		end
-
-		if drawCardButton then
-			-- The first card has been activated => generate the card button
-			drawCardButton = false
-			local cardButton = Darius:GetCardButton(latestCard, 240, 400)
-
-			cardButton.OnMouseUp = {function(self)
-										RunOnCardButtonClick(self)
-									end
-			}
-
-			deckEditorStack:AddChild(cardButton)
-		end
-	end
-
-	if deckEditorWindow then
-		deckEditorWindow:Invalidate()
-	end
 end
 
 local function AdjustWindow()

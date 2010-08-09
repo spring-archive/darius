@@ -86,7 +86,17 @@ unitDef = {
   turnRate              = 0,
   upright               = true,
   workerTime            = 12,
-
+  
+  sounds = {
+    underattack        = "voices/structure_under_attack",
+    ok = {
+      "voices/unit_selected",
+    },
+    select = {
+      "voices/castle_selected",
+    },
+  },
+  
   weapons               = {
   },
 

@@ -15,24 +15,12 @@ local sideData = {
   },
   [2] = {
     name      = 'ARM',
-    startunit = 'armcom',
+    startunit = 'random_comm',
   },
   [3] = {
     name      = 'CORE',
-    startunit = 'corcom',
-  },
-  [4] = {
-    name      = 'Chicken (Random if disabled)',
-    startunit = 'chickenbroodqueen',
-  },
---[[  [5] = {
-    name      = 'Backup',
-    startunit = 'backupunit',
-  },
-  [6] = {
-    name      = 'Teamspec',
-    startunit = 'backupunit',
-  },]]
+    startunit = 'random_comm',
+  }
 }
 
 --------------------------------------------------------------------------------

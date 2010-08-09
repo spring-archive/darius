@@ -52,7 +52,17 @@ unitDef = {
   TEDClass            = [[FORT]],
   workerTime          = 0,
   yardMap             = [[oooooooooooooooo]],
-
+  
+  sounds = {
+    underattack        = "voices/unit_under_attack",
+    ok = {
+      "voices/unit_selected",
+    },
+    select = {
+      "voices/unit_selected",
+    },
+  },
+  
   weapons             = {
 
     {
@@ -62,7 +72,6 @@ unitDef = {
     },
 
   },
-
 
   weaponDefs          = {
 

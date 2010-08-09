@@ -55,7 +55,17 @@ unitDef = {
   threed              = [[1]],
   version             = [[3.1]],
   yardMap             = [[ooooooooo]],
-
+  
+  sounds = {
+    underattack        = "voices/unit_under_attack",
+    ok = {
+      "voices/unit_selected",
+    },
+    select = {
+      "voices/unit_selected",
+    },
+  },
+  
   weapons             = {
 
     {
@@ -72,7 +82,6 @@ unitDef = {
     },
 
   },
-
 
   weaponDefs          = {
 

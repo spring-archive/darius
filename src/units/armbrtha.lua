@@ -62,13 +62,15 @@ unitDef = {
   yardMap             = [[oooooooooooooooo]],
   
   sounds = {
-    underattack        = "voices/unit_under_attack",
+    underattack = {
+      "voices/unit_under_attack"
+    },
     ok = {
-      "voices/unit_selected",
+      "voices/unit_selected"
     },
     select = {
-      "voices/unit_selected",
-    },
+      "voices/unit_selected"
+    }
   },
   
   weapons             = {

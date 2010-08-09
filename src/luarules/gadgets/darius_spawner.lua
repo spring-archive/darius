@@ -178,7 +178,7 @@ function ShowGracePeriod(graceSeconds)
 		spSetGameRulesParam("currentWave", currentWave)
 		spSetGameRulesParam("timeToTheNextWave", -1)
 		waveUnfinished = true
-		Spring.PlaySoundFile("sounds/ui/bleep.wav")
+		Spring.PlaySoundFile("sounds/ui/chip.wav")
 		--spEcho("New wave started")
 	end
 end
@@ -244,13 +244,12 @@ function UpdateGameStatus()
 	if (rounds[currentRound][currentWave + 1] == nil) then
 		if	(rounds[currentRound + 1] == nil) then
 			gameUnfinished = false	-- win
-			Spring.PlaySoundFile("sounds/ui/map_finished.wav")
+			Spring.PlaySoundFile("sounds/voices/objective_completed.wav")
 		end
 		roundUnfinished = false -- next round
 	end
 
 	waveUnfinished = false -- next wave
-	Spring.PlaySoundFile("sounds/ui/chip.wav")
 end
 
 function UpdateStats()

@@ -202,67 +202,9 @@ local function SendDecksToSession()  -- Sends the decks to the instance game man
 end
 
 local function SetActiveDeckIndexes(index1, index2) --Sets and checks the decks the user wishes to use
-
-	if not (index1 and index2) then
-		return false
-	end
-
-	local cardsUsed = {} --A table of (card name, amount) pairs
-
-	--Count the amount of cards in the decks
-	for i = 1, #decks[index1] do
-
-		local cardName = decks[index1].name
-
-		if cardsUsed[cardName] == nil then --The first instance of this card in the deck
-			cardsUsed[cardName] = 1
-
-		else -- Increase the count of this card
-			cardsUsed[cardName] = cardsUsed[cardName] + 1
-		end
-	end
-
-	-- Do exactly the same for the second deck
-	for i = 1, #decks[index2] do
-
-		local cardName = decks[index2].name
-
-		if cardsUsed[cardName] == nil then
-			cardsUsed[cardName] = 1
-
-		else
-			cardsUsed[cardName] = cardsUsed[cardName] + 1
-
-		end
-	end
-
-	--Check that the pool has atleast as many instances of a certain card as the cardsUsed-table
-	for i = 1, #pool do
-
-		local cardName = pool[i].name
-
-		if cardsUsed[cardName] == nil then
-			--The card is not used in the decks => do nothing
-
-		else
-			--The card is used => decrease the count (this way the cardsUsed-table tells us how many instances of that card we still need)
-			cardsUsed[cardName] = cardsUsed[cardName] - 1
-		end
-	end
-
-	--And finally check that there is no over use of a certain card in the cardsUsed-table
-	for _, amount in pairs(cardsUsed) do
-
-		if amount > 0 then --There are more instances of the card in the decks than in the pool
-			return false
-		end
-	end
-
-	--Decks passed the test => they can be supported by the card pool
+	-- Actual deck checking moved to the deck editor
 	deck1Index = index1
 	deck2Index = index2
-
-	return true
 end
 
 -------------------

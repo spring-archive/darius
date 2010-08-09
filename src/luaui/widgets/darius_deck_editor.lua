@@ -29,14 +29,22 @@ local activatedDeckCard = ""  -- Name of tha latest selected card in the selecte
 local selectedDeckIndex = 0   -- Index of the deck that is currently under edit
 local cardLabelSpaceCount = 5
 
+local activatedDeckIndex1 = 0
+local activatedDeckIndex2 = 0
+local useNext = false
+
 -- UI handles
 local deckEditorStack = nil
 local deckEditorWindow = nil
 local cardPoolLabelStack = nil
 local decksLabelStack = nil
+local selectedCardButton = nil
 local cardPoolLabels = {}
 local selectedDeckLabels = {}
 local decksLabels = {}
+local activeDeckLabel = nil
+local activeDeck1Label = nil
+local activeDeck2Label = nil
 
 -- Data flags
 local poolHasChanged = false
@@ -150,7 +158,7 @@ local function GenerateDecksString()
 		for cardName, amount in pairs(decks[i]) do
 
 			for j = 1, amount do
-				decksString = decksString .. cardName
+				decksString = decksString .. cardName .. ","
 			end
 		end
 
@@ -166,7 +174,7 @@ end
 -- Interfacing with the card pool --
 ------------------------------------
 local function SendDecks()
-	spSendLuaRulesMsg("SetDecks:", GenerateDecksString())
+	spSendLuaRulesMsg("SetDecks:" .. GenerateDecksString())
 end
 
 local function SendActivatedDecks(id1, id2)
@@ -188,7 +196,6 @@ end
 
 
 local function SetDecks(deckCollection)
-
 	for i = 1, #deckCollection do
 		table.insert(decks, i, GenerateOccuranceTable(deckCollection[i]))
 	end
@@ -298,8 +305,11 @@ end
 -- UI functions --
 ------------------
 local function RunOnCardButtonClick(button)
-	-- Change the number to set the amount of cards to add
-	AddCardToDeck(button.card.name, selectedDeckIndex, 1)
+	-- Only add cards in the deck editing view (this might be unnecessry since the card button should only be drawn in the deck editing view)
+	if not deckSelectingview then
+		AddCardToDeck(button.card.name, selectedDeckIndex, 1)
+	end
+
 end
 
 local function UpdateDeckEditorUI()
@@ -325,6 +335,16 @@ local function UpdateDeckEditorUI()
 			end
 
 			-- FIXME better text, deck names?
+		end
+
+		-- Update the labels showing the activated decks
+		-- Only draw if a deck has been activated (activatedDeckIndex will be a positive number in this case)
+		if activatedDeckIndex1 > 0 then
+			activeDeck1Label:SetCaption(activatedDeckIndex1)
+		end
+
+		if activatedDeckIndex2 > 0 then
+			activeDeck2Label:SetCaption(activatedDeckIndex2)
 		end
 	end
 
@@ -389,42 +409,42 @@ local function UpdateDeckEditorUI()
 		end
 	end
 
+	if not deckSelectingview then
+		-- The card button should only be drawn while in the deck editing view
 
-	if table.isempty(latestCard) then
+		if table.isempty(latestCard) then
 
-		GetCard("Fire")
-		drawCardButton = true
+			GetCard("Fire")
+			drawCardButton = true
 
-	else
-		for i = 1, #deckEditorStack.children do
+		else
+			if selectedCardButton and selectedCardButton.card then
+				-- The card button has been made => we need to only update it
 
-			if deckEditorStack.children[i].card then
-				-- The child has a card => we assume this is the card button
-
-				if deckEditorStack.children[i].card.name ~= latestCard.name then
-					-- The name in the button is different from the one in the activated card => a new card has been activated and it needs to be updated
-
-						deckEditorStack.children[i].card = latestCard
-						deckEditorStack.children[i]:UpdateCard(240, 400)
-
-				else
-					-- The names are the same => the active card has not changed => it's enough to update the old button
-					deckEditorStack.children[i]:UpdateCard(240, 400)
-				end
+					if selectedCardButton.card.name ~= latestCard.name then
+						-- The name in the button is different from the one in the activated card => a new card has been activated and it needs to be updated
+						selectedCardButton.card = latestCard
+						selectedCardButton:UpdateCard(240, 400)
+					else
+						-- The names are the same => the active card has not changed => it's enough to update the old button
+						selectedCardButton:UpdateCard(240, 400)
+					end
 			end
-		end
 
-		if drawCardButton then
-			-- The first card has been activated => generate the card button
-			drawCardButton = false
-			local cardButton = Darius:GetCardButton(latestCard, 240, 400)
 
-			cardButton.OnMouseUp = {function(self)
-										RunOnCardButtonClick(self)
-									end
-			}
+			if drawCardButton then
+				-- The first card has been activated => generate the card button
+				sideDataPanel:RemoveChild(selectedCardButton)
+				drawCardButton = false
+				selectedCardButton = Darius:GetCardButton(latestCard, 240, 400)
 
-			deckEditorStack:AddChild(cardButton)
+				selectedCardButton.OnMouseUp = {function(self)
+													RunOnCardButtonClick(self)
+												end
+				}
+				sideDataPanel:AddChild(selectedCardButton)
+				selectedCardButton:Invalidate()
+			end
 		end
 	end
 
@@ -445,6 +465,12 @@ local function ChangeDeckEditorView()
 	cardLabelStack:RemoveChild(startDeckSelectionButton)
 	cardLabelStack:RemoveChild(createNewDeckButton)
 	cardLabelStack:RemoveChild(deleteDeckButton)
+	cardLabelStack:RemoveChild(activateSelectedDeckButton)
+
+	sideDataPanel:RemoveChild(selectedCardButton)
+	sideDataPanel:RemoveChild(activeDeckLabel)
+	sideDataPanel:RemoveChild(activeDeck1Label)
+	sideDataPanel:RemoveChild(activeDeck2Label)
 
 	if deckSelectingview then
 		-- Add the stuff required for the deck selection view
@@ -453,6 +479,11 @@ local function ChangeDeckEditorView()
 		cardLabelStack:AddChild(selectedDeckLabelStack)
 		cardLabelStack:AddChild(createNewDeckButton)
 		cardLabelStack:AddChild(deleteDeckButton)
+		cardLabelStack:AddChild(activateSelectedDeckButton)
+
+		sideDataPanel:AddChild(activeDeckLabel)
+		sideDataPanel:AddChild(activeDeck1Label)
+		sideDataPanel:AddChild(activeDeck2Label)
 
 		selectedDeckIndex = 0
 		decksHaveChanged = true
@@ -463,6 +494,8 @@ local function ChangeDeckEditorView()
 		cardLabelStack:AddChild(removeCardFromDeckButton)
 		cardLabelStack:AddChild(startDeckSelectionButton)
 		cardLabelStack:AddChild(selectedDeckLabelStack)
+
+		sideDataPanel:AddChild(selectedCardButton)
 
 		activatedPoolcard = ""
 		activatedDeckCard = ""
@@ -534,6 +567,33 @@ local function MakeDeckEditorUI()
 
 	local label = nil
 
+	-- Generate the side data panel labels
+	activeDeckLabel = Label:New{
+
+		caption = "Activated Decks:",
+		textColor = color.sub_fg,
+		align = "left",
+		valign = "left",
+		fontSize = labelFontSize,
+	}
+
+	activeDeck1Label = Label:New{
+
+		caption = "",
+		textColor = color.sub_fg,
+		align = "left",
+		valign = "left",
+		fontSize = labelFontSize,
+	}
+
+	activeDeck2Label = Label:New{
+
+		caption = "",
+		textColor = color.sub_fg,
+		align = "left",
+		valign = "left",
+		fontSize = labelFontSize,
+	}
 
 	-- Generate the card pool labels
 	for i = 1, maxCardAmount do
@@ -627,6 +687,17 @@ local function MakeDeckEditorUI()
 		children = selectedDeckLabels
 	}
 
+	selectedCardButton = Button:New{
+		-- The actual card button is created elsewhere, this is just a dummy to prevent crashing
+		x = 1,
+		y = 1,
+
+		width = 1,
+		height = 1,
+
+		caption = "",
+	}
+
 	addCardToDeckButton = Button:New{
 		x = 1,
 		y = '51%',
@@ -677,7 +748,7 @@ local function MakeDeckEditorUI()
 		x = 1,
 		y = '51%',
 
-		width = '30%',
+		width = '25%',
 		height = '5%',
 
 		caption = "Edit deck",
@@ -691,10 +762,10 @@ local function MakeDeckEditorUI()
 	}
 
 	createNewDeckButton = Button:New{
-		x = '33%',
+		x = '25%',
 		y = '51%',
 
-		width = '30%',
+		width = '25%',
 		height = '5%',
 
 		caption = "New deck",
@@ -711,10 +782,10 @@ local function MakeDeckEditorUI()
 	}
 
 	deleteDeckButton = Button:New{
-		x = '64%',
+		x = '50%',
 		y = '51%',
 
-		width = '32%',
+		width = '25%',
 		height = '5%',
 
 		caption = "Delete deck",
@@ -734,12 +805,65 @@ local function MakeDeckEditorUI()
 					end},
 	}
 
+	activateSelectedDeckButton = Button:New{
+		x = '75%',
+		y = '51%',
+
+		width = '25%',
+		height = '5%',
+
+		caption = "Activate",
+
+		OnMouseUp = {function()
+						-- Only set the deck as active if it has not been activated before
+						if selectedDeckIndex ~= activatedDeckIndex1 and selectedDeckIndex ~= activatedDeckIndex2 then
+
+							-- Check if the first variable has been used before
+							if activatedDeckIndex1 > 0 then
+
+								--Check if the second variable has been used before
+								if activatedDeckIndex2 > 0 then
+
+									-- Check wich of the variables should be used next
+									if useNext then
+										activatedDeckIndex1 = selectedDeckIndex
+									else
+										activatedDeckIndex2 = selectedDeckIndex
+									end
+
+									useNext = not useNext
+								else
+									-- This is the first time the second variable is used
+									activatedDeckIndex2 = selectedDeckIndex
+								end
+
+							else
+								-- This is the first time the first variable is used
+								activatedDeckIndex1 = selectedDeckIndex
+							end
+						end
+					end
+		}
+	}
+
 	cardLabelStack = StackPanel:New{
 		x = 1,
 		y = 1,
 		width = '50%',
 		height = '100%',
 		resizeItems = true,
+		autosize = true,
+		preserveChildrenOrder = true,
+
+		children = {},
+	}
+
+	sideDataPanel = StackPanel:New{
+		x = 1,
+		y = 1,
+		width = '50%',
+		height = '100%',
+		resizeItems = false,
 		autosize = true,
 		preserveChildrenOrder = true,
 
@@ -758,7 +882,7 @@ local function MakeDeckEditorUI()
 		height = '100%',
 		resizeItems = true,
 
-		children = {cardLabelStack,},
+		children = {cardLabelStack, sideDataPanel,},
 
 	}
 
@@ -813,3 +937,8 @@ function widget:Update()
 end
 
 
+function widget:Shutdown()
+	spEcho("!!!!!!!!!Sending decks")
+	SendDecks()
+	SendActivatedDecks(activatedDeckIndex1, activatedDeckIndex2)
+end

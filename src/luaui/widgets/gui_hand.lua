@@ -113,6 +113,7 @@ local function MakeHandMenu()
 end
 
 local function ActivateCard(button)
+	Spring.PlaySoundFile("sounds/ui/click.wav")
 	Darius:ActivateCard(button.card)
 end
 

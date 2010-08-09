@@ -90,10 +90,14 @@ local function MakeHandMenu()
 end
 
 local function SendCardToHand(button)
+	Spring.PlaySoundFile("sounds/ui/click2.wav")
+
 	if not (Darius:CanDraw()) then
 		spEcho("You need more Greenballs")
+		Spring.PlaySoundFile("sounds/ui/error.wav")
 		return
 	end
+	
 	if (button.deck.name == "Deck1") then
 		--spEcho("Deck1")
 		Darius:Draw(1)

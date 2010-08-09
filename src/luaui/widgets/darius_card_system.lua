@@ -274,6 +274,8 @@ function Darius:GetCardButton(card, width, height)
 			button:Invalidate()
 		end,
 	}
+	
+	Spring.PlaySoundFile("sounds/ui/card_pick.wav")
 
 	button:UpdateCard(width, height)
 	return button

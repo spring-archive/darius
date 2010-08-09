@@ -178,6 +178,7 @@ function ShowGracePeriod(graceSeconds)
 		spSetGameRulesParam("currentWave", currentWave)
 		spSetGameRulesParam("timeToTheNextWave", -1)
 		waveUnfinished = true
+		Spring.PlaySoundFile("sounds/ui/bleep.wav")
 		--spEcho("New wave started")
 	end
 end
@@ -189,6 +190,7 @@ function SpawnWaveMonsters()
 			if monster[3] > 0 then
 				local unit = spCreateUnit(monster[1], x_src + i * 20, y_src, z_src, "south", monsterTeamNumber, false)
 				spGiveOrderToUnit(unit, CMD.MOVE, {x_dest, y_dest, z_dest}, {})
+				Spring.PlaySoundFile("sounds/ui/monster_spawn.wav")
 				monstersLeftInTheWave = monstersLeftInTheWave + 1
 				spSetGameRulesParam("monstersLeftInTheWave", monstersLeftInTheWave)
 				monster[3] = monster[3] - 1
@@ -224,6 +226,7 @@ function GadgetUpdate(f)
 			if waveUnfinished == true then
 				SpawnWaveMonsters()
 			else -- wave finished
+				Spring.PlaySoundFile("sounds/ui/tick.wav")
 				ShowGracePeriod(10)
 			end
 		else -- round finished
@@ -241,11 +244,13 @@ function UpdateGameStatus()
 	if (rounds[currentRound][currentWave + 1] == nil) then
 		if	(rounds[currentRound + 1] == nil) then
 			gameUnfinished = false	-- win
+			Spring.PlaySoundFile("sounds/ui/map_finished.wav")
 		end
 		roundUnfinished = false -- next round
 	end
 
 	waveUnfinished = false -- next wave
+	Spring.PlaySoundFile("sounds/ui/chip.wav")
 end
 
 function UpdateStats()

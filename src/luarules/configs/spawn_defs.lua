@@ -12,7 +12,7 @@ maxChicken           = 1000
 lagTrigger           = 0.65       -- average cpu usage after which lag prevention mode triggers
 triggerTolerance     = 0.05      -- increase if lag prevention mode switches on and off too fast
 maxAge               = 5*60      -- chicken die at this age, seconds
-queenName            = "chickenflyerqueen"
+queenName            = "chickenbroodqueen"
 waveRatio            = 0.6       -- waves are composed by two types of chicken, waveRatio% of one and (1-waveRatio)% of the other
 defenderChance       = 0.15       -- amount of turrets spawned per wave, <1 is the probability of spawning a single turret
 quasiAttackerChance  = 0.6		--subtract defenderChance from this to get spawn chance if "defender" is tagged as a quasi-attacker
@@ -69,20 +69,16 @@ local chickenTypes = {
   chicken_pigeon =  {time =  7,  squadSize =   1.4, obsolete = 50},
   chickena       =  {time = 14,   squadSize = 0.5, obsolete = 50},
   chickens       =  {time = 21,  squadSize =   1, obsolete = 60},
-  chicken_leaper       =  {time = 25,  squadSize =   1, obsolete = 60},
   chickenr       =  {time = 30,  squadSize = 1, obsolete = 60},
   chicken_sporeshooter =  {time = 35,  squadSize =   0.5},
   chicken_dodo   =  {time = 40,  squadSize =   2, obsolete = 70},
   chickenf       =  {time = 45,  squadSize = 0.5},
   chickenc       =  {time = 50,  squadSize = 0.5},
-  chickenblobber =  {time = 55,  squadSize = 0.3},
-  chicken_blimpy =  {time = 60,  squadSize = 0.2},
+  chicken_blimpy =  {time = 60,  squadSize = 0.2}
 }
 
 local defenders = {
-  chickend =  {time = 20, squadSize = 0.65 },
-  chickenspire =  {time = 50, squadSize = 0.35, quasiAttacker = true, },
-  chicken_shield =  {time = 40, squadSize = 0.6, quasiAttacker = true, },
+  chickend =  {time = 20, squadSize = 0.65 }
 }
     
     
@@ -96,7 +92,6 @@ difficulties = {
     chickenTypes     = Copy(chickenTypes),
     defenders        = Copy(defenders),
 	queenTime		 = 32*60,
-	queenName        = "chickenbroodqueen",
 	maxBurrows       = 6,	
 	minBurrows		 = 0,
 	minBurrowsIncrease = 0,
@@ -108,7 +103,6 @@ difficulties = {
     gracePeriod      = 60,
     firstSpawnSize   = 1.2,
     timeSpawnBonus   = .03,
-    queenName        = "chickenqueenlite",
     chickenTypes     = Copy(chickenTypes),
     defenders        = Copy(defenders),
   },

@@ -122,8 +122,8 @@ local function DrawDeck()
 			Button:New {
 				caption = "",
 				deck = deck,
-				height = settings.cardsize_y + 20,
-				width = settings.cardsize_x + 20,
+				height = settings.cardsize_y + 8,
+				width = settings.cardsize_x + 8,
 				OnMouseUp = { 
 					function(self)
 						SendCardToHand(self)
@@ -135,12 +135,12 @@ local function DrawDeck()
 					Label:New {
 						caption = deck.name,
 					},
-					--Image:New {
-						--file = deck.img,
-						--width = settings.cardsize_x,
-						--height = settings.cardsize_y,
-						--keepAspect = false,
-					--},
+					Image:New {
+						file = 'cards/images/background/back.png',
+						width = settings.cardsize_x,
+						height = settings.cardsize_y,
+						keepAspect = false,
+					},
 				}
 			})
 	end
@@ -177,8 +177,8 @@ function widget:Initialize()
 	 screen0 = Chili.Screen0
 
 	 two_decks = { 
-	 	{name = "Deck1"  , img = 'LuaUI/images/deck1.png'},
-	 	{name = "Deck2"  , img = 'LuaUI/images/deck2.png'},
+	 	{name = "Deck1" },
+	 	{name = "Deck2" },
 	 }
 	 
 	 

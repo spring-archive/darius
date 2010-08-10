@@ -611,8 +611,6 @@ if (modOptions and tobool(modOptions.chickens)) then
 		chickenf = 'newch_flickenbig',
 		chickenr = 'newch_chubby',
 		chickenq = 'newch_queen',
-		chicken_leaper = 'newch_leaper',
-		chicken_shield = 'newch_shield',
 		chicken_blimpy = 'newch_flickenfat',
 	}
 	for name, ud in pairs(UnitDefs) do

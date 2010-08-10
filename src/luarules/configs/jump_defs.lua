@@ -41,7 +41,6 @@ jumpClassGroups = {
 	--"corsktl",
 	--"core_slicer",
 	--"corcan",
-	"chicken_leaper",
 	-- "pizzathehut",--bad unit left for testing purposes
 	},
 
@@ -74,8 +73,6 @@ overCategory = {
     speed = 4,},
 --]]
 	
- chicken_leaper = {
-    range = 600, reload = 1, },
 	
 	-- corpyro = {
 	--	 range = 400, height = 200, speed = 6,  reload = 10, },	

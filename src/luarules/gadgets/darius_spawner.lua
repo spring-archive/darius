@@ -136,35 +136,30 @@ function InitRoundsAndWaves()
 	})
 
 	local wave10 = CreateWave({
-		{"chicken_leaper", 2, 3},
-	})
-
-	local wave11 = CreateWave({
 		{"chicken_sporeshooter", 2, 3},
 	})
 
-	local wave12 = CreateWave({
+	local wave11 = CreateWave({
 		{"cormortgold", 2, 3},
 	})
 
-	local wave13 = CreateWave({
+	local wave12 = CreateWave({
 		{"armwar", 2, 3},
 	})
 
-	local wave14 = CreateWave({
+	local wave13 = CreateWave({
 		{"chickenc", 2, 3},
 	})
 
-	local wave15 = CreateWave({
+	local wave14 = CreateWave({
 		{"armorco", 2, 3},
 	})
 
-	local wave16 = CreateWave({
+	local wave15 = CreateWave({
 		{"chickenq", 2, 3},
 	})
 
---wave 10 doesn't work properly, so it's removed for now
-	local round1 = CreateRound({wave1, wave2, wave3, wave4, }) -- wave5, wave6, wave7, wave8, wave9, wave11, wave12, wave13, wave14, wave15, wave16 })
+	local round1 = CreateRound({wave1, wave2, wave3, wave4, wave5, wave6, wave7, wave8, wave9, wave11, wave12, wave13, wave14, wave15, wave16 })
 	rounds = {round1}
 end
 

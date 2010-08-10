@@ -1,3 +1,0 @@
-hotspot topleft
-frame  anims/cursorrepair.png  5
-

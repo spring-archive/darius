@@ -1,2 +1,0 @@
-hotspot topleft
-frame  anims/cursorrevive.png  0.3

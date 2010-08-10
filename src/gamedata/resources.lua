@@ -32,19 +32,8 @@ local resources = {
 			'unknown/scars/scar4.png',
 		},
 
-		trees = {
-			bark='Bark.bmp',
-			leaf='bleaf.bmp',
-			gran1='gran.bmp',
-			gran2='gran2.bmp',
-			birch1='birch1.bmp',
-			birch2='birch2.bmp',
-			birch3='birch3.bmp',
-		},
-
 		maps = {
-			detailtex='detailtex2.bmp',
-			watertex='ocean.jpg',
+			watertex='ocean.jpg'
 		},
 
 		groundfx = {
@@ -86,17 +75,11 @@ local resources = {
 			
 
 			----------Spring Effects--------
-			circularthingy='circularthingy.tga',
-			laserend='laserend.tga',
-			laserfalloff='laserfalloff.tga',
 			randdots='randdots.tga',
 			smoketrail='PD/smoketrail.tga',
 			wake='GPL/wake.png',
 			flare='flare.tga',
 			flame='GPL/flame.tga',
-			explofade='explofade.tga',
-			--heatcloud='explo.tga',
-			--explo='explo.tga',
 			heatcloud='GPL/explo.png',
 			explo='GPL/fire.png',
 
@@ -230,26 +213,6 @@ local resources = {
 			dirt='CC/dirt.png',
 			odd='CC/odd.tga',
 
-			--------------NOTA-----------
-			otaplas1='Other/ota_plas/boom2.png',
-			otaplas2='Other/ota_plas/boom3.png',
-			otaplas3='Other/ota_plas/boom4.png',
-			otaplas4='Other/ota_plas/boom5.png',
-			otaplas5='Other/ota_plas/boom6.png',
-			otaplas6='Other/ota_plas/boom7.png',
-			otaplas7='Other/ota_plas/boom8.png',
-			otaplas8='Other/ota_plas/boom9.png',
-			otaplas9='Other/ota_plas/boom10.png',
-			otaplas10='Other/ota_plas/boom11.png',
-			otaplas11='Other/ota_plas/boom12.png',
-			otaplas12='Other/ota_plas/boom13.png',
-			otaplas13='Other/ota_plas/boom14.png',
-			otaplas14='Other/ota_plas/boom15.png',
-			otaplas15='Other/ota_plas/boom16.png',
-			otaplas16='Other/ota_plas/boom17.png',
-			otaplas17='Other/ota_plas/boom18.png',
-			otaplas18='Other/ota_plas/boom19.png',
-
 			------------XTA--------------
 			whitelight='Other/lightw.bmp',
 			redlight='Other/light_red.png',
@@ -258,8 +221,6 @@ local resources = {
 			YELLOWBLAST2='Other/G_FIRE3.tga',
 			YELLOWBLAST3='Other/G_FIRE4.tga',
 			splash='PD/dirtplosion2.tga',
-			muzzleside='muzzleside.tga',
-			muzzlefront='muzzlefront.tga',
 
 
 			------------Evil4Zerggin

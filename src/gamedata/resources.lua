@@ -32,8 +32,19 @@ local resources = {
 			'unknown/scars/scar4.png',
 		},
 
+		trees = {
+			bark='Bark.bmp',
+			leaf='bleaf.bmp',
+			gran1='gran.bmp',
+			gran2='gran2.bmp',
+			birch1='birch1.bmp',
+			birch2='birch2.bmp',
+			birch3='birch3.bmp',
+		},
+
 		maps = {
-			watertex='ocean.jpg'
+			detailtex='detailtex2.bmp',
+			watertex='ocean.jpg',
 		},
 
 		groundfx = {
@@ -75,11 +86,17 @@ local resources = {
 			
 
 			----------Spring Effects--------
+			circularthingy='circularthingy.tga',
+			laserend='laserend.tga',
+			laserfalloff='laserfalloff.tga',
 			randdots='randdots.tga',
 			smoketrail='PD/smoketrail.tga',
 			wake='GPL/wake.png',
 			flare='flare.tga',
 			flame='GPL/flame.tga',
+			explofade='explofade.tga',
+			--heatcloud='explo.tga',
+			--explo='explo.tga',
 			heatcloud='GPL/explo.png',
 			explo='GPL/fire.png',
 
@@ -221,6 +238,8 @@ local resources = {
 			YELLOWBLAST2='Other/G_FIRE3.tga',
 			YELLOWBLAST3='Other/G_FIRE4.tga',
 			splash='PD/dirtplosion2.tga',
+			muzzleside='muzzleside.tga',
+			muzzlefront='muzzlefront.tga',
 
 
 			------------Evil4Zerggin

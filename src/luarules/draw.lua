@@ -58,32 +58,11 @@ function Spring.GetModOption(s,bool,default)
 end
 
 
-if (Spring.GetModOption("camode")=="deploy")or
-   (Spring.GetModOption("camode")=="tactics")
-then
 
-  -----------------------------
-  -- DEPLOYMENT MODE
-  -----------------------------
-  if (not Spring.IsDevLuaEnabled()) then
-    VFS.Include(Script.GetName() .. "/Deploy/draw.lua", nil, VFS.ZIP_ONLY)
-    Spring.Echo("LUARULES-DRAW  (DEPLOYMENT)")
-  else
-    VFS.Include(Script.GetName() .. "/Deploy/draw.lua", nil, VFS.RAW_ONLY)
-    Spring.Echo("LUARULES-DRAW  (DEPLOYMENT)  --  DEVMODE")
-  end
-
+if (not Spring.IsDevLuaEnabled()) then
+  VFS.Include(Script.GetName() .. '/gadgets.lua', nil, VFS.ZIP_ONLY)
+  Spring.Echo("LUARULES-DRAW  (GADGETS)")
 else
-
-  -----------------------------
-  -- NORMAL MODE
-  -----------------------------
-  if (not Spring.IsDevLuaEnabled()) then
-    VFS.Include(Script.GetName() .. '/gadgets.lua', nil, VFS.ZIP_ONLY)
-    Spring.Echo("LUARULES-DRAW  (GADGETS)")
-  else
-    VFS.Include(Script.GetName() .. '/gadgets.lua', nil, VFS.RAW_ONLY)
-    Spring.Echo("LUARULES-DRAW  (GADGETS)  --  DEVMODE")
-  end
-
+  VFS.Include(Script.GetName() .. '/gadgets.lua', nil, VFS.RAW_ONLY)
+  Spring.Echo("LUARULES-DRAW  (GADGETS)  --  DEVMODE")
 end

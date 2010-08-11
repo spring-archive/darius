@@ -35,22 +35,10 @@ local function AddFaction(ud,faction,scaned)
 end
 
 
---[[
-for i,sideData in ipairs(sides) do
-  AddFaction(UnitDefNames[sideData.startUnit],sideData.sideName,{})
-end
---]]
-
 
 AddFaction(UnitDefNames['armcom'],'arm',{})
 AddFaction(UnitDefNames['corcom'],'core',{})
 
---[[ DISABLED FOR DEBUGGING PURPOSES:
-AddFaction(UnitDefNames['nest'],'chicken',{})
-AddFaction(UnitDefNames['roostfac'],'chicken',{})
-AddFaction(UnitDefNames['roost'],'chicken',{})
-AddFaction(UnitDefNames['thicket'],'chicken',{})
---]]
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
@@ -61,8 +49,6 @@ for udid,udef in ipairs(UnitDefs) do
       AddFaction(udef,'core',{})
     elseif (lowname:sub(1,3)=='arm') then
       AddFaction(udef,'arm',{})
-    elseif (lowname:sub(1,5)=='chick') then
-      AddFaction(udef,'chicken',{})
     end
   end
 end

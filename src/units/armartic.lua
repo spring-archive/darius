@@ -35,7 +35,7 @@ unitDef = {
   minCloakDistance    = 150,
   noAutoFire          = false,
   noChaseCategory     = [[FIXEDWING LAND SHIP SATELLITE SWIM GUNSHIP SUB HOVER]],
-  objectName          = [[ARMARTIC]],
+  objectName          = [[armartic.s3o]],
   seismicSignature    = 4,
   selfDestructAs      = [[MEDIUM_BUILDINGEX]],
 

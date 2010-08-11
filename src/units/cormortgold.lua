@@ -35,7 +35,7 @@ unitDef = {
   moveState           = 0,
   noAutoFire          = false,
   noChaseCategory     = [[TERRAFORM FIXEDWING SATELLITE SUB]],
-  objectName          = [[CorMort_gold.s3o]],
+  objectName          = [[cormort_gold.s3o]],
   seismicSignature    = 4,
   selfDestructAs      = [[BIG_UNITEX]],
 
@@ -116,7 +116,7 @@ unitDef = {
       height           = [[20]],
       hitdensity       = [[100]],
       metal            = 160,
-      object           = [[CORMORT_DEAD]],
+      object           = [[cormort_dead.s3o]],
       reclaimable      = true,
       reclaimTime      = 160,
       seqnamereclamate = [[TREE1RECLAMATE]],

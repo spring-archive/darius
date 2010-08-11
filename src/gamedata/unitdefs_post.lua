@@ -79,7 +79,6 @@ end
 --
 
 local function TagTree(unit, faction, newbuildoptions)
-  local morphDefs = VFS.Include"LuaRules/Configs/morph_defs.lua"
   
   local function Tag(unit)
     if (not UnitDefs[unit] or UnitDefs[unit].faction) then
@@ -94,15 +93,6 @@ local function TagTree(unit, faction, newbuildoptions)
 	  if (tonumber(ud.maxvelocity) > 0) and unit ~= "armcsa" and unit ~= "corcsa" then
 	    ud.buildoptions = newbuildoptions
 	  end
-    end
-    if (morphDefs[unit]) then
-      if (morphDefs[unit].into) then
-        Tag(morphDefs[unit].into)
-      else
-        for _, t in ipairs(morphDefs[unit]) do
-          Tag(t.into)
-        end
-      end        
     end
   end
   
@@ -161,46 +151,6 @@ for name, ud in pairs(UnitDefs) do
 end 
 
 --------------------------------------------------------------------------------
---------------------------------------------------------------------------------
--- Special Air
---
---[[
-if (modOptions and tobool(modOptions.specialair)) then
-  local replacements = VFS.Include("LuaRules/Configs/specialair.lua")
-  if (replacements[modOptions.specialair]) then
-    replacements = replacements[modOptions.specialair]
-    for name, ud in pairs(UnitDefs) do
-      if (ud.buildoptions) then
-        for buildKey, buildOption in pairs(ud.buildoptions) do
-          if (replacements[buildOption]) then
-            ud.buildoptions[buildKey] = replacements[buildOption];
-          end
-        end
-      end
-    end
-  end
-end
---]]
-
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------
--- Tactics GameMode
---
-
-if (modOptions and (modOptions.camode == "tactics")) then
-  -- remove all build options
-  Game = { gameSpeed = 30 };  --  required by tactics.lua
-  local options = VFS.Include("LuaRules/Configs/tactics.lua")
-  local customBuilds = options.customBuilds
-  for name, ud in pairs(UnitDefs) do
-    if tobool(ud.commander) then
-      ud.buildoptions = (customBuilds[name] or {}).allow or {}
-    else
-      ud.buildoptions = {}
-    end
-  end
-end
-
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------

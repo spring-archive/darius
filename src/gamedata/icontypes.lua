@@ -10,7 +10,6 @@
 
 local icontypes = {
   default = {
-    bitmap='icons/default.dds',
     size=1.5,
     radiusadjust=1,
     distance=99

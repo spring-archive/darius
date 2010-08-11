@@ -28,6 +28,7 @@ local activatedPoolcard = ""  -- Name of the latest selected card in the pool
 local activatedDeckCard = ""  -- Name of tha latest selected card in the selected deck
 local selectedDeckIndex = 0   -- Index of the deck that is currently under edit
 local cardLabelSpaceCount = 5
+local maxDeckAmount = 10
 
 local activatedDeckIndex1 = 0
 local activatedDeckIndex2 = 0
@@ -45,19 +46,23 @@ local decksLabels = {}
 local activeDeckLabel = nil
 local activeDeck1Label = nil
 local activeDeck2Label = nil
+local activeDeckInfoLabel = nil
 
 -- Data flags
 local poolHasChanged = false
 local decksHaveChanged = false
 local deckSelectingview = true -- Tells which view to draw: the deck selection view (true) or the deck editing view(false)
+local decksAreOK = false -- Tells if the decks have been checked and found to be OK (true) or if there is something wrong with them(false)
 
 -- Colours are pwetty!
-local VFSMODE      = VFS.RAW_FIRST
+local VFSMODE = VFS.RAW_FIRST
 local file = LUAUI_DIRNAME .. "Configs/crudemenu_conf.lua"
 local confdata = VFS.Include(file, nil, VFSMODE)
 local color = confdata.color
 local orange = {1,0.5,0,1}
 local activeColour = "\255\255\128\10"
+local acceptiveGreen = "\255\0\255\0"
+local redOfDenial = "\255\255\0\0"
 
 
 function table.tostring(t)
@@ -128,6 +133,18 @@ end
 
 
 
+function table.copy(t)
+	if t == nil then
+		return nil
+	end
+
+	r = {}
+	for k, v in pairs(t) do
+		r[k] = v
+	end
+	return r
+end
+
 local function GenerateOccuranceTable(t)
 	local occuranceTable = {}
 
@@ -144,7 +161,24 @@ local function GenerateOccuranceTable(t)
 
 	return occuranceTable
 end
+local function FindLongestKey(t) -- FIXME Does not work (is this even needed?)
+	local currentMax = 0
 
+	for k, v in pairs(t) do
+		if type(v) == 'table' then
+			-- Recursion to subtables
+			FindLongestKey(v)
+
+		elseif type(k) == 'string' then
+			-- If the key is a string check it's lenght and update the current max if necessary
+			if string.len(k) > currentMax then
+				currentMax = string.len(k)
+			end
+		end
+	end
+
+	return currentMax
+end
 -----------------------
 -- Interface helpers --
 -----------------------
@@ -180,7 +214,6 @@ end
 local function SendActivatedDecks(id1, id2)
 	spSendLuaRulesMsg("SetActiveDecks:" .. id1 .. "," .. id2)
 end
-
 
 local function GetCard(cardName)
 	spSendLuaRulesMsg("UnsyncCard:" .. cardName)
@@ -255,6 +288,37 @@ local function RemoveCardFromDeck(cardName, deckID, amount)
 	decksHaveChanged = true
 end
 
+local function CheckDecks(deckID1, deckID2)
+
+	-- Use the first deck as a base for the calculation (copy is needed, bacause we don't want to brake the existing deck)
+	local cardTotals = table.copy(decks[deckID1])
+
+	-- Counts the total amount of each card in the decks supplied
+	for cardName, amount in pairs(decks[deckID2]) do
+
+		if cardTotals[cardName] then
+			-- The card totals allready has some of these cards => increase the amount
+			cardTotals[cardName] = cardTotals[cardName] + amount
+		else
+			-- These are the first occurances of these cards => create a new value
+			cardTotals[cardName] = amount
+		end
+	end
+
+	-- Check that the card pool has enough cards to support the deck candidates
+	for cardName, amount in pairs(cardTotals) do
+
+		-- Check that the card is in the pool and that we have enough of them
+		if not cardPool[cardName] or cardPool[cardName] < amount then
+			-- Not enough cards to support the decks
+			return false
+		end
+
+	end
+
+	-- All checks were passed
+	return true
+end
 ----------------
 -- UI helpers --
 ----------------
@@ -289,7 +353,6 @@ local function SetUpHandles()
 	screen0 = Chili.Screen0
 end
 
-
 local function GetLabelByCaption(labelArray, caption)
 
 	for i = 1, #labelArray do
@@ -300,6 +363,15 @@ local function GetLabelByCaption(labelArray, caption)
 	end
 
 	return nil
+end
+local function CheckActivatedDecks()
+
+	-- Check that we have two active decks
+	if activatedDeckIndex1 > 0 and activatedDeckIndex2 > 0 then
+
+		-- Check if the decks are valid and save the result
+		decksAreOK = CheckDecks(activatedDeckIndex1, activatedDeckIndex2)
+	end
 end
 ------------------
 -- UI functions --
@@ -345,6 +417,12 @@ local function UpdateDeckEditorUI()
 
 		if activatedDeckIndex2 > 0 then
 			activeDeck2Label:SetCaption(activatedDeckIndex2)
+		end
+
+		if decksAreOK then
+			activeDeckInfoLabel:SetCaption(acceptiveGreen .. "You can play with these decks")
+		else
+			activeDeckInfoLabel:SetCaption(redOfDenial .. "You can't play with these decks")
 		end
 	end
 
@@ -414,7 +492,7 @@ local function UpdateDeckEditorUI()
 
 		if table.isempty(latestCard) then
 
-			GetCard("Fire")
+			--GetCard("Fire")
 			drawCardButton = true
 
 		else
@@ -471,6 +549,7 @@ local function ChangeDeckEditorView()
 	sideDataPanel:RemoveChild(activeDeckLabel)
 	sideDataPanel:RemoveChild(activeDeck1Label)
 	sideDataPanel:RemoveChild(activeDeck2Label)
+	sideDataPanel:RemoveChild(activeDeckInfoLabel)
 
 	if deckSelectingview then
 		-- Add the stuff required for the deck selection view
@@ -484,6 +563,7 @@ local function ChangeDeckEditorView()
 		sideDataPanel:AddChild(activeDeckLabel)
 		sideDataPanel:AddChild(activeDeck1Label)
 		sideDataPanel:AddChild(activeDeck2Label)
+		sideDataPanel:AddChild(activeDeckInfoLabel)
 
 		selectedDeckIndex = 0
 		decksHaveChanged = true
@@ -595,6 +675,15 @@ local function MakeDeckEditorUI()
 		fontSize = labelFontSize,
 	}
 
+	activeDeckInfoLabel = Label:New{
+
+		caption = "",
+		textColor = color.sub_fg,
+		align = "left",
+		valign = "left",
+		fontSize = labelFontSize,
+	}
+
 	-- Generate the card pool labels
 	for i = 1, maxCardAmount do
 
@@ -632,7 +721,7 @@ local function MakeDeckEditorUI()
 	end
 
 	-- Generate the deck labels for all the decks
-	for i = 1, 10 do --FIXME the actual amount of decks?
+	for i = 1, maxDeckAmount do
 
 		label = Label:New{
 					caption = "",
@@ -677,7 +766,7 @@ local function MakeDeckEditorUI()
 
 	selectedDeckLabelStack = StackPanel:New{
 		x = 1,
-		y = '56%',
+		y = '62%',
 		width = '100%',
 		height = '50%',
 		resizeItems = true,
@@ -739,6 +828,7 @@ local function MakeDeckEditorUI()
 		caption = "Done",
 
 		OnMouseUp = {function()
+						CheckActivatedDecks() -- Check that the decks are valid even after the changes (the user might have edited an active deck)
 						deckSelectingview = true --Set the mode for deck selection view
 						ChangeDeckEditorView()
 					end},
@@ -748,7 +838,7 @@ local function MakeDeckEditorUI()
 		x = 1,
 		y = '51%',
 
-		width = '25%',
+		width = '35%',
 		height = '5%',
 
 		caption = "Edit deck",
@@ -762,10 +852,10 @@ local function MakeDeckEditorUI()
 	}
 
 	createNewDeckButton = Button:New{
-		x = '25%',
+		x = '38%',
 		y = '51%',
 
-		width = '25%',
+		width = '35%',
 		height = '5%',
 
 		caption = "New deck",
@@ -782,10 +872,10 @@ local function MakeDeckEditorUI()
 	}
 
 	deleteDeckButton = Button:New{
-		x = '50%',
-		y = '51%',
+		x = 1,
+		y = '57%',
 
-		width = '25%',
+		width = '35%',
 		height = '5%',
 
 		caption = "Delete deck",
@@ -806,10 +896,10 @@ local function MakeDeckEditorUI()
 	}
 
 	activateSelectedDeckButton = Button:New{
-		x = '75%',
-		y = '51%',
+		x = '38%',
+		y = '57%',
 
-		width = '25%',
+		width = '35%',
 		height = '5%',
 
 		caption = "Activate",
@@ -832,10 +922,15 @@ local function MakeDeckEditorUI()
 									end
 
 									useNext = not useNext
+
+
 								else
 									-- This is the first time the second variable is used
 									activatedDeckIndex2 = selectedDeckIndex
 								end
+
+								-- Check if the decks are valid
+								CheckActivatedDecks()
 
 							else
 								-- This is the first time the first variable is used
@@ -901,16 +996,6 @@ local function MakeDeckEditorUI()
 
 	screen0:AddChild(deckEditorWindow)
 end
-
-local function AdjustWindow()
-	if deckEditorWindow then
-		deckEditorStack.height = deckEditorWindow.height
-		deckEditorStack.widh = deckEditorWindow.widh
-	end
-end
-
-
-
 ---------------------
 -- Widget call-ins --
 ---------------------
@@ -926,19 +1011,16 @@ function widget:Initialize()
 
 	SetUpHandles()
 	MakeDeckEditorUI()
-
-	--AdjustWindow()
-	--UpdateDeckEditorUI()
 end
 
 function widget:Update()
-	--AdjustWindow()
 	UpdateDeckEditorUI()
 end
 
-
 function widget:Shutdown()
-	spEcho("!!!!!!!!!Sending decks")
 	SendDecks()
-	SendActivatedDecks(activatedDeckIndex1, activatedDeckIndex2)
+	-- Check that the decks the user has selected are valid and only then activate them
+	if decksAreOK then
+		SendActivatedDecks(activatedDeckIndex1, activatedDeckIndex2)
+	end
 end

@@ -149,64 +149,6 @@ local decks = {} --Collection of decks; Decks store references to the card datas
 local deck1Index = 1
 local deck2Index = 2
 
----------------------
--- Local Functions --
----------------------
-local function LoadCardsFromFiles()
-	pool = {}
-	decks[1] = {}
-	decks[2] = {}
-	decks[3] = {} -- Fake deck
-	local materialFiles = VFS.DirList('cards/lua/material', '*.lua')
-	local weaponFiles = VFS.DirList('cards/lua/weapon', '*.lua')
-	local specialFiles = VFS.DirList('cards/lua/special', '*.lua')
-
-	for i=1, #materialFiles do
-		local card = VFS.Include(materialFiles[i])
-		table.insert(cardData, card)
-		table.insert(pool, card) --Temporary (player gets one of each card)
-		table.insert(decks[1], card) --Temporary (puts the card into a deck once)
-	end
-
-	for i=1, #weaponFiles do
-		local card = VFS.Include(weaponFiles[i])
-		table.insert(cardData, card)
-		table.insert(pool, card) --Temporary (player gets one of each card)
-		table.insert(decks[2], card) --Temporary (puts the card into a deck once)
-	end
-
-	for i=1, #specialFiles do
-		local card = VFS.Include(specialFiles[i])
-		table.insert(cardData, card)
-		table.insert(pool, card) --Temporary (player gets one of each card)
-		table.insert(decks[3], card) --Temporary (puts the card into a deck once)
-	end
-
-	Spring.SetGameRulesParam("maximumcardamount", #pool) -- Used by the deck editor. DO NOT remove
-end
-
-local function SendDecksToSession()  -- Sends the decks to the instance game manager
-
-	if (not decks[deck1Index]) then return false end
-	if (not decks[deck2Index]) then return false end
-
-	for i=1, #decks[deck1Index] do
-		Darius:AddCard(table.copy(decks[deck1Index][i]), 1) --Card table must be copied to create unique instance
-	end
-
-	for i=1, #decks[deck2Index] do
-		Darius:AddCard(table.copy(decks[deck2Index][i]), 2)
-	end
-
-	return true
-end
-
-local function SetActiveDeckIndexes(index1, index2) --Sets and checks the decks the user wishes to use
-	-- Actual deck checking moved to the deck editor
-	deck1Index = index1
-	deck2Index = index2
-end
-
 -------------------
 -- Communication --
 -------------------
@@ -228,6 +170,11 @@ end
 local function UnsyncDecks()
 	decksString = CreateDecksString(decks)
 	SendToUnsynced("decksCollection", decksString)
+end
+
+local function UnsyncDeckSelection()
+	str = deck1Index .. "," .. deck2Index
+	SendToUnsynced("deckSelection", str)
 end
 
 local function UnsyncCard(card)
@@ -264,6 +211,55 @@ function gadget:ParseDecks(decksString)
 	return decks
 end
 
+---------------------
+-- Local Functions --
+---------------------
+local function LoadCardsFromFiles()
+	local materialFiles = VFS.DirList('cards/lua/material', '*.lua')
+	local weaponFiles = VFS.DirList('cards/lua/weapon', '*.lua')
+	local specialFiles = VFS.DirList('cards/lua/special', '*.lua')
+
+	for i=1, #materialFiles do
+		local card = VFS.Include(materialFiles[i])
+		table.insert(cardData, card)
+	end
+
+	for i=1, #weaponFiles do
+		local card = VFS.Include(weaponFiles[i])
+		table.insert(cardData, card)
+	end
+
+	for i=1, #specialFiles do
+		local card = VFS.Include(specialFiles[i])
+		table.insert(cardData, card)
+	end
+
+	Spring.SetGameRulesParam("maximumcardamount", #pool) -- Used by the deck editor. DO NOT remove
+end
+
+local function SendDecksToSession()  -- Sends the decks to the instance game manager
+
+	if (not decks[deck1Index]) then return false end
+	if (not decks[deck2Index]) then return false end
+
+	for i=1, #decks[deck1Index] do
+		Darius:AddCard(table.copy(decks[deck1Index][i]), 1) --Card table must be copied to create unique instance
+	end
+
+	for i=1, #decks[deck2Index] do
+		Darius:AddCard(table.copy(decks[deck2Index][i]), 2)
+	end
+
+	return true
+end
+
+local function SetActiveDeckIndexes(index1, index2) --Sets and checks the decks the user wishes to use
+	-- Actual deck checking moved to the deck editor
+	deck1Index = index1
+	deck2Index = index2
+	UnsyncDeckSelection()
+end
+
 -------------------------
 -- Card pool functions --
 -------------------------
@@ -274,7 +270,7 @@ function gadget:StartGame()
 	end
 
 	Darius = GG.Darius
-	Darius:ClearGame() --Clear any previous/current game
+	Darius:ClearGame() --Clear any previous/current game data
 
 	if not (SendDecksToSession()) then
 		spEcho("Could not start game, decks are not valid ("..deck1Index..", "..deck2Index..")")
@@ -397,6 +393,7 @@ local GAMEDATA_FILENAME = 'LuaUI/Config/Darius_data.lua'
 
 pool = {} -- Stores names only
 decks = {} -- Stores names only
+selection = {1,2} -- Stores deck ids
 
 -------------------------------
 -- Unsynced Member Functions --
@@ -427,6 +424,11 @@ function gadget:LoadData()
 			if (debug_message) then debug_message("SetDecks:"..decksString) end
 			decks = data.decks --Unsynced side
 		end
+		if (data.selection and type(data.selection) == 'table') then
+			spSendLuaRulesMsg("SetActiveDecks:"..data.selection[1]..","..data.selection[2])
+			selection = data.selection
+			if (debug_message) then debug_message("SetActiveDecks:"..data.selection[1]..","..data.selection[2]) end
+		end
 	end
 	return true
 end
@@ -441,7 +443,7 @@ local function RecvCardPool(_, str)
 	pool = string.totable(str)
 
 	if (Script.LuaUI('SaveGameData')) then
-		Script.LuaUI.SaveGameData(pool, decks)
+		Script.LuaUI.SaveGameData(pool, decks, selection)
 	end
 
 	if (Script.LuaUI('SetDeckEditorCardPool')) then
@@ -456,11 +458,28 @@ local function RecvDecks(_, str)
 	decks = string.totable(str)
 
 	if (Script.LuaUI('SaveGameData')) then
-		Script.LuaUI.SaveGameData(pool, decks)
+		Script.LuaUI.SaveGameData(pool, decks, selection)
 	end
 
 	if (Script.LuaUI('SetDeckEditorDecks')) then
 		Script.LuaUI.SetDeckEditorDecks(decks)
+	end
+end
+
+local function RecvDeckSelection(_, str)
+	if (debug_message) then debug_message("Unsynced:Receiving Deck Indices: " .. str) end
+
+	local separatorIndex = str:find(",") -- The deck numbers should be separated by a comma
+	local index1 = tonumber(str:sub(1, separatorIndex - 1))
+	local index2 = tonumber(str:sub(separatorIndex + 1))
+	selection = {index1, index2}
+
+	if (Script.LuaUI('SaveGameData')) then
+		Script.LuaUI.SaveGameData(pool, decks, selection)
+	end
+
+	if (Script.LuaUI('SetDeckEditorDeckSelection')) then
+		Script.LuaUI.SetDeckSelection(selection)
 	end
 end
 
@@ -476,6 +495,7 @@ end
 function gadget:Initialize() -- I believe that this is guaranteed to run after its synced side counterpart (though it might run concurrently)
 	gadgetHandler:AddSyncAction("cardpool", RecvCardPool)--This is the one that gets called on the SendToUnsynced
 	gadgetHandler:AddSyncAction("decksCollection", RecvDecks)
+	gadgetHandler:AddSyncAction("deckSelection", RecvDeckSelection)
 	gadgetHandler:AddSyncAction("UnsyncingCard", RecvCard)
 
 	gadget:LoadData()

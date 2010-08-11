@@ -11,15 +11,15 @@
 local sideData = {
   [1] = {
     name      = 'Random',
-    startunit = 'random_comm',
+    startunit = 'castle',
   },
   [2] = {
     name      = 'ARM',
-    startunit = 'random_comm',
+    startunit = 'castle',
   },
   [3] = {
     name      = 'CORE',
-    startunit = 'random_comm',
+    startunit = 'castle',
   }
 }
 

@@ -1,5 +1,5 @@
 unitDef = {
-  unitname          = [[random_comm]],
+  unitname          = [[castle]],
   name              = [[Castle]],
   description       = [[Save me!]],
   acceleration      = 0,
@@ -118,4 +118,4 @@ unitDef = {
 
 }
 
-return lowerkeys({ random_comm = unitDef })
+return lowerkeys({ castle = unitDef })

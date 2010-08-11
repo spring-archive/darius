@@ -159,7 +159,7 @@ function InitRoundsAndWaves()
 		{"chickenq", 2, 3},
 	})
 
-	local round1 = CreateRound({wave1, wave2, wave3, wave4, wave5, wave6, wave7, wave8, wave9, wave11, wave12, wave13, wave14, wave15, wave16 })
+	local round1 = CreateRound({wave1, wave2, wave3, wave4, wave5, wave6, wave7, wave8, wave9, wave10, wave11, wave12, wave13, wave14, wave15 })
 	rounds = {round1}
 end
 

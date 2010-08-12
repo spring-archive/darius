@@ -32,22 +32,22 @@
 	}
 	[TEAM0]
 	{
-		StartPosX=600;
-		StartPosZ=350;
+		StartPosX=1200;
+		StartPosZ=700;
 	}
 	[TEAM1]
 	{
-		StartPosX=925;
+		StartPosX=1850;
 		StartPosZ=100;
 	}
 	[TEAM2]
 	{
-		StartPosX=30;
-		StartPosZ=950;
+		StartPosX=90;
+		StartPosZ=1900;
 	}
 	[TEAM3]
 	{
-		StartPosX=30;
-		StartPosZ=200;
+		StartPosX=90;
+		StartPosZ=400;
 	}
 }

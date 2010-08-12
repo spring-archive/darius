@@ -227,6 +227,9 @@ local function GetPool()
 	spSendLuaRulesMsg("UnsyncCardPool")
 end
 
+local function GetDeckSelection()
+	spSendLuaRulesMsg("UnsyncDeckSelection")
+end
 
 local function SetDecks(deckCollection)
 	for i = 1, #deckCollection do
@@ -257,6 +260,16 @@ local function SetActiveCard(id, name, type, img, health, reloadTime, range, dam
 	latestCard = newCard
 end
 
+local function SetDeckSelection(selection)
+	if selection and selection[1] and selection [2] then
+		-- Save the selections
+		activatedDeckIndex1 = selection[1]
+		activatedDeckIndex2 = selection[2]
+
+		-- Signal the update to re-check the deck validation
+		decksHaveChanged = true
+	end
+end
 -----------------------
 -- Deck Manipulation --
 -----------------------
@@ -365,7 +378,6 @@ local function GetLabelByCaption(labelArray, caption)
 	return nil
 end
 local function CheckActivatedDecks()
-
 	-- Check that we have two active decks
 	if activatedDeckIndex1 > 0 and activatedDeckIndex2 > 0 then
 
@@ -377,11 +389,10 @@ end
 -- UI functions --
 ------------------
 local function RunOnCardButtonClick(button)
-	-- Only add cards in the deck editing view (this might be unnecessry since the card button should only be drawn in the deck editing view)
-	if not deckSelectingview then
+	-- Only add cards in the deck editing view (this might be unnecessry since the card button should only be drawn in the deck editing view). Also check that a card has been activated.
+	if not deckSelectingview and not table.isempty(latestCard) then
 		AddCardToDeck(button.card.name, selectedDeckIndex, 1)
 	end
-
 end
 
 local function UpdateDeckEditorUI()
@@ -458,6 +469,8 @@ local function UpdateDeckEditorUI()
 
 		decksHaveChanged = false
 
+		CheckActivatedDecks() -- Check if some deck changes have changed the active deck validations
+
 		-- Remove old captions
 		for i = 1, #selectedDeckLabels do
 			selectedDeckLabels[i]:SetCaption("")
@@ -490,12 +503,8 @@ local function UpdateDeckEditorUI()
 	if not deckSelectingview then
 		-- The card button should only be drawn while in the deck editing view
 
-		if table.isempty(latestCard) then
+		if not table.isempty(latestCard) then
 
-			--GetCard("Fire")
-			drawCardButton = true
-
-		else
 			if selectedCardButton and selectedCardButton.card then
 				-- The card button has been made => we need to only update it
 
@@ -507,21 +516,6 @@ local function UpdateDeckEditorUI()
 						-- The names are the same => the active card has not changed => it's enough to update the old button
 						selectedCardButton:UpdateCard(240, 400)
 					end
-			end
-
-
-			if drawCardButton then
-				-- The first card has been activated => generate the card button
-				sideDataPanel:RemoveChild(selectedCardButton)
-				drawCardButton = false
-				selectedCardButton = Darius:GetCardButton(latestCard, 240, 400)
-
-				selectedCardButton.OnMouseUp = {function(self)
-													RunOnCardButtonClick(self)
-												end
-				}
-				sideDataPanel:AddChild(selectedCardButton)
-				selectedCardButton:Invalidate()
 			end
 		end
 	end
@@ -776,16 +770,17 @@ local function MakeDeckEditorUI()
 		children = selectedDeckLabels
 	}
 
-	selectedCardButton = Button:New{
-		-- The actual card button is created elsewhere, this is just a dummy to prevent crashing
-		x = 1,
-		y = 1,
+	-- The card that gets drawn on the button, before any card has been selected
+	local defCard = {
+		img = 'cards/images/background/back.png',
+		template    = "generic",
 
-		width = 1,
-		height = 1,
-
-		caption = "",
 	}
+	selectedCardButton = Darius:GetCardButton(defCard, 240, 400)
+	selectedCardButton.OnMouseUp = {function(self)
+										RunOnCardButtonClick(self)
+									end}
+
 
 	addCardToDeckButton = Button:New{
 		x = 1,
@@ -1003,11 +998,14 @@ function widget:Initialize()
 	widgetHandler:RegisterGlobal("SetDeckEditorCardPool" , SetCardPool)--This is the one the gadget should call
 	widgetHandler:RegisterGlobal("SetDeckEditorDecks", SetDecks)
 	widgetHandler:RegisterGlobal("SetDeckEditorActiveCard", SetActiveCard)
+	widgetHandler:RegisterGlobal("SetDeckEditorDeckSelection", SetDeckSelection)
 
 	maxCardAmount = Spring.GetGameRulesParam("maximumcardamount") --Fetch the amount of cards from the pool. Yes, it is *necessary* to do it like this.
+
+	-- Obatin the required data from the card pool
 	GetDecks()
 	GetPool()
-
+	GetDeckSelection()
 
 	SetUpHandles()
 	MakeDeckEditorUI()

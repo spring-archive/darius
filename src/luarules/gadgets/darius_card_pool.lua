@@ -234,7 +234,7 @@ local function LoadCardsFromFiles()
 		table.insert(cardData, card)
 	end
 
-	Spring.SetGameRulesParam("maximumcardamount", #pool) -- Used by the deck editor. DO NOT remove
+	Spring.SetGameRulesParam("maximumcardamount", #cardData) -- Used by the deck editor. DO NOT remove
 end
 
 local function SendDecksToSession()  -- Sends the decks to the instance game manager
@@ -356,6 +356,9 @@ function gadget:RecvLuaMsg(message, playerID)--Messaging between Deck Editor and
 	elseif message == "UnsyncDecks" then
 		UnsyncDecks()
 
+	elseif message == "UnsyncDeckSelection" then -- The deck editor needs this to get the selected decks
+		UnsyncDeckSelection()
+
 	elseif string.find(message, "UnsyncCard:") then --Unsync Card data by name
 		local cardName = message:gsub("UnsyncCard:","")
 		local card = gadget:GetCardDataByName(cardName)
@@ -474,12 +477,13 @@ local function RecvDeckSelection(_, str)
 	local index2 = tonumber(str:sub(separatorIndex + 1))
 	selection = {index1, index2}
 
+
 	if (Script.LuaUI('SaveGameData')) then
 		Script.LuaUI.SaveGameData(pool, decks, selection)
 	end
 
 	if (Script.LuaUI('SetDeckEditorDeckSelection')) then
-		Script.LuaUI.SetDeckSelection(selection)
+		Script.LuaUI.SetDeckEditorDeckSelection(selection)
 	end
 end
 

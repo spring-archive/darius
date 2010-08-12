@@ -1,6 +1,7 @@
 local card = {
 	name 		= "Wood",
 	type 		= "Material",
+	template    = "generic",
 	img 		= 'cards/images/material/wood.png',
 	health 		= 400,
 	reloadTime 	= 0,

@@ -1,6 +1,7 @@
 local card = {
 	name 		= "Seise's special",
 	type 		= "Material",
+	template    = "generic",
 	img 		= 'LuaUI/images/seises_special.png',
 	health 		= 10000,
 	reloadTime 	= 0,

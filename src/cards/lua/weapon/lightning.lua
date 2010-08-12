@@ -1,6 +1,7 @@
 local card = {
 	name 		= "Lightning",
 	type 		= "Weapon",
+	template    = "generic",
 	img 		= 'cards/images/weapon/lightning.png',
 	health 		= 0,
 	reloadTime 	= 3.5,

@@ -1,6 +1,7 @@
 local card = {
 	name 		= "Acid",
 	type 		= "Weapon",
+	template    = "generic",
 	img 		= 'cards/images/weapon/acid.png',
 	health 		= -100,
 	reloadTime 	= 0.6,

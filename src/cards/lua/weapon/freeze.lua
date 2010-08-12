@@ -1,6 +1,7 @@
 local card = {
 	name 		= "Freeze",
 	type 		= "Weapon",
+	template    = "generic",
 	img 		= 'cards/images/weapon/freeze.png',
 	health 		= 0,
 	reloadTime 	= 2.0,

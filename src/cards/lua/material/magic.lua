@@ -1,6 +1,7 @@
 local card = {
 	name 		= "Magic",
 	type 		= "Material",
+	template    = "generic",
 	img 		= 'cards/images/material/Magic.png',
 	health 		= 300,
 	reloadTime 	= 2,

@@ -1,6 +1,7 @@
 local card = {
 	name 		= "Chicken",
 	type 		= "Material",
+	template    = "generic",
 	img 		= 'cards/images/material/chicken.png',
 	health 		= 1600,
 	reloadTime 	= 0.4,

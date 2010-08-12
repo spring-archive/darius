@@ -1,6 +1,7 @@
 local card = {
 	name 		= "Suicide Bomber",
 	type 		= "Weapon",
+	template    = "generic",
 	img 		= 'cards/images/weapon/suicide.png',
 	health 		= 0,
 	reloadTime 	= 20.0,

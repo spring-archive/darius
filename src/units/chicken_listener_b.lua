@@ -56,7 +56,7 @@ unitDef = {
 
   },
 
-  side                = [[THUNDERBIRDS]],
+  side                = [[MONSTERS]],
   sightDistance       = 0,
   smoothAnim          = true,
   stealth             = true,

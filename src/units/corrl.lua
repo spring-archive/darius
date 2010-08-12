@@ -51,7 +51,7 @@ unitDef = {
 
   },
 
-  side                = [[CORE]],
+  side                = [[HUMANS]],
   sightDistance       = 660,
   smoothAnim          = true,
   TEDClass            = [[METAL]],

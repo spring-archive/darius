@@ -50,7 +50,7 @@ unitDef = {
 
   },
 
-  side                = [[THUNDERBIRDS]],
+  side                = [[MONSTERS]],
   sightDistance       = 256,
   smoothAnim          = true,
   steeringmode        = [[2]],

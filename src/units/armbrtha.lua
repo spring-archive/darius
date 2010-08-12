@@ -53,7 +53,7 @@ unitDef = {
 
   },
 
-  side                = [[ARM]],
+  side                = [[HUMANS]],
   sightDistance       = 660,
   smoothAnim          = true,
   TEDClass            = [[FORT]],

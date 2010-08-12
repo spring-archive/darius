@@ -49,7 +49,7 @@ unitDef = {
   },
 
   shootme             = [[1]],
-  side                = [[ARM]],
+  side                = [[HUMANS]],
   sightDistance       = 484,
   TEDClass            = [[FORT]],
   threed              = [[1]],

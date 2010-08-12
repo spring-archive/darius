@@ -53,7 +53,7 @@ unitDef = {
 
   },
 
-  side               = [[THUNDERBIRDS]],
+  side               = [[MONSTERS]],
   sightDistance      = 512,
   smoothAnim         = true,
   TEDClass           = [[METAL]],

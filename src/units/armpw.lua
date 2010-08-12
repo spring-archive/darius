@@ -48,7 +48,7 @@ unitDef = {
 
   },
 
-  side                = [[ARM]],
+  side                = [[HUMANS]],
   sightDistance       = 425,
   smoothAnim          = true,
   steeringmode        = [[2]],

@@ -119,7 +119,7 @@ unitDef = {
 
   showNanoSpray       = false,
   showPlayerName      = true,
-  side                = [[ARM]],
+  side                = [[HUMANS]],
   sightDistance       = 500,
   smoothAnim          = true,
   sonarDistance       = 300,

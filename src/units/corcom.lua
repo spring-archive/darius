@@ -121,7 +121,7 @@ unitDef = {
 
   showNanoSpray       = false,
   showPlayerName      = true,
-  side                = [[CORE]],
+  side                = [[HUMANS]],
   sightDistance       = 500,
   smoothAnim          = true,
   sonarDistance       = 300,

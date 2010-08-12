@@ -49,7 +49,7 @@ unitDef = {
 
   },
 
-  side                = [[THUNDERBIRDS]],
+  side                = [[MONSTERS]],
   sightDistance       = 400,
   smoothAnim          = true,
   sonarDistance       = 380,

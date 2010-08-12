@@ -60,7 +60,7 @@ unitDef = {
 
   },
 
-  side                = [[CORE]],
+  side                = [[HUMANS]],
   sightDistance       = 660,
   smoothAnim          = true,
   steeringmode        = [[1]],

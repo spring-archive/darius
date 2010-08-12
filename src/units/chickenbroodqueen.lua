@@ -83,7 +83,7 @@ unitDef = {
   },
 
   showPlayerName      = true,
-  side                = [[THUNDERBIRDS]],
+  side                = [[MONSTERS]],
   sightDistance       = 1024,
   smoothAnim          = true,
   sonarDistance       = 450,

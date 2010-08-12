@@ -7,7 +7,6 @@ local card = {
 	range 		= 200,
 	damage 		= 0,
 	greenballs 	= -1,
-	effect 		= nil,
 	desc 		= "Does no damage, but slows monsters within range."
 }
 

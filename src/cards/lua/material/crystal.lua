@@ -4,10 +4,8 @@ local card = {
 	img 		= 'cards/images/material/crystal.png',
 	health 		= 300,
 	reloadTime 	= 0.6,
-	range 		= 100,
-	damage 		= 300, 
+	range 		= 100, 
 	greenballs 	= -1,
-	effect 		= nil,
 	desc 		= "Create your own glass cannon with this!",
 }
 

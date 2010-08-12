@@ -4,10 +4,9 @@ local card = {
 	img 		= 'cards/images/material/Bionic.png',
 	health 		= 1000,
 	reloadTime 	= 4,
-	range 		= 0,
-	damage 		= 800, 
+	range 		= 0, 
+	regen       = 2,
 	greenballs 	= -2,
-	effect 		= nil,
 	desc 		= "A regenerating, living tower, ideal as a monster magnet!"
 }
 

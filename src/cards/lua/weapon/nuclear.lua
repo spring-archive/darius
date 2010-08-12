@@ -6,10 +6,9 @@ local card = {
 	reloadTime 	= 40.0,
 	range 		= 600,
 	damage 		= 3000,
-	greenballs 	= 2,
-	effect 		= nil,
-	desc 		= "Shoots a small nuclear warhead at enemies that inflict massive damage. Do the hazardous\n" .. 
-				  "nature of the used materials reload time is long and it weakens the structure.",
+	greenballs 	= -2,
+	desc 		= "Shoots a small nuclear warhead at enemies that inflicts massive damage. Due to the hazardous\n" .. 
+				  "nature of the materials used the reload time is long and the structure is weakened.",
 }
 
 return card

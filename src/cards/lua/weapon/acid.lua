@@ -7,8 +7,7 @@ local card = {
 	range 		= 300,
 	damage 		= 200, 
 	greenballs 	= 0,
-	effect 		= nil,
-	desc 		= "Squirts litres of acid on enemies. Due to hazardous nature costs tower health points.",
+	desc 		= "Squirts litres of acid on enemies. Due to the hazards involved this tower loses health.",
 }
 
 return card

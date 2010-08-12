@@ -7,7 +7,6 @@ local card = {
 	range 		= 400,
 	damage 		= 15,
 	greenballs 	= 0,
-	effect 		= nil,
 	desc 		= "Shoots a laser beam at enemies that does constant damage",
 }
 

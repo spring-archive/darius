@@ -5,9 +5,7 @@ local card = {
 	health 		= 900,
 	reloadTime 	= 0.3,
 	range 		= 20,
-	damage 		= 0,
 	greenballs 	= 0,
-	effect 		= nil,
 	desc 		= "Creates sturdy structures with no clear weakness or strength",
 }
 

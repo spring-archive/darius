@@ -5,9 +5,7 @@ local card = {
 	health 		= 4000,
 	reloadTime 	= 0.6,
 	range 		= 0,
-	damage 		= 0, 
 	greenballs 	= -5,
-	effect 		= nil,
 	desc 		= "Hardest known material in the universe. Very rare and expensive.",
 }
 

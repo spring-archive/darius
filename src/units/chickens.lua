@@ -103,7 +103,6 @@ unitDef = {
       damage                  = {
         default = 160,
         planes  = 160,
-        subs    = 7,
       },
 
       explosionGenerator      = [[custom:EMG_HIT]],

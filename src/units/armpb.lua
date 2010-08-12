@@ -89,7 +89,6 @@ unitDef = {
       damage                  = {
         default = 150,
         planes  = 150,
-        subs    = 7.5,
       },
 
       explosionGenerator      = [[custom:gauss_hit_m]],

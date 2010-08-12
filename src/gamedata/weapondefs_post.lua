@@ -75,10 +75,8 @@ local function ProcessUnitDef(udName, ud)
 end
 
 
---------------------------------------------------------------------------------
 
 -- Process the unitDefs
-
 local UnitDefs = DEFS.unitDefs
 
 for udName, ud in pairs(UnitDefs) do
@@ -88,11 +86,8 @@ for udName, ud in pairs(UnitDefs) do
 end
 
 
---------------------------------------------------------------------------------
---
--- Fix the canAttack tag
---
 
+-- Fix the canAttack tag
 do
   local processed = {}
 
@@ -146,6 +141,3 @@ do
     ud.canattack = CanAttack(ud)
   end
 end
-
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------

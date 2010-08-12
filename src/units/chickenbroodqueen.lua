@@ -139,7 +139,6 @@ unitDef = {
       damage                  = {
         default = 40,
         planes  = 40,
-        subs    = 40,
       },
 
       endsmoke                = [[0]],
@@ -175,7 +174,6 @@ unitDef = {
 
       damage                  = {
         default = 30,
-        subs    = 1.5,
       },
 
       dance                   = 60,

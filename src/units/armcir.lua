@@ -87,7 +87,6 @@ unitDef = {
       damage                  = {
         default = 35,
         planes  = 350,
-        subs    = 17.5,
       },
 
       energypershot           = 0,

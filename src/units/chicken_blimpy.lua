@@ -139,7 +139,6 @@ unitDef = {
       damage                  = {
         default = 1,
         planes  = 1,
-        subs    = 1,
       },
 
       explosionGenerator      = [[custom:none]],
@@ -180,7 +179,6 @@ unitDef = {
       damage                  = {
         default = 1,
         planes  = 1,
-        subs    = 1,
       },
 
       dropped                 = true,

@@ -82,8 +82,6 @@ unitDef = {
       damage                  = {
         default    = 175,
         planes     = [[1750]],
-        satellites = [[1750]],
-        subs       = 87.5,
       },
 
       edgeEffectiveness       = 0.25,

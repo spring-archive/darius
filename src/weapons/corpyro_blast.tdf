@@ -20,6 +20,5 @@
   [DAMAGE]
   {
     default=100;
-    flamethrowers=100;
   }
 }

@@ -12,11 +12,6 @@
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
-for udid,udef in ipairs(UnitDefs) do
-  udef.factions = {}
-end
-
-
 local function AddFaction(ud,faction,scaned)
   for i=1,#scaned do
     if (scaned[i]==ud.id) then return end
@@ -36,11 +31,11 @@ end
 
 
 
-AddFaction(UnitDefNames['armcom'],'arm',{})
-AddFaction(UnitDefNames['corcom'],'core',{})
+for udid,udef in ipairs(UnitDefs) do
+  udef.factions = {}
+end
 
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------
+
 
 for udid,udef in ipairs(UnitDefs) do
   if ((#udef.factions)==0) then

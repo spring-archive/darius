@@ -337,18 +337,6 @@ AddFX("corcrw", {
   })
 
 
---// ^-^
-local t = os.date('*t')
-if (t.month==12) then
-  AddFX("armcom", {
-    {class='SantaHat',options={color={0,0.7,0,1}, pos={0,4,0.35}, emitVector={0.3,1,0.2}, width=2.7, height=6, ballSize=0.7, piece="head"}},
-  })
-  AddFX("corcom", {
-    {class='SantaHat',options={pos={0,6,2}, emitVector={0.4,1,0.2}, width=2.7, height=6, ballSize=0.7, piece="head"}},
-  })
-end
-
-
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------

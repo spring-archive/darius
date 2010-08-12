@@ -94,7 +94,6 @@ unitDef = {
       damage                  = {
         default = 110,
         planes  = [[110]],
-        subs    = 7.5,
       },
 
       explosionGenerator      = [[custom:FLASH2]],

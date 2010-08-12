@@ -167,7 +167,6 @@ unitDef = {
 
       damage                  = {
         default    = 99999,
-        commanders = [[1]],
       },
 
       energypershot           = 0,
@@ -202,7 +201,6 @@ unitDef = {
 
       damage                  = {
         default = 0,
-        subs    = 0,
       },
 
       duration                = 0.11,
@@ -249,7 +247,6 @@ unitDef = {
 
       damage                  = {
         default = 15.75,
-        subs    = 3.75,
       },
 
       duration                = 0.11,

@@ -130,7 +130,6 @@ unitDef = {
       damage                  = {
         default = 75,
         planes  = [[150]],
-        subs    = 7.5,
       },
 
       dance                   = 60,

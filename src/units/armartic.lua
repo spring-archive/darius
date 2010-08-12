@@ -98,9 +98,7 @@ unitDef = {
 
       damage                  = {
         default        = 1000,
-        commanders     = 100,
         empresistant75 = 250,
-        empresistant99 = 10,
       },
 
       duration                = 8,
@@ -144,7 +142,6 @@ unitDef = {
       damage                  = {
         default = 6,
         planes  = 6,
-        subs    = 0.3,
       },
 
       duration                = 0.0025,

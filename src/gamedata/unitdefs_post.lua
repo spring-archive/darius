@@ -63,32 +63,6 @@ for name, ud in pairs(UnitDefs) do
 end 
 
 
--- Set unit faction and build options
-local function TagTree(unit, faction, newbuildoptions)
-  
-  local function Tag(unit)
-    if (not UnitDefs[unit] or UnitDefs[unit].faction) then
-      return
-    end
-	local ud = UnitDefs[unit]
-    ud.faction = faction
-    if (UnitDefs[unit].buildoptions) then
-	  for _, buildoption in ipairs(ud.buildoptions) do
-        Tag(buildoption)
-      end
-	  if (tonumber(ud.maxvelocity) > 0) and unit ~= "armcsa" and unit ~= "corcsa" then
-	    ud.buildoptions = newbuildoptions
-	  end
-    end
-  end
-  
-  Tag(unit)
-end
-
-TagTree("armcom", "arm", UnitDefs["armcom"].buildoptions)
-TagTree("corcom", "core", UnitDefs["corcom"].buildoptions)
-
-
 -- Calculate mincloakdistance based on unit footprint size
 local sqrt = math.sqrt
 

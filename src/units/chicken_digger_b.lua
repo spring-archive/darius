@@ -99,7 +99,6 @@ unitDef = {
       damage                  = {
         default = 80,
         planes  = 80,
-        subs    = 4,
       },
 
       endsmoke                = [[0]],

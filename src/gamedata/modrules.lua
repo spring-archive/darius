@@ -1,11 +1,3 @@
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------
---
---  file:    modrules.lua
---  brief:   modrules definitions
---
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------
 
 local modrules  = {
   construction = {
@@ -13,7 +5,6 @@ local modrules  = {
     constructionDecayTime  = 6.66;  -- defaults to 6.66
     constructionDecaySpeed = 0.03;  -- defaults to 0.03
   },
-
 
   reclaim = {
     multiReclaim  = 1;    -- defaults to 0
@@ -28,21 +19,17 @@ local modrules  = {
     allowAllies   = false;  -- defaults to true
   },
 
-
   repair = {
     energyCostFactor = 1,  -- defaults to 0
   },
-
 
   resurrect = {
     energyCostFactor = 1.2,  -- defaults to 0.5
   },
 
-
   capture = {
     energyCostFactor = 1,  -- defaults to 0
   },
-
 
   paralyze = {
     paralyzeOnMaxHealth = false, -- defaults to true
@@ -59,14 +46,12 @@ local modrules  = {
     },
   },
 
-
   transportability = {
     transportGround = 1;   -- defaults to 1
     transportHover  = 1;   -- defaults to 0
     transportShip   = 0;  -- defaults to 0
     transportAir    = 0;  -- defaults to 0
   },
-
 
   flankingBonus = {
     -- defaults to 1
@@ -76,7 +61,6 @@ local modrules  = {
     -- 3: unit coords, locked 
     defaultMode=0;
   },
-
 
   experience = {
     experienceMult = 1.0; -- defaults to 1.0
@@ -88,12 +72,10 @@ local modrules  = {
     reloadScale = 0.5;  -- defaults to 0.4
   },
 
-
   fireAtDead = {
     fireAtKilled   = false;  -- defaults to false
     fireAtCrashing = false;   -- defaults to false
   },
-
 
   nanospray = {
     allow_team_colors = true;  -- defaults to true
@@ -107,14 +89,7 @@ local modrules  = {
     -- default 3
     featureVisibility = 1;
   },
-
 }
 
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------
 
 return modrules
-
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------
-

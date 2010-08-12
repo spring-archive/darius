@@ -1,12 +1,3 @@
--- $Id: resources.lua 4609 2009-05-12 01:32:58Z carrepairer $
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------
---
---  file:    resources.lua
---  brief:   resources definitions
---
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------
 
 local resources = {
 	graphics = {
@@ -54,38 +45,14 @@ local resources = {
 		},
 
 		projectiletextures = {
-			----- Weapons ---------------
-			--sbtrailtexture         ='smoketrail
-			--missiletrailtexture    ='smoketrail
-			--muzzleflametexture     ='explo
-			--repulsetexture         ='explo
-			--dguntexture            ='flare
-			--flareprojectiletexture ='flare
-			--sbflaretexture         ='flare
-			--missileflaretexture    ='flare
-			--beamlaserflaretexture  ='flare
-			--bubbletexture          ='circularthingy
-			--geosquaretexture       ='circularthingy
-			--gfxtexture             ='circularthingy
-			--projectiletexture      ='circularthingy
-			--repulsegfxtexture      ='circularthingy
-			--sphereparttexture      ='circularthingy
-			--torpedotexture         ='circularthingy
-			--wrecktexture           ='circularthingy
-			--plasmatexture          ='circularthingy
 			gfxtexture='GPL/nano.tga',
 			bubbletexture='PD/BubbleAlpha.tga',
 			dguntexture='GPL/flash2.tga',
 			sphereparttexture='cdet.bmp',
 			repulsegfxtexture='cdet.bmp',
-
-			--------- reclaim effect --------
 			shard1='unknown/shard1.tga',
 			shard2='unknown/shard2.tga',
 			shard3='unknown/shard3.tga',
-			
-
-			----------Spring Effects--------
 			circularthingy='circularthingy.tga',
 			laserend='laserend.tga',
 			laserfalloff='laserfalloff.tga',
@@ -95,22 +62,14 @@ local resources = {
 			flare='flare.tga',
 			flame='GPL/flame.tga',
 			explofade='explofade.tga',
-			--heatcloud='explo.tga',
-			--explo='explo.tga',
 			heatcloud='GPL/explo.png',
 			explo='GPL/fire.png',
-
-
-			-----------Saktoths-----------
 			spikeexplo='Saktoths/spikeexplo.tga',
 			starexplo='Saktoths/starexplo.tga',
 			flowexplo='Saktoths/flowexplo.tga',
 			cloudexplo='Saktoths/cloudexplo.tga',
 			sakexplo='Saktoths/sakexplo.tga',
 			fireball2='Saktoths/fireball.tga',
-			------------------------------
-
-
 			smoke04='GPL/smoke04.png',
 			orangesmoke3='GPL/smoke_orange.png',
 			fire2='GPL/fire.png',
@@ -190,9 +149,6 @@ local resources = {
 			corelaser='GPL/corelaser.png',
 			sporetrail='GPL/sporetrail.tga',
 			sporetrail2='GPL/sporetrail2.tga',
-
-
-			-----------Smoth's-----------
 			["2explo"]='CC/2explo.tga',
 			["3explo"]='CC/3explo.tga',
 			["4explo"]='CC/4explo.tga',
@@ -229,8 +185,6 @@ local resources = {
 			beamrifletip='CC/beamrifletip.tga',
 			dirt='CC/dirt.png',
 			odd='CC/odd.tga',
-
-			------------XTA--------------
 			whitelight='Other/lightw.bmp',
 			redlight='Other/light_red.png',
 			YELLOWBLAST='Other/G_FIRE3.tga',
@@ -240,38 +194,22 @@ local resources = {
 			splash='PD/dirtplosion2.tga',
 			muzzleside='muzzleside.tga',
 			muzzlefront='muzzlefront.tga',
-
-
-			------------Evil4Zerggin
 			smoketrailthin='PD/smoketrailthin.tga',
 			smoketrailthinner='PD/smoketrailthinner.tga',
 			splashside='PD/splashside.tga',
 			splashbase='PD/splashbase.tga',
 			imma_launchin_mah_lazer='Other/imma_launchin_mah_lazer.png',
-
-
-			------------???---------------
 			bluering='CC/bluering.tga',
-
-
-			-----------KDRs-----------
 			blooddrop='PD/blooddrop.tga',
 			bloodblast='PD/bloodblast.tga',
 			bloodsplat='Pd/bloodsplat.tga',
 			blooddropwhite='PD/blooddropwhite.tga',
 			bloodblastwhite='PD/bloodblastwhite.tga',
 			null='PD/null.tga',
-			------------------------------
-			
 			steam='PD/steam.tga',
 		},
 	},
 }
 
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------
 
 return resources
-
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------

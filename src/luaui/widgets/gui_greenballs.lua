@@ -12,7 +12,7 @@ end
 
 -- Chili Stuff
 local VFSMODE      = VFS.RAW_FIRST
-local file = LUAUI_DIRNAME .. "Configs/crudemenu_conf.lua"
+local file = LUAUI_DIRNAME .. "Configs/gui_conf.lua"
 local confdata = VFS.Include(file, nil, VFSMODE)
 local color = confdata.color
 

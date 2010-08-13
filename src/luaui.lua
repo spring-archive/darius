@@ -1,5 +1,3 @@
--- $Id: luaui.lua 3171 2008-11-06 09:06:29Z det $
---------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 --
 --  file:    luaui.lua
@@ -10,21 +8,17 @@
 --  Licensed under the terms of the GNU GPL, v2 or later.
 --
 --------------------------------------------------------------------------------
---------------------------------------------------------------------------------
 
 LUAUI_VERSION = "LuaUI v0.3"
-
 LUAUI_DIRNAME = 'LuaUI/'
-
 VFS.DEF_MODE = VFS.RAW_FIRST
 
 local STARTUP_FILENAME = LUAUI_DIRNAME .. 'dtdmain.lua'
 
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------
+
 
 do
-  -- use a versionned directory name if it exists
+  -- use a versioned directory name if it exists
   local sansslash = string.sub(LUAUI_DIRNAME, 1, -2)
   local versiondir = sansslash .. '-' .. Game.version .. '/'
   if (VFS.FileExists(versiondir  .. 'dtdmain.lua', VFS.RAW_ONLY)) then
@@ -35,12 +29,9 @@ end
 
 Spring.Echo('Using LUAUI_DIRNAME = ' .. LUAUI_DIRNAME)
 
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------
---
--- load the user's UI
---
 
+
+-- load the user's UI
 do
   text = VFS.LoadFile(STARTUP_FILENAME, VFS.RAW_FIRST)
   if (text == nil) then
@@ -54,7 +45,3 @@ do
     return
   end
 end
-
-
--------------------------------------------------------------------------------- 
--------------------------------------------------------------------------------- 

@@ -56,7 +56,7 @@ local decksAreOK = false -- Tells if the decks have been checked and found to be
 
 -- Colours are pwetty!
 local VFSMODE = VFS.RAW_FIRST
-local file = LUAUI_DIRNAME .. "Configs/crudemenu_conf.lua"
+local file = LUAUI_DIRNAME .. "Configs/gui_conf.lua"
 local confdata = VFS.Include(file, nil, VFSMODE)
 local color = confdata.color
 local orange = {1,0.5,0,1}

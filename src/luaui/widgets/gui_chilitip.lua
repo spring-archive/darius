@@ -40,7 +40,7 @@ local echo = Spring.Echo
 
 local VFSMODE      = VFS.RAW_FIRST
 local _, iconFormat = VFS.Include(LUAUI_DIRNAME .. "Configs/chilitip_conf.lua" , nil, VFSMODE)
-local confdata = VFS.Include(LUAUI_DIRNAME .. "Configs/crudemenu_conf.lua", nil, VFSMODE)
+local confdata = VFS.Include(LUAUI_DIRNAME .. "Configs/gui_conf.lua", nil, VFSMODE)
 local color = confdata.color
 
 --------------------------------------------------------------------------------

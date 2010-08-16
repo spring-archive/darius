@@ -374,6 +374,7 @@ function gadget:RecvLuaMsg(message, playerID)--Messaging between Deck Editor and
 		message = message:gsub("SetDecks:", "")
 		if (debug_message) then debug_message("Received SetDecks:"..message) end
 		gadget:ParseDecks(message)
+		UnsyncDecks() -- Once the decks have been received from the editor, they also need to be saved (the editor would be kinda pointles otherwise)
 
 	elseif string.find(message, "SetActiveDecks:") then --Sets which decks the player wants to use in the game by index
 		message = message:gsub("SetActiveDecks:", "")

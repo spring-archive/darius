@@ -21,42 +21,42 @@ local decks = {}            -- Decks are stored as ana array of (cardName, amoun
 
 local latestCard = {}       --Cache for the latest card fetched from the pool
 
-local drawCardButton = false--Used by the UpdateDeckEditorUI to see when the card button needs to be drawn for the first time
-
 local maxCardAmount = 0
-local activatedPoolcard = ""  -- Name of the latest selected card in the pool
-local activatedDeckCard = ""  -- Name of tha latest selected card in the selected deck
-local selectedDeckIndex = 0   -- Index of the deck that is currently under edit
-local cardLabelSpaceCount = 5
-local maxDeckAmount = 10
+local activatedPoolcard = ""  	-- Name of the latest selected card in the pool
+local activatedDeckCard = ""  	-- Name of tha latest selected card in the selected deck
+local selectedDeckIndex = 0   	-- Index of the deck that is currently under edit
+local cardLabelLenght = 2		-- Currently not used
+local minimumCardLabelSpaceCount = 2 -- The amount of sapces between the card name and it's amount on card labels (NOTE: this must be more than the amount of sequential spaces in the card names)
+local maxDeckAmount = 10		-- The maximum amount of decks supported by the editor
 
 local activatedDeckIndex1 = 0
 local activatedDeckIndex2 = 0
 local useNext = false
 
 -- UI handles
-local deckEditorStack = nil
-local deckEditorWindow = nil
-local cardPoolLabelStack = nil
-local decksLabelStack = nil
-local selectedCardButton = nil
-local cardPoolLabels = {}
-local selectedDeckLabels = {}
-local decksLabels = {}
-local activeDeckLabel = nil
-local activeDeck1Label = nil
-local activeDeck2Label = nil
-local activeDeckInfoLabel = nil
+local deckEditorStack 		= nil
+local deckEditorWindow 		= nil
+local cardPoolLabelStack 	= nil
+local decksLabelStack 		= nil
+local selectedCardButton 	= nil
+local cardPoolLabels 		= {}
+local selectedDeckLabels 	= {}
+local decksLabels 			= {}
+local activeDeckLabel 		= nil
+local activeDeck1Label		= nil
+local activeDeck2Label		= nil
+local activeDeckInfoLabel	= nil
 
 -- Data flags
 local poolHasChanged = false
 local decksHaveChanged = false
-local deckSelectingview = true -- Tells which view to draw: the deck selection view (true) or the deck editing view(false)
-local decksAreOK = false -- Tells if the decks have been checked and found to be OK (true) or if there is something wrong with them(false)
+local deckSelectingview = true 	-- Tells which view to draw: the deck selection view (true) or the deck editing view(false)
+local decksAreOK = false 			-- Tells if the decks have been checked and found to be OK (true) or if there is something wrong with them(false)
+local reCheckDecks = true 			-- Notifies the update function to re-check the validation of the activated decks
 
 -- Colours are pwetty!
 local VFSMODE = VFS.RAW_FIRST
-local file = LUAUI_DIRNAME .. "Configs/gui_conf.lua"
+local file = LUAUI_DIRNAME .. "configs/gui_conf.lua"
 local confdata = VFS.Include(file, nil, VFSMODE)
 local color = confdata.color
 local orange = {1,0.5,0,1}
@@ -79,6 +79,7 @@ function table.tostring(t)
 	str = str .. "}"
 	return str
 end
+
 function table.isempty(t)
 	for k, v in pairs(t) do
 		return false
@@ -126,13 +127,6 @@ function string.totable(s)
 	return t
 end
 
-
-
-
-
-
-
-
 function table.copy(t)
 	if t == nil then
 		return nil
@@ -161,13 +155,22 @@ local function GenerateOccuranceTable(t)
 
 	return occuranceTable
 end
-local function FindLongestKey(t) -- FIXME Does not work (is this even needed?)
+
+local function FindLongestKey(t) -- Currently not used
+	if not t or t == {} then
+		return 0
+	end
+
 	local currentMax = 0
 
 	for k, v in pairs(t) do
 		if type(v) == 'table' then
 			-- Recursion to subtables
-			FindLongestKey(v)
+			local v = FindLongestKey(v)
+
+			if v > currentMax then
+				currentMax = v
+			end
 
 		elseif type(k) == 'string' then
 			-- If the key is a string check it's lenght and update the current max if necessary
@@ -232,14 +235,19 @@ local function GetDeckSelection()
 end
 
 local function SetDecks(deckCollection)
+	-- Modify the data to the format used by the deck editor
 	for i = 1, #deckCollection do
 		table.insert(decks, i, GenerateOccuranceTable(deckCollection[i]))
 	end
 
+	-- Order the redraw of the deck data
 	decksHaveChanged = true
 end
+
 local function SetCardPool(pool)
 	cardPool = GenerateOccuranceTable(pool)
+
+	-- Order the redraw of the pool data
 	poolHasChanged = true
 end
 
@@ -267,7 +275,7 @@ local function SetDeckSelection(selection)
 		activatedDeckIndex2 = selection[2]
 
 		-- Signal the update to re-check the deck validation
-		decksHaveChanged = true
+		reCheckDecks = true
 	end
 end
 -----------------------
@@ -335,11 +343,10 @@ end
 ----------------
 -- UI helpers --
 ----------------
-local function GenerateCardLabelString(cardName, amount, space)
+local function GenerateCardLabelString(cardName, amount)
 	local s = cardName
-	space = space or 1
 
-	for i = 1, space do
+	for i = 1, minimumCardLabelSpaceCount do
 		s = s .. " "
 	end
 
@@ -366,7 +373,7 @@ local function SetUpHandles()
 	screen0 = Chili.Screen0
 end
 
-local function GetLabelByCaption(labelArray, caption)
+local function GetLabelByCaption(labelArray, caption) -- Currently not used
 
 	for i = 1, #labelArray do
 
@@ -377,6 +384,7 @@ local function GetLabelByCaption(labelArray, caption)
 
 	return nil
 end
+
 local function CheckActivatedDecks()
 	-- Check that we have two active decks
 	if activatedDeckIndex1 > 0 and activatedDeckIndex2 > 0 then
@@ -420,6 +428,12 @@ local function UpdateDeckEditorUI()
 			-- FIXME better text, deck names?
 		end
 
+		-- Check if the activated decks need a re-check
+		if reCheckDecks then
+			reCheckDecks = false
+			CheckActivatedDecks()
+		end
+
 		-- Update the labels showing the activated decks
 		-- Only draw if a deck has been activated (activatedDeckIndex will be a positive number in this case)
 		if activatedDeckIndex1 > 0 then
@@ -454,9 +468,9 @@ local function UpdateDeckEditorUI()
 			if amount > 0 then
 				if activatedPoolcard == cardName then
 					-- Add colour for the active card
-					cardPoolLabels[i]:SetCaption(activeColour .. GenerateCardLabelString(cardName, amount, cardLabelSpaceCount))
+					cardPoolLabels[i]:SetCaption(activeColour .. GenerateCardLabelString(cardName, amount))
 				else
-					cardPoolLabels[i]:SetCaption(GenerateCardLabelString(cardName, amount, cardLabelSpaceCount))
+					cardPoolLabels[i]:SetCaption(GenerateCardLabelString(cardName, amount))
 				end
 
 				i = i + 1
@@ -468,8 +482,6 @@ local function UpdateDeckEditorUI()
 	if decksHaveChanged and selectedDeckIndex then -- Rewrite the deck data
 
 		decksHaveChanged = false
-
-		CheckActivatedDecks() -- Check if some deck changes have changed the active deck validations
 
 		-- Remove old captions
 		for i = 1, #selectedDeckLabels do
@@ -489,9 +501,9 @@ local function UpdateDeckEditorUI()
 
 					if not deckSelectingview and cardName == activatedDeckCard then
 						-- Add color for the active card only in the deck editing view
-						selectedDeckLabels[i]:SetCaption(activeColour .. GenerateCardLabelString(cardName, amount, cardLabelSpaceCount))
+						selectedDeckLabels[i]:SetCaption(activeColour .. GenerateCardLabelString(cardName, amount))
 					else
-						selectedDeckLabels[i]:SetCaption(GenerateCardLabelString(cardName, amount, cardLabelSpaceCount))
+						selectedDeckLabels[i]:SetCaption(GenerateCardLabelString(cardName, amount))
 					end
 
 					i = i + 1
@@ -581,27 +593,29 @@ local function ChangeDeckEditorView()
 	UpdateDeckEditorUI()
 end
 local function RunOnCardPoolLabelClick(label)
-	-- Extract the card name from the label caption
-	local sep = string.find(label.caption, "     ")
-	local cardName = string.sub(label.caption, 1, sep - 1)
+	if label and label.caption and label.caption ~= "" then
 
-	-- Fetch the card from the pool
-	GetCard(cardName)
+		-- Extract the card name from the label caption
+		local sep = string.find(label.caption, "  ")
+		local cardName = string.sub(label.caption, 1, sep - 1)
 
-	-- Set the card as active
-	activatedPoolcard = cardName
+		-- Fetch the card from the pool
+		GetCard(cardName)
 
-	poolHasChanged = true
+		-- Set the card as active
+		activatedPoolcard = cardName
 
-	UpdateDeckEditorUI()
+		poolHasChanged = true
+
+		UpdateDeckEditorUI()
+	end
 end
 
 local function RunOnSelectedDeckLabelClick(label)
-
 	if label and  label.caption ~= "" and not deckSelectingview  then
 
 		-- Extract the card name from the label caption
-		local sep = string.find(label.caption, "     ")
+		local sep = string.find(label.caption, "  ")
 		local cardName = string.sub(label.caption, 1, sep - 1)
 
 		-- Set the card as beign active
@@ -613,7 +627,7 @@ local function RunOnSelectedDeckLabelClick(label)
 end
 
 local function RunOnDecksLabelClick(label)
-	if label.caption and label.caption ~= "" then
+	if label and label.caption and label.caption ~= "" then
 		selectedDeckIndex = tonumber(label.caption)
 
 		decksHaveChanged = true
@@ -626,12 +640,10 @@ local function RunOnRemoveCardFromDeckButtonClick()
 		RemoveCardFromDeck(activatedDeckCard, selectedDeckIndex, 1)
 	end
 
-	selectedDeckLabelStack:Invalidate()
 	UpdateDeckEditorUI()
 end
 local function MakeDeckEditorUI()
 
-	local vsx, vsy = widgetHandler:GetViewSizes()
 	local windowWidth = 500
 	local windowHeight = 500
 	local posX = 300
@@ -823,7 +835,7 @@ local function MakeDeckEditorUI()
 		caption = "Done",
 
 		OnMouseUp = {function()
-						CheckActivatedDecks() -- Check that the decks are valid even after the changes (the user might have edited an active deck)
+						reCheckDecks = true -- Force the revalidation of the activated decks (the user might have edited an active deck)
 						deckSelectingview = true --Set the mode for deck selection view
 						ChangeDeckEditorView()
 					end},
@@ -860,7 +872,7 @@ local function MakeDeckEditorUI()
 						selectedDeckIndex = #decks + 1
 						decks[selectedDeckIndex] = {}
 
-						-- Chnage the view to the deck editing view
+						-- Change the view to the deck editing view
 						deckSelectingview = false
 						ChangeDeckEditorView()
 					end},
@@ -924,13 +936,16 @@ local function MakeDeckEditorUI()
 									activatedDeckIndex2 = selectedDeckIndex
 								end
 
-								-- Check if the decks are valid
-								CheckActivatedDecks()
+								-- Force the update function to check if the decks are valid
+								reCheckDecks = true
 
 							else
 								-- This is the first time the first variable is used
 								activatedDeckIndex1 = selectedDeckIndex
 							end
+
+							-- Something has been changed => redraw
+							UpdateDeckEditorUI()
 						end
 					end
 		}
@@ -1002,7 +1017,7 @@ function widget:Initialize()
 
 	maxCardAmount = Spring.GetGameRulesParam("maximumcardamount") --Fetch the amount of cards from the pool. Yes, it is *necessary* to do it like this.
 
-	-- Obatin the required data from the card pool
+	-- Obtain the required data from the card pool
 	GetDecks()
 	GetPool()
 	GetDeckSelection()

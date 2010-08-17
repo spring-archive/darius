@@ -33,7 +33,7 @@ end
 
 local function getTowerID(material, weapon)
 	if ((material.type ~= "Material") or (weapon.type ~= "Weapon")) then return nil end
-	local id = getUnitDef(material.name .. weapon.name)
+	local id = getUnitDef(string.lower(string.gsub(material.name .. weapon.name,"[^%w]","")))
 	if (id) then return id end
 	return getUnitDef("corllt") -- Default tower
 end

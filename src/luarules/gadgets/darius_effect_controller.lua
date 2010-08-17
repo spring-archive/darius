@@ -34,6 +34,7 @@ end
 function gadget:GameFrame(f)
 	if not GG.Darius then return end
 	if (debug_message) then debug_message("Darius is Accessible") end
+	local selectedCard = GG.Darius:GetSelectedSpecial()
 	if not (effect == GG.Darius:GetEffect()) then
 		if (debug_message) then debug_message("Getting Effect") end
 		effect = GG.Darius:GetEffect()
@@ -49,7 +50,7 @@ function gadget:GameFrame(f)
 		if (debug_message) then debug_message("Calling Effect") end
 		effect.effect(pos, unit)
 
-		GG.Darius:DiscardSelected()
+		GG.Darius:DiscardCard(selectedCard, true)
 		pos = nil
 		unit = nil
 	end

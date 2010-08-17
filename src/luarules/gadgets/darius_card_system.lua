@@ -228,18 +228,23 @@ function Darius:ActivateCard(card)
 	end
 end
 
-function Darius:DiscardSelected()
-	if (selectedWeapon) then
-		selectedWeapon.used = true
+function Darius:DiscardCard(card, useBalls)
+	if not (card) then return end
+	if not (type(card) == "table") then return end
+
+	if (card == selectedWeapon) then
 		SetSelectedWeapon(nil)
 	end
-	if (selectedMaterial) then
-		selectedMaterial.used = true
+	if (card == selectedMaterial) then
 		SetSelectedMaterial(nil)
 	end
-	if (selectedSpecial) then
-		selectedSpecial.used = true
+	if (card == selectedSpecial) then
 		SetSelectedSpecial(nil)
+	end
+
+	card.used = true
+	if (useBalls) then
+		greenballs = greenballs + card.greenballs
 	end
 	--Remove used from hand
 	new_hand = {}

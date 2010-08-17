@@ -66,7 +66,7 @@ return {
 					TeamLeader = 0; //Team Leader index from team's collection (so first in list)
 					AllyTeam = 0; //The ally team (see below)
 					Handicap = 0;
-					Side=random; //We can fix the side here (side must exist)
+					Side=Humans; //We can fix the side here (side must exist)
 					RGBColor = 1 0 0; //Color by float
 					AIDLL = NullAI 0.1; //This is probably what actually sets the AI in use
 					RemoveUnits = 1; //Not sure what this does
@@ -78,7 +78,7 @@ return {
 					TeamLeader=0;
 					AllyTeam=1;
 					Handicap=0;
-					Side=random;
+					Side=Humans;
 					RGBColor=0 1 0;
 					RemoveUnits=1;
 					RemoveFeatures=1;

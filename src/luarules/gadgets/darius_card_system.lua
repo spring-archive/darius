@@ -243,8 +243,9 @@ function Darius:DiscardCard(card, useBalls)
 	end
 
 	card.used = true
-	if (useBalls) then
-		greenballs = greenballs + card.greenballs
+	if (useBalls) and (card.greenballs) then
+		spEcho(card.greenballs)
+		Darius:AddGreenballs(card.greenballs)
 	end
 	--Remove used from hand
 	new_hand = {}

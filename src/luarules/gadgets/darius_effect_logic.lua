@@ -31,11 +31,16 @@ function gadget:GameFrame(f)
 	if not (Darius) then return end
 
 	local special = Darius:GetSelectedSpecial()
-	
-	if (special) then if (type(special.effect) == "table") then
-		if (debug_message) then debug_message("Setting Special Card Effect") end
-		Darius:SetEffect(special.effect) 
-	end else
+
+	if (special) then 
+		if (type(special.effect) == "table") and (special.greenballs + Darius:GetGreenballs() >= 0) then
+			if (debug_message) then debug_message("Setting Special Card Effect") end
+			Darius:SetEffect(special.effect)
+		else
+			if (debug_message) then debug_message("Clearing Special Card Effect") end
+			Darius:SetEffect(nil)
+		end
+	else
 		if (debug_message) then debug_message("Clearing Special Card Effect") end
 		Darius:SetEffect(nil)
 	end

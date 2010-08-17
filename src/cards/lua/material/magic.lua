@@ -3,6 +3,7 @@ local card = {
 	type 		= "Material",
 	template    = "generic",
 	img 		= 'cards/images/material/Magic.png',
+	model       = 'corgrav',
 	health 		= 300,
 	reloadTime 	= 2,
 	range 		= 0,

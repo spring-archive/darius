@@ -3,6 +3,7 @@ local card = {
 	type 		= "Material",
 	template    = "generic",
 	img 		= 'cards/images/material/chicken.png',
+	model       = 'mercury',
 	health 		= 1600,
 	reloadTime 	= 0.4,
 	range 		= 0,

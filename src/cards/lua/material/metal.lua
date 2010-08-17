@@ -3,6 +3,7 @@ local card = {
 	type 		= "Material",
 	template    = "generic",
 	img 		= 'cards/images/material/metal.png',
+	model       = 'armllt',
 	health 		= 900,
 	reloadTime 	= 0.3,
 	range 		= 20,

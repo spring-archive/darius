@@ -1,7 +1,7 @@
 unitDef = {
-  unitname               = %%SHORTNAME%%,
-  name                   = %%NAME%%,
-  description            = %%NAME%%,
+  unitname               = [[%%SHORTNAME%%]],
+  name                   = [[%%NAME%%]],
+  description            = [[%%NAME%%]],
   acceleration           = 0,
   activateWhenBuilt      = false,
   bmcode                 = [[0]],
@@ -37,7 +37,7 @@ unitDef = {
   modelCenterOffset      = [[0 32 0]],
   noAutoFire             = false,
   noChaseCategory        = [[FIXEDWING LAND SHIP SATELLITE SWIM GUNSHIP SUB HOVER]],
-  objectName             = [[lotustest2.s3o]],
+  objectName             = [[%%MODEL%%.s3o]],
   seismicSignature       = 4,
   selfDestructAs         = [[SMALL_BUILDINGEX]],
 

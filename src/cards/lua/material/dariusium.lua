@@ -3,6 +3,7 @@ local card = {
 	type 		= "Material",
 	template    = "generic",
 	img 		= 'cards/images/material/dariusium.png',
+	model       = 'armarch',
 	health 		= 4000,
 	reloadTime 	= 0.6,
 	range 		= 0,

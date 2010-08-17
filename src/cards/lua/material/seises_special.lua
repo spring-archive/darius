@@ -3,6 +3,7 @@ local card = {
 	type 		= "Material",
 	template    = "generic",
 	img 		= 'LuaUI/images/seises_special.png',
+	model       = 'screamer',
 	health 		= 10000,
 	reloadTime 	= 0,
 	range 		= 100,

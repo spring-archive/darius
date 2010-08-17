@@ -3,6 +3,7 @@ local card = {
 	type 		= "Material",
 	template    = "generic",
 	img 		= 'cards/images/material/Bionic.png',
+	model       = 'armartic',
 	health 		= 1000,
 	reloadTime 	= 4,
 	range 		= 0, 

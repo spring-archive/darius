@@ -3,6 +3,7 @@ local card = {
 	type 		= "Material",
 	template    = "generic",
 	img 		= 'cards/images/material/titanium.png',
+	model       = 'armcir',
 	health 		= 5000,
 	reloadTime 	= 10,
 	range 		= 200, 

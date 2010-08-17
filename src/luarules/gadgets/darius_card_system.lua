@@ -244,7 +244,7 @@ function Darius:DiscardCard(card, useBalls)
 
 	card.used = true
 	if (useBalls) and (card.greenballs) then
-		spEcho(card.greenballs)
+		if (debug_message) then debug_message("Card used: Cost " .. card.greenballs .. " greenballs") end
 		Darius:AddGreenballs(card.greenballs)
 	end
 	--Remove used from hand

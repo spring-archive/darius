@@ -57,6 +57,9 @@ local gamestats = {
 	enemiesKilledTotal
 }
 
+-- default size
+local defaultWidth, defaultHeight = 250, 110
+
 
 
 ---------------------
@@ -143,8 +146,9 @@ local function CreatePanel()
 		name = 'stats_panel',
 		x = storedSettings.pos_x or 10,
 		y = storedSettings.pos_y or 10,
-		clientWidth = storedSettings.width or 280,
-		clientHeight = storedSettings.height or 90,
+		clientWidth = storedSettings.width or defaultWidth,
+		clientHeight = storedSettings.height or defaultHeight,
+		minimumSize = {defaultWidth, defaultHeight},
 		dockable = true,
 		draggable = true,
 		resizable = true,

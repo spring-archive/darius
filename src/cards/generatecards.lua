@@ -4,14 +4,20 @@
 --   Run it ie. <path_to_lua>/lua.exe generatecards.lua
 --   Overwrites all the files in the generatedtowers directory
 
+-- where all generated towers are put into
 local outputDirectory = "generatedtowers\\"
+
+-- set to true to enable more debug output
+local verbose = false
 
 -- HACK: Lua does not support reading directory content directly
 function ListFiles(query)
 	dir = io.popen("dir /b "..query)
 	files = {}
 	for l in dir:lines() do
-	    print("Found file: "..l)
+		if verbose then
+			print("Found file: "..l)
+		end
 		table.insert(files,l)
 	end
 	return files
@@ -27,7 +33,9 @@ end
 function LoadCardsFromDirectory(dir)
 	mainDirectory = "lua\\"
 	path = mainDirectory .. dir .. "\\"
-	print("Loading directory: "..dir)
+	if verbose then
+		print("Loading directory: "..dir)
+	end
 	query = path .. "*.lua"
 	cards = {}
 	for _,scriptFile in pairs(ListFiles(query)) do
@@ -48,13 +56,29 @@ function SimplifyString(str)
 end
 
 function CopyFile(source,destination)
-	print(source.." to "..destination)
+	local file = io.open(source,"r")
+	if not file then
+		print("Copy failed!! Missing "..source)
+		return
+	else
+		file:close()
+	end
+	if verbose then
+		print(source.." to "..destination)
+	end
 	io.popen("copy /y "..source.." "..destination)
+	local file = io.open(source,"r")
+	if not file then
+		print("Copy failed for "..source)
+		return
+	else
+		file:close()
+	end
 end
 
 materialCards = LoadCardsFromDirectory("material")
 weaponCards = LoadCardsFromDirectory("weapon")
-print("Loaded "..#materialCards.." material cards, "..#weaponCards.." weapon cards, ")
+print("Loaded "..#materialCards.." material cards, "..#weaponCards.." weapon cards")
 
 local towers = {}
 for _,material in pairs(materialCards) do
@@ -106,6 +130,7 @@ for _,material in pairs(materialCards) do
 	end
 end
 
+local count = 0
 for _,tower in pairs(towers) do
 	local materialTemplate = "towertemplates\\materials\\"..tower["materialTemplate"]..".lua"
 	local weaponTemplate = "towertemplates\\weapons\\"..tower["weaponTemplate"]..".lua"
@@ -149,4 +174,6 @@ for _,tower in pairs(towers) do
 	file:close()
 	CopyFile("..\\scripts\\"..tower["model"]..".cob", "..\\scripts\\"..tower["shortname"]..".cob")
 	CopyFile("..\\scripts\\"..tower["model"]..".bos", "..\\scripts\\"..tower["shortname"]..".bos")
+	count = count + 1
 end
+print("All done! Generated "..count.." towers.")

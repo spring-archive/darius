@@ -30,10 +30,11 @@ local color = confdata.color
 
 WhiteStr   = "\255\255\255\255"
 GreyStr    = "\255\210\210\210"
+RedStr     = "\255\255\092\092"
 GreenStr   = "\255\092\255\092"
+BlueStr    = "\255\092\092\255"
 YellowStr  = "\255\255\255\152"
 OrangeStr  = "\255\255\190\128"
-RedStr     = "\255\255\170\170"
 
 
 ----------------
@@ -191,7 +192,15 @@ function Darius:GetCardButton(card, width, height)
 			button.backgroundColor = background
 
 			-- Visual formatting
-			lbl_name:SetCaption(card.name)
+			if (card.type == "Material") then
+				lbl_name:SetCaption(card.name)
+			elseif (card.type == "Weapon") then
+				lbl_name:SetCaption(RedStr .. card.name)
+			elseif (card.type == "Special") then
+				lbl_name:SetCaption(BlueStr .. card.name)
+			else
+				lbl_name:SetCaption(card.name)
+			end
 			lbl_name.x = width/30
 			lbl_name.y = height/30
 			lbl_name.font.size = 13

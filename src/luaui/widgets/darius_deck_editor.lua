@@ -782,16 +782,8 @@ local function MakeDeckEditorUI()
 		children = selectedDeckLabels
 	}
 
-	-- The card that gets drawn on the button, before any card has been selected
-	local defCard = {
-		img = 'cards/images/background/back.png',
-		template    = "generic",
-
-	}
-	selectedCardButton = Darius:GetCardButton(defCard, 240, 400)
-	selectedCardButton.OnMouseUp = {function(self)
-										RunOnCardButtonClick(self)
-									end}
+	selectedCardButton = Darius:GetCardButton(nil, 240, 400)
+	selectedCardButton.OnMouseUp = {function(self) RunOnCardButtonClick(self) end}
 
 
 	addCardToDeckButton = Button:New{

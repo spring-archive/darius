@@ -59,6 +59,7 @@ local function getCardBackground(type)
 	elseif (type == "Special") then
 		return 'cards/images/background/special.png'
 	end
+	return 'cards/images/background/back.png'
 end
 
 ----------------------
@@ -115,6 +116,7 @@ function Darius:Draw(deck)
 end
 
 function Darius:GetCardButton(card, width, height)
+	if not card then card = {name = "", type = ""} end
 	-- setup Chili
 	if not (Button) then Button = WG.Chili.Button end
 	if not (Label) then Label = WG.Chili.Label end
@@ -195,7 +197,11 @@ function Darius:GetCardButton(card, width, height)
 			end
 			lbl_name:Invalidate()
 
-			lbl_greenballs:SetCaption(card.greenballs)
+			if (card.name ~= "") then
+				lbl_greenballs:SetCaption(card.greenballs)
+			else
+				lbl_greenballs:SetCaption("")
+			end
 			lbl_greenballs.x = width - 10
 			lbl_greenballs.y = 5
 			lbl_greenballs.font.color = color.black
@@ -206,12 +212,18 @@ function Darius:GetCardButton(card, width, height)
 			end
 			lbl_greenballs:Invalidate()
 
-			img_center.file = card.img
-			img_center.x = width/6
-			img_center.y = height/10
-			img_center.width = width*2/3
-			img_center.height = height*2/5
-			img_center:Invalidate()
+			if (card.img) then
+				img_center.file = card.img
+				img_center.x = width/6
+				img_center.y = height/10
+				img_center.width = width*2/3
+				img_center.height = height*2/5
+				img_center:Invalidate()
+			else
+				img_center.width = 0
+				img_center.height = 0
+				img_center:Invalidate()
+			end
 
 			--Card data display
 			if (card.health ~= 0) then

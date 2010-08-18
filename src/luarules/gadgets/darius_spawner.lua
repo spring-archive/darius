@@ -75,13 +75,14 @@ local function LoadMapData()
 	if not (type(mapData) == "table") then return false end
 	if not (type(mapData.waves) == "table") then return false end
 	if not (type(mapData.castleposition) == "table") then return false end
-	if not (#mapData.castleposition) == 2) then return false end
+	if not (#mapData.castleposition == 2) then return false end
 	if not (type(mapData.spawningpoints) == "table") then return false end
 	if (#mapData.spawningpoints) == 0) then return false end
 
 	waves = mapData.waves.normal --TODO: Get correct wave per difficulty (easy, normal, hard)
-	castleposition = mapData.castleposition
-	spawningpoints = mapData.spawningpoints
+
+	castleposition = mapData.castleposition --{x, y}
+	spawningpoints = mapData.spawningpoints --{{x,y},...}
 end
 
 local function InitWaves()

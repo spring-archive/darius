@@ -1,5 +1,5 @@
 return {
-	name = "Dunes",
+	name = "Crystal Cave",
 	waves = {
 		easy = {
 			--CreateWave({monster1 = {"id", interval, count}, monster2 = {"id", interval, count}, ...})
@@ -54,11 +54,8 @@ return {
 			CreateWave({{"chickenq", 2, 3},}),
 		},
 	},
-	castleposition = {20, 600},
+	castleposition = {850, 200},
 	spawningpoints = {
-		{1000,950},
-		{950,923},
-		{950,950},
-		{950,1000},
+		{50,900},
   	},
 }

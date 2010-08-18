@@ -43,33 +43,19 @@ local viewSizeX, viewSizeY = gl.GetViewSizes()
 
 -- draws messages on screen
 local function DrawMessages()
-	-- the next wave messages
-	if (timeToNextWave > -1) then
-		if (math.floor(timeToNextWave) < 1) then statusMessages = {} -- clear
-		elseif (math.floor(timeToNextWave) == 3) then statusMessages[1] = "Ready!"
-		elseif (math.floor(timeToNextWave) == 2) then statusMessages[1] = "Set!"
-		elseif (math.floor(timeToNextWave) < 2) then statusMessages[1] = "Wave #"..numOfNextWave.." begins!"
-		else
-			statusMessages[1] = "Time before the wave #"..numOfNextWave..": "..math.floor(timeToNextWave).." seconds"
-		end
-	end
-
 	-- the game finished message
 	if (isGameFinished == 1) then
 		statusMessages[1] = "Congratulations! You won the game.";
-	end
-
-	-- draws the actual texts set above
-	for i, message in ipairs(statusMessages) do
-		fontHandler.DrawCentered("\255\255\255\255"..message, viewSizeX/2, viewSizeY/2)
+		
+			for i, message in ipairs(statusMessages) do
+			fontHandler.DrawCentered("\255\255\255\255"..message, viewSizeX/2, viewSizeY/2)
+		end
 	end
 end
 
 
 -- gets the game status from the spawner (backend)
 function GetGameStatusFromBackend()
-	numOfNextWave = spGetGameRulesParam("currentWave") + 1
-	timeToNextWave = spGetGameRulesParam("timeToTheNextWave")
 	isGameFinished = spGetGameRulesParam("gameWon")
 end
 
@@ -84,9 +70,6 @@ function widget:Initialize()
 
 	-- use this font for messages
 	fontHandler.UseFont(messageFont)
-	
-	-- the initial welcome message
-	statusMessages[1] = "Welcome to Darius Tower Defense! Game starts in a few seconds."
 end
 
 

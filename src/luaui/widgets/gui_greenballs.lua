@@ -83,7 +83,7 @@ local function CreateGreenballUI()
 		minimumSize = {defaultWidth, defaultHeight},
 		dockable = true,
 		draggable = true,
-		resizable = false,
+		resizable = true,
 		backgroundColor = color.main_bg,
 		tooltip = "Greenballs\n\nThe game's currency. Needed to draw cards. You get more by killing monsters.",		
 		children = {

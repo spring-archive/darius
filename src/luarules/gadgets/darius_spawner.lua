@@ -31,14 +31,9 @@ local spDestroyUnit = Spring.DestroyUnit
 local x_src, y_src, z_src
 local x_dest, y_dest, z_dest
 
-currentRound = 0
-currentWave = 0
-waveFinishedTime = 0
 monsterTeamNumber = 0
-monstersLeftInTheWave = 0
 monstersKilledTotal = 0
-timeToTheNextWave = -1
-waveFinishedTime = 0
+currentWave = 0
 
 
 
@@ -73,126 +68,90 @@ function CreateWave(monsters)
 	return wave
 end
 
-function CreateRound(waves)
-	local round = {class = "round"}
 
-	if not (type(waves) == "table" and #waves > 0) then
-		spEcho("Spawner: Round does not have any waves")
-		return nil
-	end
 
-	local a = #waves
 
-	for i = 1,a do
-		w = waves[i]
+function InitWaves()
+	waves = {}
 
-		if not (w["class"] == "wave") then
-			spEcho("Spawner: Round defition is not valid")
-			return nil
-		end
-
-		round[i] = w
-	end
-
-	return round
-end
-
-function InitRoundsAndWaves()
-	-- should these be loaded from a config file?
-	local wave1 = CreateWave({
+ waves[0] = CreateWave({
 		{"chicken", 2, 3},
 	})
 
-	local wave2 = CreateWave({
+ waves[1] = CreateWave({
 		{"corthud", 2, 3},
 	})
 
-	local wave3 = CreateWave({
+ waves[2] = CreateWave({
 		{"armpw", 2, 3},
 	})
 
-	local wave4 = CreateWave({
+ waves[3] = CreateWave({
 		{"arm_venom", 2, 3},
 	})
 
-	local wave5 = CreateWave({
+ waves[4] = CreateWave({
 		{"corstorm", 2, 3},
 	})
 
-	local wave6 = CreateWave({
+ waves[5] = CreateWave({
 		{"corpyro", 2, 3},
 	})
 
-	local wave7 = CreateWave({
+ waves[6] = CreateWave({
 		{"armsptk", 2, 3},
 	})
 
-	local wave8 = CreateWave({
+ waves[7] = CreateWave({
 		{"chickena", 2, 3},
 	})
 
-	local wave9 = CreateWave({
+ waves[8] = CreateWave({
 		{"chicken_dodo", 2, 3},
 	})
 
-	local wave10 = CreateWave({
+ waves[9] = CreateWave({
 		{"chicken_sporeshooter", 2, 3},
 	})
 
-	local wave11 = CreateWave({
+ waves[10] = CreateWave({
 		{"cormortgold", 2, 3},
 	})
 
-	local wave12 = CreateWave({
+ waves[11] = CreateWave({
 		{"armwar", 2, 3},
 	})
 
-	local wave13 = CreateWave({
+ waves[12] = CreateWave({
 		{"chickenc", 2, 3},
 	})
 
-	local wave14 = CreateWave({
+ waves[13] = CreateWave({
 		{"armorco", 2, 3},
 	})
 
-	local wave15 = CreateWave({
+ waves[14] = CreateWave({
 		{"chickenq", 2, 3},
 	})
-
-	local round1 = CreateRound({wave1, wave2, wave3, wave4, wave5, wave6, wave7, wave8, wave9, wave10, wave11, wave12, wave13, wave14, wave15 })
-	rounds = {round1}
 end
 
-function ShowGracePeriod(graceSeconds)
-	diff = spGetGameSeconds() - waveFinishedTime
-	timeToTheNextWave = graceSeconds - diff
-	spSetGameRulesParam("timeToTheNextWave", timeToTheNextWave)
 
-	if (diff > graceSeconds) then
-		currentWave = currentWave + 1
-		spSetGameRulesParam("currentWave", currentWave)
-		spSetGameRulesParam("timeToTheNextWave", -1)
-		waveUnfinished = true
-		Spring.PlaySoundFile("sounds/ui/chip.wav")
-		--spEcho("New wave started")
-	end
-end
-
-function SpawnWaveMonsters()
-	local monsters = rounds[currentRound][currentWave]
+function SpawnMonsters()
+	local monsters = waves[currentWave]
 	if monsters ~= nil then
 		for i, monster in ipairs(monsters) do
 			if monster[3] > 0 then
 				local unit = spCreateUnit(monster[1], x_src + i * 20, y_src, z_src, "south", monsterTeamNumber, false)
 				spGiveOrderToUnit(unit, CMD.MOVE, {x_dest, y_dest, z_dest}, {})
 				Spring.PlaySoundFile("sounds/ui/monster_spawn.wav")
-				monstersLeftInTheWave = monstersLeftInTheWave + 1
-				spSetGameRulesParam("monstersLeftInTheWave", monstersLeftInTheWave)
 				monster[3] = monster[3] - 1
+			else
+					currentWave = currentWave + 1
 			end
 		end
 	end
 end
+
 
 function GameVictory()
 	spSetGameRulesParam("gameWon", 1);
@@ -203,58 +162,23 @@ function GameVictory()
 	end
 end
 
-function StartNewRound()
-	currentRound = currentRound + 1
-	spSetGameRulesParam("currentRound", currentRound)
-
-	currentWave = 0
-	spSetGameRulesParam("currentWave", currentWave)
-
-	waveUnfinished = false
-	roundUnfinished = true
-	--spEcho("New round started")
-end
 
 function GadgetUpdate(f)
-	if gameUnfinished == true then
-		if roundUnfinished == true then
-			if waveUnfinished == true then
-				SpawnWaveMonsters()
-			else -- wave finished
-				Spring.PlaySoundFile("sounds/ui/tick.wav")
-				ShowGracePeriod(10)
-			end
-		else -- round finished
-			StartNewRound()
-		end
-	else -- game finished
+	if gameFinished == false then
+		SpawnMonsters()
+	else
 		GameVictory()
 	end
 end
 
-function UpdateGameStatus()
-	waveFinishedTime = spGetGameSeconds()
-
-	-- if round is finished, move to the next round
-	if (rounds[currentRound][currentWave + 1] == nil) then
-		if	(rounds[currentRound + 1] == nil) then
-			gameUnfinished = false	-- win
-			Spring.PlaySoundFile("sounds/voices/objective_completed.wav")
-		end
-		roundUnfinished = false -- next round
-	end
-
-	waveUnfinished = false -- next wave
-end
 
 function UpdateStats()
-	monstersLeftInTheWave = monstersLeftInTheWave - 1
 	monstersKilledTotal = monstersKilledTotal + 1
-	spSetGameRulesParam("monstersLeftInTheWave", monstersLeftInTheWave)
 	spSetGameRulesParam("monstersKilledTotal", monstersKilledTotal)
 end
 
-function SetSpawingAndGoalLocations()
+
+function SetLocations()
 	x_src, y_src, z_src = spGetTeamStartPosition(0)
 	x_dest, y_dest, z_dest = spGetTeamStartPosition(1)
 end
@@ -266,17 +190,15 @@ end
 --------------
 
 function gadget:Initialize()
-	InitRoundsAndWaves()
+	InitWaves()
 
 	spSetGameRulesParam("gameWon", 0)
-
-	spSetGameRulesParam("monstersLeftInTheWave", monstersLeftInTheWave)
-	spSetGameRulesParam("monstersTeam", monsterTeamNumber)
-	spSetGameRulesParam("monstersKilledTotal", monstersKilledTotal)
-	spSetGameRulesParam("currentRound", currentRound)
-	spSetGameRulesParam("currentWave", currentWave)
-	spSetGameRulesParam("timeToTheNextWave", timeToTheNextWave)
+	spSetGameRulesParam("monstersKilledTotal", 0)
+	
+	gameFinished = false
 end
+
+
 
 function gadget:GameFrame(f)
 	if (f%30 < 1) then
@@ -284,31 +206,21 @@ function gadget:GameFrame(f)
 	end
 end
 
+
+
 function gadget:GameStart()
 	spSendCommands("cheat")
 	spSendCommands("globallos")
 	spEcho("Darius spawner: Enabled cheats to get rid of the Fog of War")
 
-	SetSpawingAndGoalLocations();
-
-	gameUnfinished = true
-	roundUnfinished = false
+	SetLocations();
 end
 
-function gadget:UnitDestroyed(unitID, unitDefID, teamID, _)
-	--I think this can be removed now
-	--[[
-	if unitDefID == 54 then -- start point?? gets destroyed at start
-			return
-	end
-	--]]
 
+
+function gadget:UnitDestroyed(unitID, unitDefID, teamID, _)
 	if teamID == monsterTeamNumber then
 		UpdateStats()
-	end
-
-	if (monstersLeftInTheWave == 0) then
-		UpdateGameStatus()
 	end
 end
 

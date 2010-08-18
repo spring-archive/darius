@@ -51,14 +51,11 @@ local storedSettings = {
 -- in-game stats
 local gamestats = {
 	timeElapsed,
-	curRoundNum,
-	curWaveNum,
-	enemiesLeftInTheWave,
 	enemiesKilledTotal
 }
 
 -- default size
-local defaultWidth, defaultHeight = 250, 110
+local defaultWidth, defaultHeight = 250, 60
 
 
 
@@ -88,9 +85,6 @@ end
 
 -- This function gets the stats from the backend
 local function GetStatsFromBackend()
-	gamestats.curRoundNum = GetParamFromSpawner("currentRound")
-	gamestats.curWaveNum = GetParamFromSpawner("currentWave")
-	gamestats.enemiesLeftInTheWave = GetParamFromSpawner("monstersLeftInTheWave")
 	gamestats.enemiesKilledTotal = GetParamFromSpawner("monstersKilledTotal")
 end
 
@@ -102,18 +96,6 @@ local function UpdateStats()
 
 	if lbl_time then
 		lbl_time:SetCaption(gamestats.timeElapsed)
-	end
-
-	if lbl_roundnum then
-		lbl_roundnum:SetCaption(gamestats.curRoundNum)
-	end
-
-	if lbl_wavenum then
-		lbl_wavenum:SetCaption(gamestats.curWaveNum)
-	end
-
-	if lbl_enemiesleft then
-		lbl_enemiesleft:SetCaption(gamestats.enemiesLeftInTheWave)
 	end
 
 	if lbl_enemieskilled then
@@ -136,10 +118,7 @@ local function CreatePanel()
 
 	-- labels which store dynamic data
 	lbl_time = Label:New          { textColor = color.sub_fg, x=label_x_offset, y=0 }
-	lbl_roundnum = Label:New      { textColor = color.sub_fg, x=label_x_offset, y=15 }
-	lbl_wavenum = Label:New       { textColor = color.sub_fg, x=label_x_offset, y=30 }
-	lbl_enemiesleft = Label:New   { textColor = color.sub_fg, x=label_x_offset, y=45 }
-	lbl_enemieskilled = Label:New { textColor = color.sub_fg, x=label_x_offset, y=60 }
+	lbl_enemiesleft = Label:New   { textColor = color.sub_fg, x=label_x_offset, y=15 }
 
 	-- the ui
 	windowStats = Window:New {
@@ -151,20 +130,14 @@ local function CreatePanel()
 		minimumSize = {defaultWidth, defaultHeight},
 		dockable = true,
 		draggable = true,
-		resizable = false,
+		resizable = true,
 		parent = Screen0,
 		children = {
 			-- static labels
 			Label:New { caption = 'Time survived:',             textColor = color.sub_fg, y=0  },
-			Label:New { caption = 'Round:',                     textColor = color.sub_fg, y=15 },
-			Label:New { caption = 'Wave:',                      textColor = color.sub_fg, y=30 },
-			Label:New { caption = 'Enemies left in this wave:', textColor = color.sub_fg, y=45 },
-			Label:New { caption = 'Enemies killed total:',      textColor = color.sub_fg, y=60 },
+			Label:New { caption = 'Enemies killed total:',      textColor = color.sub_fg, y=15 },
 			-- dynamic labels
 			lbl_time,
-			lbl_roundnum,
-			lbl_wavenum,
-			lbl_enemiesleft,
 			lbl_enemieskilled
 		}
 	}
@@ -218,7 +191,7 @@ function widget:GetConfigData()
 end
 
 
--- stores the ui settings to [somewhere yet unknown place] 
+-- stores the ui settings
 function widget:SetConfigData(data)
 	if (data and type(data) == 'table') then
 		storedSettings = data -- store the settings

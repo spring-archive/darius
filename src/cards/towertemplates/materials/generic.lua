@@ -37,7 +37,7 @@ unitDef = {
   modelCenterOffset      = [[0 32 0]],
   noAutoFire             = false,
   noChaseCategory        = [[FIXEDWING LAND SHIP SATELLITE SWIM GUNSHIP SUB HOVER]],
-  objectName             = [[%%MODEL%%.s3o]],
+  objectName             = [[%%MODEL%%.3do]],
   seismicSignature       = 4,
   selfDestructAs         = [[SMALL_BUILDINGEX]],
 

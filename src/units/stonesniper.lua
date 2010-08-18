@@ -40,7 +40,7 @@ unitDef = {
   modelCenterOffset      = [[0 32 0]],
   noAutoFire             = false,
   noChaseCategory        = [[FIXEDWING LAND SHIP SATELLITE SWIM GUNSHIP SUB HOVER]],
-  objectName             = [[novahlt.s3o]],
+  objectName             = [[novahlt.3do]],
   seismicSignature       = 4,
   selfDestructAs         = [[SMALL_BUILDINGEX]],
 

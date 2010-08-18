@@ -244,7 +244,6 @@ local function MakeWidgetList()
 			},
 		},
 	}
-	AdjustWindow(window_widgetlist)
 end
 
 

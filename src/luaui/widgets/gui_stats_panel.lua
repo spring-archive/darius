@@ -151,7 +151,7 @@ local function CreatePanel()
 		minimumSize = {defaultWidth, defaultHeight},
 		dockable = true,
 		draggable = true,
-		resizable = true,
+		resizable = false,
 		parent = Screen0,
 		children = {
 			-- static labels

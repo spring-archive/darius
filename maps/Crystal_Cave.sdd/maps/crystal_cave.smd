@@ -6,7 +6,7 @@
 	maxmetal=0;
 	extractorradius=0;
 	autoshowmetal=0;
-	gravity=40;
+	gravity=130;
 	[ATMOSPHERE]
 	{
 		FogColor=0 0 0;
@@ -18,15 +18,6 @@
 		MinWind=30;
 		MaxWind=30;
 	}
-	[WATER]
-	{
-		WaterSurfaceColor=0.1 0 0.1;
-		WaterPlaneColor=0 0 0;
-		WaterBaseColor=0 0 0;
-		WaterAbsorb=0 0 0;
-		WaterMinColor=0 0 0;
-		WaterDamage=0;
-	}
 	[LIGHT]
 	{
 		SunDir=0.383 0.708 -0.308;
@@ -37,15 +28,6 @@
 		UnitSunColor=0.5 0 1;
 		UnitShadowDensity=1.5;
 		SpecularSunColor=1 1 1;
-	}
-	[TERRAINTYPE0]
-	{
-		name=default;
-		hardness=1;
-		tankmovespeed=1;
-		kbotmovespeed=1;
-		hovermovespeed=1;
-		shipmovespeed=1;
 	}
 	[TEAM0]
 	{

@@ -6,7 +6,7 @@
 	maxmetal=0;
 	extractorradius=0;
 	autoshowmetal=0;
-	gravity=40;
+	gravity=130;
 	[ATMOSPHERE]
 	{
 		FogColor=0 0 0;

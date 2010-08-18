@@ -227,7 +227,7 @@ function Darius:GetCardButton(card, width, height)
 			lbl_health.y = height/10 + height*2/5 + 5
 			lbl_health:Invalidate()
 
-			if (card.reloadTime ~= 0) then
+			if (card.reloadTime ~= "0.000") then
 				lbl_reloadTime:SetCaption(YellowStr .. "Reload: " .. card.reloadTime)
 				lbl_reloadTime.font.size = height/15
 				while (lbl_reloadTime.font:GetTextWidth(lbl_reloadTime.caption) > width - 15) do

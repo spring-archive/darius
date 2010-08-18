@@ -162,7 +162,10 @@ local function ParsePool(poolString)
 	local newPool = string.totable(poolString)
 	pool = {}
 	for i = 1, #newPool do
-		table.insert(pool, gadget:GetCardDataByName(newPool[i]))
+		local card = gadget:GetCardDataByName(newPool[i])
+		if (type(card) == "table") then --Makes sure data exists
+			table.insert(pool, card)
+		end
 	end
 	return pool
 end
@@ -204,7 +207,10 @@ function gadget:ParseDecks(decksString)
 		deck = {}
 		for j = 1, #newDecks[i] do
 			if (debug_message) then debug_message("Adding card " .. newDecks[i][j] .. " to deck " .. i .. ".") end
-			table.insert(deck, gadget:GetCardDataByName(newDecks[i][j]))
+			local card = gadget:GetCardDataByName(newDecks[i][j])
+			if (type(card) == "table") then --Makes sure data exists
+				table.insert(deck, card)
+			end
 		end
 		decks[i] = deck
 	end
@@ -219,20 +225,36 @@ local function LoadCardsFromFiles()
 	local weaponFiles = VFS.DirList('cards/lua/weapon', '*.lua')
 	local specialFiles = VFS.DirList('cards/lua/special', '*.lua')
 
+	startpool = {}
+	startdecks = {{},{},{}}
 	for i=1, #materialFiles do
 		local card = VFS.Include(materialFiles[i])
 		table.insert(cardData, card)
+		table.insert(startpool, card) --Generates basic starting pool (This should be more controlled later)
+		table.insert(startdecks[1], card) --Generates one of the basic starting decks (This should be more controlled later)
 	end
-
 	for i=1, #weaponFiles do
 		local card = VFS.Include(weaponFiles[i])
 		table.insert(cardData, card)
+		table.insert(startpool, card) --Generates basic starting pool (This should be more controlled later)
+		table.insert(startdecks[2], card) --Generates one of the basic starting decks (This should be more controlled later)
 	end
 
 	for i=1, #specialFiles do
 		local card = VFS.Include(specialFiles[i])
 		table.insert(cardData, card)
+		table.insert(startpool, card) --Generates basic starting pool (This should be more controlled later)
+		table.insert(startdecks[3], card) --Generates one of the basic starting decks (This should be more controlled later)
 	end
+	--If the player doesn't have a pool or any decks (possibly because the data hasn't been loaded yet) then give them the standard
+--	if not (#pool == 0) then
+		pool = startpool
+--	end
+--	if not (#decks == 0) then
+		decks = startdecks
+		deck1Index = 1
+		deck2Index = 2
+--	end
 
 	Spring.SetGameRulesParam("maximumcardamount", #cardData) -- Used by the deck editor. DO NOT remove
 end

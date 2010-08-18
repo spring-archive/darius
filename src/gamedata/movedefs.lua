@@ -3,24 +3,24 @@ local moveDefs = {
 	SMALL = {
 		footprintx = 1,
 		footprintz = 1,
-		maxslope = 20,
-		slopemod = 10,
+		maxslope = 32,
+		slopemod = 20,
 		crushstrength = 5,
 	},
 
 	MEDIUM = {
 		footprintx = 3,
 		footprintz = 3,
-		maxslope = 20,
-		slopemod = 10,
+		maxslope = 32,
+		slopemod = 20,
 		crushstrength = 50,
 	},
 
 	LARGE = {
 		footprintx = 5,
 		footprintz = 5,
-		maxslope = 20,
-		slopemod = 10,
+		maxslope = 32,
+		slopemod = 20,
 		crushstrength = 500,
 	},
 }

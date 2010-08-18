@@ -37,8 +37,8 @@
 	}
 	[TEAM1]
 	{
-		StartPosX=1850;
-		StartPosZ=100;
+		StartPosX=1900;
+		StartPosZ=400;
 	}
 	[TEAM2]
 	{

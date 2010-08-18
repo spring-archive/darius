@@ -77,7 +77,7 @@ local function LoadMapData()
 	if not (type(mapData.castleposition) == "table") then return false end
 	if not (#mapData.castleposition == 2) then return false end
 	if not (type(mapData.spawningpoints) == "table") then return false end
-	if (#mapData.spawningpoints) == 0) then return false end
+	if (#mapData.spawningpoints == 0) then return false end
 
 	waves = mapData.waves.normal --TODO: Get correct wave per difficulty (easy, normal, hard)
 
@@ -86,6 +86,7 @@ local function LoadMapData()
 end
 
 local function InitWaves()
+	waves = {}
 	waves[0] = CreateWave({
 			{"chicken", 2, 3},
 		})
@@ -208,6 +209,7 @@ function gadget:Initialize()
 	spSetGameRulesParam("monstersKilledTotal", 0)
 	
 	gameFinished = false
+	SetLocations()
 end
 
 

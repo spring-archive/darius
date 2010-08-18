@@ -105,12 +105,6 @@ unitDef = {
       onlyTargetCategory = [[SWIM LAND SINK FLOAT SHIP HOVER]],
     },
 
-
-    {
-      def                = [[QUEENCRUSH]],
-      onlyTargetCategory = [[SWIM LAND SINK FLOAT SHIP HOVER]],
-    },
-
   },
 
 
@@ -184,38 +178,6 @@ unitDef = {
       weaponType              = [[Cannon]],
       weaponVelocity          = 600,
     },
-
-
-    QUEENCRUSH = {
-      name                    = [[ChickenKick]],
-      areaOfEffect            = 400,
-      collideFriendly         = false,
-      craterBoost             = 0.001,
-      craterMult              = 0.002,
-
-      damage                  = {
-        default    = 10,
-      },
-
-      edgeEffectiveness       = 1,
-      explosionGenerator      = [[custom:NONE]],
-      impulseBoost            = 2000,
-      impulseFactor           = 1,
-      intensity               = 1,
-      interceptedByShieldType = 1,
-      lineOfSight             = false,
-      noSelfDamage            = true,
-      range                   = 512,
-      reloadtime              = 1,
-      renderType              = 4,
-      rgbColor                = [[1 1 1]],
-      thickness               = 1,
-      tolerance               = 100,
-      turret                  = true,
-      weaponType              = [[Cannon]],
-      weaponVelocity          = 0.8,
-    },
-
 
     SPORES     = {
       name                    = [[Spores]],

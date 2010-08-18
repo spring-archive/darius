@@ -40,19 +40,15 @@ local cards_in_hand = {}
 -- local functions --
 ---------------------
 local function AdjustWindow()
-	vsx, vsy, _, _ = Spring.GetViewGeometry()
 	if not (window_hand) then return end
-	stack_hand.width = window_hand.width
-	stack_hand.height = window_hand.height
-	local max_width = (window_hand.width - 35)/#cards_in_hand
-	local max_height = window_hand.height - 35
-	settings.cardsize_y = max_height
-	settings.cardsize_x = settings.cardsize_y * 0.6
-	if (settings.cardsize_x > max_width) then
-		settings.cardsize_x = max_width
-		settings.cardsize_y = max_width / 0.6
-	end
+	vsx, vsy, _, _ = Spring.GetViewGeometry()
 
+	if (window_hand.width > vsx) then
+		window_hand.width = vsx
+	end
+	if (window_hand.height > vsy) then
+		window_hand.height = vsy
+	end
 	if (window_hand.x < 0) then
 		window_hand.x = 0
 	end
@@ -64,6 +60,17 @@ local function AdjustWindow()
 	end
 	if (window_hand.y > vsy - window_hand.height) then
 		window_hand.y = vsy - window_hand.height
+	end
+
+	stack_hand.width = window_hand.width
+	stack_hand.height = window_hand.height
+	local max_width = (window_hand.width - 35)/#cards_in_hand
+	local max_height = window_hand.height - 35
+	settings.cardsize_y = max_height
+	settings.cardsize_x = settings.cardsize_y * 0.6
+	if (settings.cardsize_x > max_width) then
+		settings.cardsize_x = max_width
+		settings.cardsize_y = max_width / 0.6
 	end
 
 	-- Force redraw
@@ -103,7 +110,7 @@ local function MakeHandMenu()
 		name = "hand_window",
 		width = hand_width,
 		height = hand_height,
-		minWidth  = 100,
+		minWidth  = 400,
 		minHeight = 100,
 		draggable = true,
 		resizable = true,

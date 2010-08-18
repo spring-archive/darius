@@ -168,15 +168,19 @@ function Darius:GetCardButton(card, width, height)
 			height = height - 10
 
 			--Create tooltip
-			tooltip =   WhiteStr  .. "Name: "        .. card.name         .. "\n" ..
-					GreyStr   .. "Type: "        .. card.type         .. "\n" ..
-					GreenStr  .. "Health: "      .. card.health       .. "\n" ..
-					YellowStr .. "Reload Time: " .. card.reloadTime   .. "s\n" ..
-					OrangeStr .. "Range: "       .. card.range        .. "\n" ..
-					RedStr    .. "Damage: "      .. card.damage       .. "\n" ..
-					WhiteStr  .. "Desc:\n"       .. card.desc
+			if (card.name ~= "") then
+				tooltip =   WhiteStr  .. "Name: "        .. card.name         .. "\n" ..
+						GreyStr   .. "Type: "        .. card.type         .. "\n" ..
+						GreenStr  .. "Health: "      .. card.health       .. "\n" ..
+						YellowStr .. "Reload Time: " .. card.reloadTime   .. "s\n" ..
+						OrangeStr .. "Range: "       .. card.range        .. "\n" ..
+						RedStr    .. "Damage: "      .. card.damage       .. "\n" ..
+						WhiteStr  .. "Desc:\n"       .. card.desc
+			else
+				tooltip = nil
+			end
 			button.tooltip = tooltip
-	
+
 			--Determine highlighting
 			local background = color.game_bg
 			if (card == selectedSpecial) then
@@ -185,11 +189,11 @@ function Darius:GetCardButton(card, width, height)
 				background = color.game_fg
 			end
 			button.backgroundColor = background
-			
+
 			-- Visual formatting
 			lbl_name:SetCaption(card.name)
-			lbl_name.x = 5
-			lbl_name.y = 5
+			lbl_name.x = width/30
+			lbl_name.y = height/30
 			lbl_name.font.size = 13
 			while (lbl_name.font:GetTextWidth(lbl_name.caption) > width - 15) do
 				lbl_name.font.size = lbl_name.font.size - 1
@@ -201,8 +205,10 @@ function Darius:GetCardButton(card, width, height)
 			else
 				lbl_greenballs:SetCaption("")
 			end
-			lbl_greenballs.x = width - 10
-			lbl_greenballs.y = 5
+			lbl_greenballs.x = width - 18
+			lbl_greenballs.y = lbl_name.y
+			lbl_greenballs.font.size = 18
+			--Set Greenball Label Color
 			lbl_greenballs.font.color = color.black
 			if (card.greenballs < 0) then
 				lbl_greenballs.font.color = color.red
@@ -217,15 +223,20 @@ function Darius:GetCardButton(card, width, height)
 				img_center.y = height/10
 				img_center.width = width*2/3
 				img_center.height = height*2/5
-				img_center:Invalidate()
+				if (img_center.width < 50) or (img_center.height < 50) then
+					img_center.x = 1
+					img_center.y = 1
+					img_center.width = width
+					img_center.height = height
+				end
 			else
 				img_center.width = 0
 				img_center.height = 0
-				img_center:Invalidate()
 			end
+			img_center:Invalidate()
 
 			--Card data display
-			if (card.health ~= 0) then
+			if (card.health ~= 0 and img_center.width ~= width) then
 				lbl_health:SetCaption(GreenStr .. "Health: " .. card.health)
 				lbl_health.font.size = height/15
 				while (lbl_health.font:GetTextWidth(lbl_health.caption) > width - 15) do
@@ -235,11 +246,11 @@ function Darius:GetCardButton(card, width, height)
 				lbl_health:SetCaption("")
 				lbl_health.font.size = 0
 			end
-			lbl_health.y = height/10 + height*2/5 + 5
+			lbl_health.y = img_center.y + img_center.height
 			lbl_health:Invalidate()
 
-			if (card.reloadTime ~= "0.000") then
-				lbl_reloadTime:SetCaption(YellowStr .. "Reload: " .. card.reloadTime)
+			if (card.reloadTime ~= "0.000" and img_center.width ~= width) then
+				lbl_reloadTime:SetCaption(YellowStr .. "Reload: " .. card.reloadTime .. "s")
 				lbl_reloadTime.font.size = height/15
 				while (lbl_reloadTime.font:GetTextWidth(lbl_reloadTime.caption) > width - 15) do
 					lbl_reloadTime.font.size = lbl_reloadTime.font.size - 1
@@ -251,7 +262,7 @@ function Darius:GetCardButton(card, width, height)
 			lbl_reloadTime.y = lbl_health.y + lbl_health.font.size
 			lbl_reloadTime:Invalidate()
 
-			if (card.range ~= 0) then
+			if (card.range ~= 0 and img_center.width ~= width) then
 				lbl_range:SetCaption(OrangeStr .. "Range: " .. card.range)
 				lbl_range.font.size = height/15
 				while (lbl_range.font:GetTextWidth(lbl_range.caption) > width - 15) do
@@ -264,7 +275,7 @@ function Darius:GetCardButton(card, width, height)
 			lbl_range.y = lbl_reloadTime.y + lbl_reloadTime.font.size
 			lbl_range:Invalidate()
 
-			if (card.damage ~= 0) then
+			if (card.damage ~= 0 and img_center.width ~= width) then
 				lbl_damage:SetCaption(RedStr .. "Damage: " .. card.damage)
 				lbl_damage.font.size = height/15
 				while (lbl_damage.font:GetTextWidth(lbl_damage.caption) > width - 15) do

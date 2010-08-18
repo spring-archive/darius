@@ -378,7 +378,7 @@ function enableWidgets()
 	widgetHandler:EnableWidget("Deck GUI")
 	widgetHandler:EnableWidget("Card Hand GUI")
 	widgetHandler:EnableWidget("Darius stats panel")
-	widgetHandler:EnableWidget("Green balls display")
+	widgetHandler:EnableWidget("Greenballs display")
 	widgetHandler:EnableWidget("Darius Minimap")
 end
 
@@ -387,7 +387,7 @@ function disableWidgets()
 	widgetHandler:DisableWidget("Deck GUI")
 	widgetHandler:DisableWidget("Card Hand GUI")
 	widgetHandler:DisableWidget("Darius stats panel")
-	widgetHandler:DisableWidget("Green balls display")
+	widgetHandler:DisableWidget("Greenballs display")
 	widgetHandler:DisableWidget("The deck editor")
 	widgetHandler:DisableWidget("Darius Minimap")
 end

@@ -135,7 +135,6 @@ function Darius:GetCardButton(card, width, height)
 	lbl_greenballs:SetCaption("")
 
 	local button = Button:New{
-		name = "",
 		caption = "",
 		textColor = color.game_fg,
 		card = card,
@@ -287,8 +286,6 @@ function Darius:GetCardButton(card, width, height)
 		end,
 	}
 	
-	Spring.PlaySoundFile("sounds/ui/card_pick.wav")
-
 	button:UpdateCard(width, height)
 	return button
 end

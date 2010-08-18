@@ -3,7 +3,7 @@ function widget:GetInfo()
 	return {
 	name = "Deck GUI",
 	desc = "Two simple clickable decks",
-	author = "kap89",
+	author = "kap89/xcompwiz",
 	date = "June 6, 2010",
 	license = "GNU GPL, v2 or later",
 	layer = 0,
@@ -30,6 +30,8 @@ local settings = {
 	cardsize_y = 170,
 	pos_x,
 	pos_y,
+	width,
+	height,
 }
 
 ----------------
@@ -37,59 +39,11 @@ local settings = {
 ----------------
 local window_deck
 local stack_deck
-local two_decks = {}
-local hoveredCard
 
 ---------------------
 -- local functions --
 ---------------------
-local function MakeHandMenu()
-
-	if window_deck then
-		window_deck:Dispose()
-		window_deck = nil
-	end
-
-	local vsx, vsy = widgetHandler:GetViewSizes()
-	local deck_width = 400
-	local deck_height = 300
-	local deck_pos_x = settings.pos_x or 0.5 * vsx - deck_width * 0.5
-	local deck_pos_y = settings.pos_y or 0.05 * vsy - deck_height * 0.5
-	
-	stack_deck = StackPanel:New{
-		name='stack_deck',
-		orientation = 'horizontal',
-		width = deck_width,
-		height = deck_height,
-		resizeItems = false,
-		padding = {-50,10,0,0},
-		itemPadding = {10,0,0,0},
-		itemMargin = {0,0,0,0},
-		children = {}
-	}
-
-	window_deck = Window:New {  
-		caption="Decks",
-		x = deck_pos_x,
-		y = deck_pos_y,
-		dockable = true,
-		name = "carddeck",
-		width = deck_width,
-		height = deck_height,
-		draggable = true,
-		resizable = true,
-		OnMouseUp = {},
-		backgroundColor = color.main_bg,
-		
-		children = {
-			stack_deck,
-		}
-
-	}
-	screen0:AddChild(window_deck)
-end
-
-local function SendCardToHand(button)
+local function DrawFromDeck(deck)
 	Spring.PlaySoundFile("sounds/ui/click2.wav")
 
 	if not (Darius:CanDraw()) then
@@ -97,58 +51,103 @@ local function SendCardToHand(button)
 		Spring.PlaySoundFile("sounds/ui/error.wav")
 		return
 	end
-	
-	if (button.deck.name == "Deck1") then
+
+	if (deck == 1) then
 		--spEcho("Deck1")
 		Darius:Draw(1)
-	elseif (button.deck.name == "Deck2") then
+	elseif (deck == 2) then
 		--spEcho("Deck2")
 		Darius:Draw(2)
 	end
 end
 
-local function DrawDeck()
-	if not (stack_deck) then
-		return
-	end
-	stack_deck.children = {}
+local function AdjustWindow()
+	vsx, vsy, _, _ = Spring.GetViewGeometry()
 
-	if not (two_decks) then
-		return
+	--Calculate card sizes
+	if not (window_deck) then return end
+	stack_deck.width = window_deck.width
+	stack_deck.height = window_deck.height
+	local max_width = (window_deck.width - 35)/2
+	local max_height = window_deck.height - 35
+	settings.cardsize_y = max_height
+--	settings.cardsize_x = settings.cardsize_y * 0.6
+--	if (settings.cardsize_x > max_width) then
+		settings.cardsize_x = max_width
+		--settings.cardsize_y = max_width / 0.6
+--	end
+
+	--Redraw buttons
+	stack_deck:UpdateLayout()
+	stack_deck:Invalidate()
+	stack_deck.children[1]:UpdateCard(settings.cardsize_x, settings.cardsize_y)
+	stack_deck.children[2]:UpdateCard(settings.cardsize_x, settings.cardsize_y)
+
+	--Force window onto screen
+	if (window_deck.x < 0) then
+		window_deck.x = 0
 	end
-	for _, deck in pairs(two_decks) do
-		-- Create a button for deck
-		table.insert(stack_deck.children,
-			Button:New {
-				caption = "",
-				deck = deck,
-				height = settings.cardsize_y + 8,
-				width = settings.cardsize_x + 8,
-				OnMouseUp = { 
-					function(self)
-						SendCardToHand(self)
-					end
-				},
-				backgroundColor = color.game_bg,
-				textColor = color.game_fg,
-				children = { 
-					Label:New {
-						caption = deck.name,
-					},
-					Image:New {
-						file = 'cards/images/background/back.png',
-						width = settings.cardsize_x,
-						height = settings.cardsize_y,
-						keepAspect = false,
-					},
-				}
-			})
+	if (window_deck.y < 0) then
+		window_deck.y = 0
 	end
-	--Force the window to be redrawn
-	window_deck:Invalidate()
+	if (window_deck.x > vsx - window_deck.width) then
+		window_deck.x = vsx - window_deck.width
+	end
+	if (window_deck.y > vsy - window_deck.height) then
+		window_deck.y = vsy - window_deck.height
+	end
 end
 
+local function MakeWindow()
 
+	if window_deck then
+		window_deck:Dispose()
+		window_deck = nil
+	end
+
+	local vsx, vsy = widgetHandler:GetViewSizes()
+	local deck_width = settings.width or 400
+	local deck_height = settings.height or 300
+	local deck_pos_x = settings.pos_x or 0.5 * vsx - deck_width * 0.5
+	local deck_pos_y = settings.pos_y or 0.05 * vsy - deck_height * 0.5
+	
+	stack_deck = StackPanel:New{
+		name='stack_deck',
+		orientation = 'horizontal',
+		width = -1,
+		height = hand_height,
+		resizeItems = false,
+		padding = {0,10,0,0},
+		itemPadding = {0,0,0,0},
+		itemMargin = {0,0,0,0},
+		children = {
+			Darius:GetCardButton(nil, settings.cardsize_x, settings.cardsize_y),
+			Darius:GetCardButton(nil, settings.cardsize_x, settings.cardsize_y),
+		},
+	}
+
+	window_deck = Window:New {  
+		caption="carddeck",
+		x = deck_pos_x,
+		y = deck_pos_y,
+		dockable = false,
+		name = "deckwindow",
+		width = deck_width,
+		height = deck_height,
+		minWidth  = 100,
+		minHeight = 100,
+		draggable = true,
+		resizable = true,
+		OnMouseUp = {},
+		backgroundColor = color.main_bg,
+		children = {
+			stack_deck,
+		},
+	}
+	stack_deck.children[1].OnMouseUp = {function(self) DrawFromDeck(1) end}
+	stack_deck.children[2].OnMouseUp = {function(self) DrawFromDeck(2) end}
+	screen0:AddChild(window_deck)
+end
 
 --------------
 -- Call-ins --
@@ -165,32 +164,30 @@ function widget:Initialize()
 	Darius = WG.Darius
 
 	-- setup Chili
-	 Chili = WG.Chili
-	 Button = Chili.Button
-	 Label = Chili.Label
-	 Window = Chili.Window
-	 ScrollPanel = Chili.ScrollPanel
-	 StackPanel = Chili.StackPanel
-	 Grid = Chili.Grid
-	 TextBox = Chili.TextBox
-	 Image = Chili.Image
-	 screen0 = Chili.Screen0
+	Chili = WG.Chili
+	Button = Chili.Button
+	Label = Chili.Label
+	Window = Chili.Window
+	ScrollPanel = Chili.ScrollPanel
+	StackPanel = Chili.StackPanel
+	Grid = Chili.Grid
+	TextBox = Chili.TextBox
+	Image = Chili.Image
+	screen0 = Chili.Screen0
 
-	 two_decks = { 
-	 	{name = "Deck1" },
-	 	{name = "Deck2" },
-	 }
-	 
-	 
-	MakeHandMenu()
-	DrawDeck()
-	widget:ViewResize(Spring.GetViewGeometry())
+	MakeWindow()
+end
+
+function widget:Update()
+	AdjustWindow()
 end
 
 function widget:GetConfigData()
 	if (window_deck) then
 		settings.pos_x = window_deck.x
 		settings.pos_y = window_deck.y
+		settings.width = window_deck.width
+		settings.height = window_deck.height
 	end
 	return settings
 end
@@ -201,18 +198,6 @@ function widget:SetConfigData(data)
 	end
 end
 
-function widget:ViewResize(viewSizeX, viewSizeY)
-end
-
-function widget:MousePress(x, y, button)
-end
-
-function widget:Update()
-end
-
-function widget:DrawScreen()
-end
-
 function widget:Shutdown()
 	spEcho( "Deck widget OFF" )
 	if (window_deck) then
@@ -220,19 +205,3 @@ function widget:Shutdown()
 		window_deck:Dispose()
 	end
 end
-
-----------------------------------
---Turns out, Chili handles these--
-----------------------------------
---function widget:IsAbove(x, y)
---	local vsx, vsy = widgetHandler:GetViewSizes()
---	local x = x - window_deck.x
---	local y = vsy - y
---	y = y - window_deck.y
---	hoveredCard = window_deck:HitTest(x, y)
---	return not (hoveredCard == nil)
---end
-
---function widget:GetTooltip(x, y)
---end
-

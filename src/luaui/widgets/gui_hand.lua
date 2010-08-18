@@ -44,8 +44,8 @@ local function AdjustWindow()
 	if not (window_hand) then return end
 	stack_hand.width = window_hand.width
 	stack_hand.height = window_hand.height
-	local max_width = (window_hand.width - 60)/#cards_in_hand
-	local max_height = window_hand.height - 60
+	local max_width = (window_hand.width - 35)/#cards_in_hand
+	local max_height = window_hand.height - 35
 	settings.cardsize_y = max_height
 	settings.cardsize_x = settings.cardsize_y * 0.6
 	if (settings.cardsize_x > max_width) then
@@ -101,8 +101,10 @@ local function MakeHandMenu()
 		y = hand_pos_y,
 		dockable = false,
 		name = "hand_window",
-		clientWidth = hand_width,
-		clientHeight = hand_height,
+		width = hand_width,
+		height = hand_height,
+		minWidth  = 100,
+		minHeight = 100,
 		draggable = true,
 		resizable = true,
 		children = {
@@ -183,8 +185,8 @@ end
 
 function widget:GetConfigData()
 	if (window_hand) then
-		settings.height = window_hand.height - 25
-		settings.width  = window_hand.width - 25
+		settings.height = window_hand.height
+		settings.width  = window_hand.width
 		settings.pos_x  = window_hand.x
 		settings.pos_y  = window_hand.y
 	end

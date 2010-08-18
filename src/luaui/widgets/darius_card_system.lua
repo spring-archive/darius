@@ -220,7 +220,7 @@ function Darius:GetCardButton(card, width, height)
 			if (card.img) then
 				img_center.file = card.img
 				img_center.x = width/6
-				img_center.y = height/10
+				img_center.y = height/7
 				img_center.width = width*2/3
 				img_center.height = height*2/5
 				if (img_center.width < 50) or (img_center.height < 50) then
@@ -239,7 +239,7 @@ function Darius:GetCardButton(card, width, height)
 			if (card.health ~= 0 and img_center.width ~= width) then
 				lbl_health:SetCaption(GreenStr .. "Health: " .. card.health)
 				lbl_health.font.size = height/15
-				while (lbl_health.font:GetTextWidth(lbl_health.caption) > width - 15) do
+				while (lbl_health.font:GetTextWidth(lbl_health.caption) > width) do
 					lbl_health.font.size = lbl_health.font.size - 1
 				end
 			else
@@ -252,7 +252,7 @@ function Darius:GetCardButton(card, width, height)
 			if (card.reloadTime ~= "0.000" and img_center.width ~= width) then
 				lbl_reloadTime:SetCaption(YellowStr .. "Reload: " .. card.reloadTime .. "s")
 				lbl_reloadTime.font.size = height/15
-				while (lbl_reloadTime.font:GetTextWidth(lbl_reloadTime.caption) > width - 15) do
+				while (lbl_reloadTime.font:GetTextWidth(lbl_reloadTime.caption) > width) do
 					lbl_reloadTime.font.size = lbl_reloadTime.font.size - 1
 				end
 			else
@@ -265,7 +265,7 @@ function Darius:GetCardButton(card, width, height)
 			if (card.range ~= 0 and img_center.width ~= width) then
 				lbl_range:SetCaption(OrangeStr .. "Range: " .. card.range)
 				lbl_range.font.size = height/15
-				while (lbl_range.font:GetTextWidth(lbl_range.caption) > width - 15) do
+				while (lbl_range.font:GetTextWidth(lbl_range.caption) > width) do
 					lbl_range.font.size = lbl_range.font.size - 1
 				end
 			else
@@ -278,7 +278,7 @@ function Darius:GetCardButton(card, width, height)
 			if (card.damage ~= 0 and img_center.width ~= width) then
 				lbl_damage:SetCaption(RedStr .. "Damage: " .. card.damage)
 				lbl_damage.font.size = height/15
-				while (lbl_damage.font:GetTextWidth(lbl_damage.caption) > width - 15) do
+				while (lbl_damage.font:GetTextWidth(lbl_damage.caption) > width) do
 					lbl_damage.font.size = lbl_damage.font.size - 1
 				end
 			else

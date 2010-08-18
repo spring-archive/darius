@@ -60,7 +60,6 @@ local gameOver = false
 ---------------------
 
 local function StartNewGame(mapfile)
-
 	if ((spRestart) and VFS.FileExists(startscriptfilename)) then --If Spring.Restart exists
 		scriptContent = VFS.Include(startscriptfilename)
 		if (scriptContent) then

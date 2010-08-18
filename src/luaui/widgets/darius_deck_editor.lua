@@ -16,17 +16,18 @@ local spEcho = Spring.Echo
 
 -- Data Storage
 local cardPool = {}         -- Card pool is stored as (cardName, amount) -pairs e.g. cardPool["Fire"] = 5 The pool has five fire cards
+local cardPool = {}         -- Card pool is stored as (cardName, amount) -pairs e.g. cardPool["Fire"] = 5 => The pool has five fire cards
 
-local decks = {}            -- Decks are stored as ana array of (cardName, amount) -pairs e.g. decks[2]["Fire"] = 3 Deck number 2 has 3 fire cards
+local decks = {}            -- Decks are stored as ana array of (cardName, amount) -pairs e.g. decks[2]["Fire"] = 3 => Deck number 2 has 3 fire cards
 
-local latestCard = {}       --Cache for the latest card fetched from the pool
+local latestCard = {}       -- Cache for the latest card fetched from the pool
 
 local maxCardAmount = 0
 local activatedPoolcard = ""  	-- Name of the latest selected card in the pool
 local activatedDeckCard = ""  	-- Name of tha latest selected card in the selected deck
 local selectedDeckIndex = 0   	-- Index of the deck that is currently under edit
 local cardLabelLenght = 2		-- Currently not used
-local minimumCardLabelSpaceCount = 2 -- The amount of sapces between the card name and it's amount on card labels (NOTE: this must be more than the amount of sequential spaces in the card names)
+local minimumCardLabelSpaceCount = 2 -- The amount of spaces between the card name and it's amount on card labels (NOTE: this must be more than the amount of sequential spaces in the card names)
 local maxDeckAmount = 10		-- The maximum amount of decks supported by the editor
 
 local activatedDeckIndex1 = 0
@@ -37,6 +38,7 @@ local useNext = false
 local deckEditorStack 		= nil
 local deckEditorWindow 		= nil
 local cardPoolLabelStack 	= nil
+local cardPoolScrollStack	= nil
 local decksLabelStack 		= nil
 local selectedCardButton 	= nil
 local cardPoolLabels 		= {}
@@ -48,21 +50,21 @@ local activeDeck2Label		= nil
 local activeDeckInfoLabel	= nil
 
 -- Data flags
-local poolHasChanged = false
-local decksHaveChanged = false
-local deckSelectingview = true 	-- Tells which view to draw: the deck selection view (true) or the deck editing view(false)
-local decksAreOK = false 			-- Tells if the decks have been checked and found to be OK (true) or if there is something wrong with them(false)
-local reCheckDecks = true 			-- Notifies the update function to re-check the validation of the activated decks
+local poolHasChanged 		= false	-- Tells the update function to redraw card pool related data
+local decksHaveChanged 		= false	-- Tells the update function to redraw deck related data
+local deckSelectingview 	= true 	-- Tells which view to draw: the deck selection view (true) or the deck editing view(false)
+local decksAreOK 			= false	-- Tells if the decks have been checked and found to be OK (true) or if there is something wrong with them(false)
+local reCheckDecks 			= true 	-- Notifies the update function to re-check the validation of the activated decks
 
 -- Colours are pwetty!
-local VFSMODE = VFS.RAW_FIRST
-local file = LUAUI_DIRNAME .. "configs/gui_conf.lua"
-local confdata = VFS.Include(file, nil, VFSMODE)
-local color = confdata.color
-local orange = {1,0.5,0,1}
-local activeColour = "\255\255\128\10"
-local acceptiveGreen = "\255\0\255\0"
-local redOfDenial = "\255\255\0\0"
+local VFSMODE 			= VFS.RAW_FIRST
+local file 				= LUAUI_DIRNAME .. "configs/gui_conf.lua"
+local confdata 			= VFS.Include(file, nil, VFSMODE)
+local color 			= confdata.color
+local orange 			= {1,0.5,0,1}
+local activeColour 		= "\255\255\128\10"
+local acceptiveGreen 	= "\255\0\255\0"
+local redOfDenial 		= "\255\255\0\0"
 
 
 function table.tostring(t)
@@ -182,6 +184,22 @@ local function FindLongestKey(t) -- Currently not used
 
 	return currentMax
 end
+
+local function GetSortedKeys(t)
+	local cache = {}
+
+	-- Copy the keys of the table given to an array
+	for k,v in pairs(t) do
+		table.insert(cache, k)
+	end
+
+	-- Sort the array with the keys in
+	table.sort(cache, function(s1, s2) return s1 < s2 end)
+
+	-- And return it
+	return cache
+end
+
 -----------------------
 -- Interface helpers --
 -----------------------
@@ -462,21 +480,21 @@ local function UpdateDeckEditorUI()
 		end
 
 		local i = 1 -- Used to index the cardPoolLabels-array
+		local sortedKeys = GetSortedKeys(cardPool) -- Used to make the card list alphabetically sorted
 
-		for cardName, amount in pairs(cardPool) do
+		for i = 1, #sortedKeys do
 
-			if amount > 0 then
-				if activatedPoolcard == cardName then
+			if cardPool[sortedKeys[i]] > 0 then
+				if activatedPoolcard == sortedKeys[i] then
 					-- Add colour for the active card
-					cardPoolLabels[i]:SetCaption(activeColour .. GenerateCardLabelString(cardName, amount))
+					cardPoolLabels[i]:SetCaption(activeColour .. GenerateCardLabelString(sortedKeys[i], cardPool[sortedKeys[i]]))
 				else
-					cardPoolLabels[i]:SetCaption(GenerateCardLabelString(cardName, amount))
+					cardPoolLabels[i]:SetCaption(GenerateCardLabelString(sortedKeys[i], cardPool[sortedKeys[i]]))
 				end
 
 				i = i + 1
 			end
 		end
-
 	end
 
 	if decksHaveChanged and selectedDeckIndex then -- Rewrite the deck data
@@ -543,13 +561,13 @@ local function ChangeDeckEditorView()
 	cardLabelStack:RemoveChild(decksLabelStack)
 	cardLabelStack:RemoveChild(startDeckEditingButton)
 	cardLabelStack:RemoveChild(selectedDeckLabelStack)
-	cardLabelStack:RemoveChild(cardPoolLabelStack)
 	cardLabelStack:RemoveChild(addCardToDeckButton)
 	cardLabelStack:RemoveChild(removeCardFromDeckButton)
 	cardLabelStack:RemoveChild(startDeckSelectionButton)
 	cardLabelStack:RemoveChild(createNewDeckButton)
 	cardLabelStack:RemoveChild(deleteDeckButton)
 	cardLabelStack:RemoveChild(activateSelectedDeckButton)
+	cardLabelStack:RemoveChild(cardPoolScrollStack)
 
 	sideDataPanel:RemoveChild(selectedCardButton)
 	sideDataPanel:RemoveChild(activeDeckLabel)
@@ -575,7 +593,7 @@ local function ChangeDeckEditorView()
 		decksHaveChanged = true
 	else
 		-- Add the stuff for the deck editing view
-		cardLabelStack:AddChild(cardPoolLabelStack)
+		cardLabelStack:AddChild(cardPoolScrollStack)
 		cardLabelStack:AddChild(addCardToDeckButton)
 		cardLabelStack:AddChild(removeCardFromDeckButton)
 		cardLabelStack:AddChild(startDeckSelectionButton)
@@ -642,6 +660,7 @@ local function RunOnRemoveCardFromDeckButtonClick()
 
 	UpdateDeckEditorUI()
 end
+
 local function MakeDeckEditorUI()
 
 	local windowWidth = 500
@@ -761,13 +780,26 @@ local function MakeDeckEditorUI()
 		x = 1,
 		y = 1,
 		width = '100%',
-		height = '50%',
-		bottom = '50%',
+		height = labelFontSize * (maxCardAmount + 10), -- The +10 creates some extra space on the panel so that there is more space for the labels
 		resizeItems = true,
 		autosize = true,
 		preserveChildrenOrder = true,
 
 		children = cardPoolLabels
+	}
+
+	cardPoolScrollStack = ScrollPanel:New{
+		x = 1,
+		y = 1,
+		width = '100%',
+		height = '50%',
+		bottom = '50%',
+		autosize = true,
+		preserveChildrenOrder = true,
+		verticalSmartScroll = true,
+		horizontalScrollbar = false,
+
+		children = {cardPoolLabelStack,},
 	}
 
 	selectedDeckLabelStack = StackPanel:New{

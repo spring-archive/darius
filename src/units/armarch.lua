@@ -33,7 +33,7 @@ unitDef = {
   minCloakDistance    = 60,
   noAutoFire          = false,
   noChaseCategory     = [[FIXEDWING LAND SINK SHIP SATELLITE SWIM GUNSHIP FLOAT SUB HOVER]],
-  objectName          = [[armarch.s3o]],
+  objectName          = [[armarch]],
   seismicSignature    = 16,
   selfDestructAs      = [[SMALL_BUILDINGEX]],
 

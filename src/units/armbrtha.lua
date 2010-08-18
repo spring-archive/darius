@@ -39,7 +39,7 @@ unitDef = {
   maxWaterDepth       = 0,
   minCloakDistance    = 150,
   noChaseCategory     = [[FIXEDWING LAND SHIP SATELLITE SWIM GUNSHIP SUB HOVER]],
-  objectName          = [[armbrtha.s3o]],
+  objectName          = [[armbrtha]],
   seismicSignature    = 4,
   selfDestructAs      = [[ATOMIC_BLAST]],
 

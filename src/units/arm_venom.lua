@@ -34,7 +34,7 @@ unitDef = {
   movementClass       = [[MEDIUM]],
   noAutoFire          = false,
   noChaseCategory     = [[TERRAFORM FIXEDWING SATELLITE SUB]],
-  objectName          = [[armspid.s3o]],
+  objectName          = [[armspid]],
   seismicSignature    = 4,
   selfDestructAs      = [[BIG_UNITEX]],
 

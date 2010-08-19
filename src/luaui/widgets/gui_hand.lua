@@ -27,6 +27,13 @@ local settings = {
 	height,
 }
 
+local defaults = {
+	width = settings.cardsize_x * 5 + 35,
+	height = settings.cardsize_y + 35,
+	x = 0, --0.5 * vsx - defaults.width * 0.5,
+	y = 0, --0.05 * vsy + defaults.height * 0.5,
+}
+
 ----------------
 -- local vars --
 ----------------
@@ -76,6 +83,7 @@ local function AdjustWindow()
 	-- Force redraw
 	stack_hand:UpdateLayout()
 	stack_hand:Invalidate()
+	window_hand:Invalidate()
 end
 
 local function MakeHandMenu()
@@ -84,11 +92,10 @@ local function MakeHandMenu()
 		window_hand = nil
 	end
 
-	local vsx, vsy = widgetHandler:GetViewSizes()
-	local hand_width = settings.width or settings.cardsize_x * 5
-	local hand_height = settings.height or (settings.cardsize_y + 50)
-	local hand_pos_x = settings.pos_x or 0.5 * vsx - hand_width * 0.5
-	local hand_pos_y = settings.pos_y or 0.05 * vsy + hand_height * 0.5
+	local hand_width = settings.width or defaults.width
+	local hand_height = settings.height or defaults.height
+	local hand_pos_x = settings.pos_x or defaults.x
+	local hand_pos_y = settings.pos_y or defaults.y
 
 	stack_hand = StackPanel:New{
 		name='stack_hand',
@@ -171,23 +178,22 @@ function widget:Initialize()
 	Darius = WG.Darius
 
 	-- setup Chili
-	 Chili = WG.Chili
-	 Button = Chili.Button
-	 Label = Chili.Label
-	 Window = Chili.Window
-	 ScrollPanel = Chili.ScrollPanel
-	 StackPanel = Chili.StackPanel
-	 Grid = Chili.Grid
-	 TextBox = Chili.TextBox
-	 Image = Chili.Image
-	 screen0 = Chili.Screen0
+	Chili = WG.Chili
+	Button = Chili.Button
+	Label = Chili.Label
+	Window = Chili.Window
+	ScrollPanel = Chili.ScrollPanel
+	StackPanel = Chili.StackPanel
+	Grid = Chili.Grid
+	TextBox = Chili.TextBox
+	Image = Chili.Image
+	screen0 = Chili.Screen0
 
 	MakeHandMenu()
 	AdjustWindow()
 	UpdateHand()
-end
 
-function widget:ViewResize(viewSizeX, viewSizeY)
+	Darius:RegisterWidget(widget)
 end
 
 function widget:GetConfigData()
@@ -212,10 +218,31 @@ function widget:Update()
 end
 
 function widget:Shutdown()
+	Darius:RemoveWidget(widget)
+
 	spEcho( "Hand widget OFF" )
 	if (window_hand) then
 		screen0:RemoveChild(window_hand)
 		window_hand:Dispose()
 		window_hand = nil
+	end
+end
+
+-----------------------------
+-- Darius Message Handling --
+-----------------------------
+
+function widget:RcvMessage(message)
+	if (message == "reset") then
+		if (window_hand) then
+			window_hand.x = defaults.x
+			window_hand.y = defaults.y
+			window_hand.width = defaults.width
+			window_hand.height = defaults.height
+		end
+	elseif (message == "show") then
+		if (window_hand) then screen0:AddChild(window_hand) end
+	elseif (message == "hide") then
+		if (window_hand) then screen0:RemoveChild(window_hand) end
 	end
 end

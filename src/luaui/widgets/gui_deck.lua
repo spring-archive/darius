@@ -34,6 +34,13 @@ local settings = {
 	height,
 }
 
+local defaults = {
+	width = settings.cardsize_x * 5 + 35,
+	height = settings.cardsize_y + 35,
+	x = settings.cardsize_x * 5 + 35, --vsx,
+	y = 0
+}
+
 ----------------
 -- local vars --
 ----------------
@@ -96,6 +103,7 @@ local function AdjustWindow()
 	if (window_deck.y > vsy - window_deck.height) then
 		window_deck.y = vsy - window_deck.height
 	end
+	window_deck:Invalidate()
 end
 
 local function MakeWindow()
@@ -105,11 +113,10 @@ local function MakeWindow()
 		window_deck = nil
 	end
 
-	local vsx, vsy = widgetHandler:GetViewSizes()
-	local deck_width = settings.width or 400
-	local deck_height = settings.height or 300
-	local deck_pos_x = settings.pos_x or 0.5 * vsx - deck_width * 0.5
-	local deck_pos_y = settings.pos_y or 0.05 * vsy - deck_height * 0.5
+	local deck_width = settings.width or defaults.width
+	local deck_height = settings.height or defaults.height
+	local deck_pos_x = settings.pos_x or defaults.x
+	local deck_pos_y = settings.pos_y or defaults.y
 	
 	stack_deck = StackPanel:New{
 		name='stack_deck',
@@ -176,10 +183,16 @@ function widget:Initialize()
 	screen0 = Chili.Screen0
 
 	MakeWindow()
+
+	Darius:RegisterWidget(widget)
 end
 
 function widget:Update()
 	AdjustWindow()
+end
+
+function widget:ViewResize(viewSizeX, viewSizeY)
+	defaults.x = viewSizeX
 end
 
 function widget:GetConfigData()
@@ -199,9 +212,31 @@ function widget:SetConfigData(data)
 end
 
 function widget:Shutdown()
+	Darius:RemoveWidget(widget)
+
 	spEcho( "Deck widget OFF" )
 	if (window_deck) then
 		screen0:RemoveChild(window_deck)
 		window_deck:Dispose()
+		window_deck = nil
+	end
+end
+
+-----------------------------
+-- Darius Message Handling --
+-----------------------------
+
+function widget:RcvMessage(message)
+	if (message == "reset") then
+		if (window_deck) then
+			window_deck.x = defaults.x
+			window_deck.y = defaults.y
+			window_deck.width = defaults.width
+			window_deck.height = defaults.height
+		end
+	elseif (message == "show") then
+		if (window_deck) then screen0:AddChild(window_deck) end
+	elseif (message == "hide") then
+		if (window_deck) then screen0:RemoveChild(window_deck) end
 	end
 end

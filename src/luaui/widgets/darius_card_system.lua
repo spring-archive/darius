@@ -32,7 +32,6 @@ WhiteStr   = "\255\255\255\255"
 GreyStr    = "\255\210\210\210"
 RedStr     = "\255\255\092\092"
 GreenStr   = "\255\092\255\092"
-BlueStr    = "\255\092\092\255"
 YellowStr  = "\255\255\255\152"
 OrangeStr  = "\255\255\190\128"
 
@@ -52,6 +51,8 @@ local selectedMaterial = {}
 local selectedSpecial = {}
 local cards = {} -- The in-game card pool (not the player's full card collection)
 
+local widgets = {}
+
 local function getCardBackground(type)
 	if (type == "Material") then
 		return 'cards/images/background/material.png'
@@ -66,6 +67,27 @@ end
 ----------------------
 -- Member Functions --
 ----------------------
+function Darius:RegisterWidget(widget)
+	for _, w in pairs(widgets) do --Make sure the widget isn't already registered
+		if (w == widget) then return end
+	end
+	table.insert(widgets, widget)
+end
+
+function Darius:RemoveWidget(widget)
+	newwidgets = {}
+	for _, w in pairs(widgets) do
+		if (w ~= widget) then table.insert(newwidgets, w) end
+	end
+	widgets = newwidgets
+end
+
+function Darius:SendMessage(message)
+	for _, w in pairs(widgets) do
+		if (w.RcvMessage) then w:RcvMessage(message) end
+	end
+end
+
 function Darius:GetTower()
 	return tower
 end
@@ -192,14 +214,15 @@ function Darius:GetCardButton(card, width, height)
 			button.backgroundColor = background
 
 			-- Visual formatting
+			lbl_name:SetCaption(card.name)
 			if (card.type == "Material") then
-				lbl_name:SetCaption(card.name)
+				lbl_name.font.color = color.black
 			elseif (card.type == "Weapon") then
-				lbl_name:SetCaption(RedStr .. card.name)
+				lbl_name.font.color = color.red
 			elseif (card.type == "Special") then
-				lbl_name:SetCaption(BlueStr .. card.name)
+				lbl_name.font.color = color.blue
 			else
-				lbl_name:SetCaption(card.name)
+				lbl_name.font.color = color.black
 			end
 			lbl_name.x = width/30
 			lbl_name.y = height/30

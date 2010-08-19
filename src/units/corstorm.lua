@@ -15,6 +15,7 @@ unitDef = {
   corpse              = [[DEAD]],
 
   customParams        = {
+    greenballs = [[2]],
   },
 
   defaultmissiontype  = [[Standby]],
@@ -22,14 +23,14 @@ unitDef = {
   footprintX          = 2,
   footprintZ          = 2,
   iconType            = [[default]],
-  idleAutoHeal        = 5,
+  idleAutoHeal        = 0,
   idleTime            = 1800,
   leaveTracks         = true,
   maneuverleashlength = [[640]],
   mass                = 100,
-  maxDamage           = 770,
+  maxDamage           = 250,
   maxSlope            = 36,
-  maxVelocity         = 1.9,
+  maxVelocity         = 2,
   maxWaterDepth       = 22,
   minCloakDistance    = 75,
   movementClass       = [[SMALL]],
@@ -83,7 +84,7 @@ unitDef = {
       craterMult              = 2,
 
       damage                  = {
-        default = 125,
+        default = 50,
       },
 
       fireStarter             = 70,
@@ -96,8 +97,8 @@ unitDef = {
       model                   = [[wep_m_hailstorm.s3o]],
       noSelfDamage            = true,
       predictBoost            = 1,
-      range                   = 400,
-      reloadtime              = 2,
+      range                   = 300,
+      reloadtime              = 1.5,
       renderType              = 1,
       selfprop                = true,
       smokedelay              = [[.1]],
@@ -134,7 +135,7 @@ unitDef = {
       height           = [[20]],
       hitdensity       = [[100]],
       metal            = 50,
-      object           = [[CORSTORM_DEAD]],
+      object           = [[debris2x2b.s3o]],
       reclaimable      = true,
       reclaimTime      = 50,
       seqnamereclamate = [[TREE1RECLAMATE]],

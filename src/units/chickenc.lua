@@ -14,6 +14,7 @@ unitDef = {
   category            = [[LAND]],
 
   customParams        = {
+    greenballs = [[7]],
   },
 
   defaultmissiontype  = [[Standby]],
@@ -26,7 +27,7 @@ unitDef = {
   leaveTracks         = true,
   maneuverleashlength = [[640]],
   mass                = 264,
-  maxDamage           = 2400,
+  maxDamage           = 1500,
   maxSlope            = 72,
   maxVelocity         = 1,
   maxWaterDepth       = 22,
@@ -87,7 +88,7 @@ unitDef = {
       craterMult              = 0,
 
       damage                  = {
-        default = 140,
+        default = 130,
       },
 
       endsmoke                = [[0]],
@@ -98,7 +99,7 @@ unitDef = {
       interceptedByShieldType = 1,
       lineOfSight             = true,
       noSelfDamage            = true,
-      range                   = 350,
+      range                   = 400,
       reloadtime              = 3,
       renderType              = 4,
       rgbColor                = [[0.2 0.6 0]],

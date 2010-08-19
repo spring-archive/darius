@@ -14,23 +14,24 @@ unitDef = {
   category              = [[LAND]],
   corpse                = [[DEAD]],
 
-  customParams          = {
+  customParams        = {
+    greenballs = [[10]],
   },
-
+  
   damageModifier        = 1,
   defaultmissiontype    = [[Standby]],
   explodeAs             = [[BIG_UNITEX]],
   footprintX            = 4,
   footprintZ            = 4,
   iconType              = [[default]],
-  idleAutoHeal          = 30,
+  idleAutoHeal          = 0,
   idleTime              = 0,
   immunetoparalyzer     = [[1]],
   maneuverleashlength   = [[640]],
   mass                  = 3100,
-  maxDamage             = 5080,
+  maxDamage             = 3000,
   maxSlope              = 37,
-  maxVelocity           = 0.8,
+  maxVelocity           = 1,
   maxWaterDepth         = 500,
   minCloakDistance      = 75,
   movementClass         = [[LARGE]],
@@ -70,13 +71,13 @@ unitDef = {
       bouncerebound           = 0.15,
       bounceslip              = 1,
       burst                   = 3,
-      burstrate               = 0.2,
+      burstrate               = 0.1,
       cegTag                  = [[gauss_tag_h]],
       craterBoost             = 1,
       craterMult              = 2,
 
       damage                  = {
-        default = 400,
+        default = 300,
       },
 
       explosionGenerator      = [[custom:gauss_hit_h]],
@@ -90,8 +91,8 @@ unitDef = {
       noExplode               = true,
       noSelfDamage            = true,
       numbounce               = 40,
-      range                   = 350,
-      reloadtime              = 3,
+      range                   = 400,
+      reloadtime              = 2,
       renderType              = 4,
       rgbColor                = [[0.5 1 1]],
       separation              = 0.5,

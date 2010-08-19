@@ -15,6 +15,7 @@ unitDef = {
   corpse              = [[DEAD]],
 
   customParams        = {
+    greenballs = [[2]],
   },
 
   defaultmissiontype  = [[Standby]],
@@ -22,13 +23,13 @@ unitDef = {
   footprintX          = 3,
   footprintZ          = 3,
   iconType            = [[default]],
-  idleAutoHeal        = 5,
+  idleAutoHeal        = 0,
   idleTime            = 1800,
   maneuverleashlength = [[640]],
   mass                = 150,
-  maxDamage           = 800,
+  maxDamage           = 240,
   maxSlope            = 72,
-  maxVelocity         = 1.9,
+  maxVelocity         = 2,
   maxWaterDepth       = 22,
   minCloakDistance    = 75,
   movementClass       = [[MEDIUM]],
@@ -68,7 +69,7 @@ unitDef = {
       craterMult              = 0,
 
       damage                  = {
-        default = 125,
+        default = 40,
       },
 
       edgeEffectiveness       = 0.5,
@@ -81,8 +82,8 @@ unitDef = {
       lineOfSight             = true,
       model                   = [[wep_m_ajax.s3o]],
       noSelfDamage            = true,
-      range                   = 400,
-      reloadtime              = 4,
+      range                   = 300,
+      reloadtime              = 1.5,
       renderType              = 1,
       selfprop                = true,
       smokedelay              = [[0.1]],
@@ -120,7 +121,7 @@ unitDef = {
       height           = [[40]],
       hitdensity       = [[100]],
       metal            = 150,
-      object           = [[ARMSPTK_DEAD]],
+      object           = [[debris2x2b.s3o]],
       reclaimable      = true,
       reclaimTime      = 150,
       seqnamereclamate = [[TREE1RECLAMATE]],

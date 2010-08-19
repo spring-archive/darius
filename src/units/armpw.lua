@@ -15,6 +15,7 @@ unitDef = {
   corpse              = [[DEAD]],
 
   customParams        = {
+    greenballs = [[1]],
   },
 
   defaultmissiontype  = [[Standby]],
@@ -22,12 +23,12 @@ unitDef = {
   footprintX          = 2,
   footprintZ          = 2,
   iconType            = [[default]],
-  idleAutoHeal        = 20,
+  idleAutoHeal        = 0,
   idleTime            = 300,
   leaveTracks         = true,
   maneuverleashlength = [[640]],
   mass                = 32.5,
-  maxDamage           = 190,
+  maxDamage           = 30,
   maxSlope            = 36,
   maxVelocity         = 4,
   maxWaterDepth       = 22,
@@ -87,8 +88,7 @@ unitDef = {
       craterMult              = 2,
 
       damage                  = {
-        default = 11,
-        planes  = 11,
+        default = 1,
       },
 
       endsmoke                = [[0]],
@@ -101,8 +101,8 @@ unitDef = {
       lineOfSight             = true,
       noGap                   = false,
       noSelfDamage            = true,
-      range                   = 255,
-      reloadtime              = 0.31,
+      range                   = 260,
+      reloadtime              = 0.1,
       renderType              = 4,
       rgbColor                = [[1 0.95 0.4]],
       separation              = 1.5,

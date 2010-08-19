@@ -15,7 +15,7 @@ unitDef = {
   corpse                = [[DEAD]],
 
   customParams          = {
-    canjump        = [[1]],
+    greenballs 	   = [[1]],
     fireproof      = [[1]],
   },
 
@@ -24,12 +24,12 @@ unitDef = {
   footprintX            = 2,
   footprintZ            = 2,
   iconType              = [[default]],
-  idleAutoHeal          = 5,
+  idleAutoHeal          = 0,
   idleTime              = 1800,
   leaveTracks           = true,
   maneuverleashlength   = [[640]],
   mass                  = 110,
-  maxDamage             = 400,
+  maxDamage             = 40,
   maxSlope              = 36,
   maxVelocity           = 4,
   maxWaterDepth         = 22,
@@ -90,7 +90,7 @@ unitDef = {
       craterMult              = 0,
 
       damage                  = {
-        default       = 3,
+        default       = 2,
       },
 
       explosionGenerator      = [[custom:SMOKE]],
@@ -103,8 +103,8 @@ unitDef = {
       lineOfSight             = true,
       noExplode               = true,
       noSelfDamage            = true,
-      range                   = 220,
-      reloadtime              = 0.16,
+      range                   = 240,
+      reloadtime              = 0.1,
       renderType              = 5,
       sizeGrowth              = 1.05,
       soundStart              = [[weapons/flamhvy1]],

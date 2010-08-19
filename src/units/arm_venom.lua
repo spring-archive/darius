@@ -15,6 +15,7 @@ unitDef = {
   corpse              = [[DEAD]],
 
   customParams        = {
+    greenballs = [[1]],
   },
 
   defaultmissiontype  = [[Standby]],
@@ -22,13 +23,13 @@ unitDef = {
   footprintX          = 3,
   footprintZ          = 3,
   iconType            = [[default]],
-  idleAutoHeal        = 5,
+  idleAutoHeal        = 0,
   idleTime            = 1800,
   maneuverleashlength = [[640]],
   mass                = 100,
-  maxDamage           = 750,
+  maxDamage           = 200,
   maxSlope            = 72,
-  maxVelocity         = 1.9,
+  maxVelocity         = 2,
   maxWaterDepth       = 22,
   minCloakDistance    = 75,
   movementClass       = [[MEDIUM]],
@@ -77,7 +78,7 @@ unitDef = {
       craterMult              = 0,
 
       damage                  = {
-        default        = 1000,
+        default        = 99999,
       },
 
       duration                = 8,
@@ -93,8 +94,8 @@ unitDef = {
       noSelfDamage            = true,
       paralyzer               = true,
       paralyzeTime            = 3,
-      range                   = 250,
-      reloadtime              = 6,
+      range                   = 300,
+      reloadtime              = 5,
       renderType              = 7,
       rgbColor                = [[1 1 0.25]],
       soundHit                = [[weapons/laser_hit]],
@@ -126,7 +127,7 @@ unitDef = {
       height           = [[40]],
       hitdensity       = [[100]],
       metal            = 100,
-      object           = [[ARMSPID_DEAD]],
+      object           = [[debris2x2b.s3o]],
       reclaimable      = true,
       reclaimTime      = 100,
       seqnamereclamate = [[TREE1RECLAMATE]],

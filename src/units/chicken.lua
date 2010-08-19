@@ -14,8 +14,10 @@ unitDef = {
   canstop             = [[1]],
   category            = [[SWIM]],
 
-  customParams        = {
+ customParams        = {
+    greenballs = [[1]],
   },
+
 
   defaultmissiontype  = [[Standby]],
   explodeAs           = [[NOWEAPON]],
@@ -23,14 +25,14 @@ unitDef = {
   footprintX          = 2,
   footprintZ          = 2,
   iconType            = [[default]],
-  idleAutoHeal        = 20,
+  idleAutoHeal        = 0,
   idleTime            = 300,
   leaveTracks         = true,
   maneuverleashlength = [[640]],
   mass                = 26.4,
-  maxDamage           = 370,
+  maxDamage           = 75,
   maxSlope            = 36,
-  maxVelocity         = 1.9,
+  maxVelocity         = 2,
   minCloakDistance    = 75,
   movementClass       = [[MEDIUM]],
   noAutoFire          = false,
@@ -86,7 +88,7 @@ unitDef = {
       craterMult              = 2,
 
       damage                  = {
-        default = 80,
+        default = 30,
       },
 
       endsmoke                = [[0]],

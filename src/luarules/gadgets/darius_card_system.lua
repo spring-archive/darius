@@ -353,7 +353,7 @@ end
 
 function gadget:UnitDestroyed(unitID, unitDefID, teamID, attackerID)
 	if teamID == 0 then
-		Darius:AddGreenballs(1)
+		Darius:AddGreenballs(tonumber(UnitDefs[unitDefID].customParams.greenballs))
 	end
 end
 

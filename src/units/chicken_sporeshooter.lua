@@ -14,6 +14,7 @@ unitDef = {
   category            = [[LAND]],
 
   customParams        = {
+    greenballs = [[3]],
   },
 
   defaultmissiontype  = [[Standby]],
@@ -21,14 +22,14 @@ unitDef = {
   footprintX          = 2,
   footprintZ          = 2,
   iconType            = [[default]],
-  idleAutoHeal        = 20,
+  idleAutoHeal        = 0,
   idleTime            = 300,
   leaveTracks         = false,
   maneuverleashlength = [[640]],
   mass                = 264,
-  maxDamage           = 1000,
+  maxDamage           = 300,
   maxSlope            = 72,
-  maxVelocity         = 1.9,
+  maxVelocity         = 2,
   maxWaterDepth       = 22,
   minCloakDistance    = 75,
   movementClass       = [[MEDIUM]],
@@ -80,14 +81,14 @@ unitDef = {
       name                    = [[Spores]],
       areaOfEffect            = 24,
       avoidFriendly           = true,
-      burst                   = 6,
+      burst                   = 5,
       burstrate               = 0.1,
       collideFriendly         = false,
       craterBoost             = 1,
       craterMult              = 2,
 
       damage                  = {
-        default = 80,
+        default = 35,
       },
 
       dance                   = 60,
@@ -106,8 +107,8 @@ unitDef = {
       metalpershot            = 0,
       model                   = [[chickeneggpink.s3o]],
       noSelfDamage            = true,
-      range                   = 500,
-      reloadtime              = 5,
+      range                   = 300,
+      reloadtime              = 1.5,
       renderType              = 1,
       selfprop                = true,
       smokedelay              = [[0.1]],

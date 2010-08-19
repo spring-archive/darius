@@ -14,7 +14,8 @@ unitDef = {
   canstop               = [[1]],
   category              = [[SWIM]],
 
-  customParams          = {
+  customParams        = {
+    greenballs = [[1]],
   },
 
   defaultmissiontype    = [[Standby]],
@@ -23,14 +24,14 @@ unitDef = {
   footprintX            = 2,
   footprintZ            = 2,
   iconType              = [[default]],
-  idleAutoHeal          = 20,
+  idleAutoHeal          = 0,
   idleTime              = 300,
   kamikaze              = true,
   kamikazeDistance      = 80,
   leaveTracks           = true,
   maneuverleashlength   = [[640]],
   mass                  = 20,
-  maxDamage             = 300,
+  maxDamage             = 30,
   maxSlope              = 36,
   maxVelocity           = 6,
   minCloakDistance      = 75,

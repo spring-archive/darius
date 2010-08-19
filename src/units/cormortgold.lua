@@ -15,6 +15,7 @@ unitDef = {
   corpse              = [[DEAD]],
 
   customParams        = {
+    greenballs = [[5]],
   },
 
   defaultmissiontype  = [[Standby]],
@@ -25,8 +26,8 @@ unitDef = {
   idleAutoHeal        = 5,
   idleTime            = 1800,
   maneuverleashlength = [[640]],
-  mass                = 1000,
-  maxDamage           = 2000,
+  mass                = 3000,
+  maxDamage           = 1000,
   maxSlope            = 36,
   maxVelocity         = 1,
   maxWaterDepth       = 22,
@@ -77,7 +78,7 @@ unitDef = {
       craterMult              = 2,
 
       damage                  = {
-        default = 450,
+        default = 300,
       },
 
       explosionGenerator      = [[custom:DEFAULT]],
@@ -87,15 +88,15 @@ unitDef = {
       interceptedByShieldType = 1,
       minbarrelangle          = [[-35]],
       noSelfDamage            = true,
-      range                   = 400,
-      reloadtime              = 3,
+      range                   = 600,
+      reloadtime              = 2,
       renderType              = 4,
       soundHit                = [[weapons/xplomed3]],
       soundStart              = [[weapons/cannon1]],
       startsmoke              = [[1]],
       turret                  = true,
       weaponType              = [[Cannon]],
-      weaponVelocity          = 900,
+      weaponVelocity          = 800,
     },
 
   },

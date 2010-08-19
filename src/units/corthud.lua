@@ -15,7 +15,7 @@ unitDef = {
   corpse              = [[DEAD]],
 
   customParams        = {
-  
+    greenballs = [[1]],
   },
 
   defaultmissiontype  = [[Standby]],
@@ -23,14 +23,14 @@ unitDef = {
   footprintX          = 2,
   footprintZ          = 2,
   iconType            = [[default]],
-  idleAutoHeal        = 5,
+  idleAutoHeal        = 0,
   idleTime            = 1800,
   leaveTracks         = true,
   maneuverleashlength = [[640]],
   mass                = 70,
-  maxDamage           = 600,
+  maxDamage           = 135,
   maxSlope            = 36,
-  maxVelocity         = 1.9,
+  maxVelocity         = 2,
   maxWaterDepth       = 22,
   minCloakDistance    = 75,
   movementClass       = [[SMALL]],
@@ -85,7 +85,7 @@ unitDef = {
       craterMult              = 2,
 
       damage                  = {
-        default = 60,
+        default = 20,
       },
 
       explosionGenerator      = [[custom:MARY_SUE]],
@@ -94,8 +94,8 @@ unitDef = {
       interceptedByShieldType = 1,
       minbarrelangle          = [[-35]],
       noSelfDamage            = true,
-      range                   = 350,
-      reloadtime              = 2.5,
+      range                   = 300,
+      reloadtime              = 1.5,
       renderType              = 4,
       soundHit                = [[weapons/xplomed3]],
       soundStart              = [[weapons/cannon1]],

@@ -10,7 +10,7 @@
   explosiongenerator=custom:large_green_goo;
   interceptedbyshieldtype=1;
   range=400;
-  reloadtime=3.6;
+  reloadtime=0.1;
   rendertype=4;
   soundhit=weapons/xplonuk3;
   soundstart=weapons/largegun;
@@ -18,7 +18,7 @@
   weaponvelocity=250;
   [DAMAGE]
   {
-    default=1000;
+    default=150;
     dodo=1;
   }
 }

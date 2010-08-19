@@ -29,7 +29,7 @@ unitDef = {
   idleTime               = 1800,
   levelGround            = false,
   mass                   = 45,
-  maxDamage              = 7850,
+  maxDamage              = 2000,
   maxSlope               = 36,
   maxVelocity            = 0,
   maxWaterDepth          = 0,
@@ -93,7 +93,7 @@ unitDef = {
       craterMult              = 2,
 
       damage                  = {
-        default = 300,
+        default = 30,
       },
 
       duration                = 0.02,

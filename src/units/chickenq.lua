@@ -21,7 +21,8 @@ unitDef = {
   collisionVolumeTest    = 1,
   collisionVolumeType    = [[box]],
 
-  customParams           = {
+  customParams        = {
+    greenballs = [[10]],
   },
 
   defaultmissiontype     = [[standby]],
@@ -34,8 +35,8 @@ unitDef = {
   leaveTracks            = true,
   maneuverleashlength    = [[640]],
   mass                   = 24800,
-  maxDamage              = 20000,
-  maxVelocity            = 1.3,
+  maxDamage              = 10000,
+  maxVelocity            = 1,
   minCloakDistance       = 75,
   movementClass          = [[MEDIUM]],
   noAutoFire             = false,
@@ -120,7 +121,7 @@ unitDef = {
       craterMult              = 0,
 
       damage                  = {
-        default = 500,
+        default = 200,
       },
 
       endsmoke                = [[0]],
@@ -132,8 +133,8 @@ unitDef = {
       lineOfSight             = true,
       noSelfDamage            = true,
       proximityPriority       = -4,
-      range                   = 450,
-      reloadtime              = 6,
+      range                   = 400,
+      reloadtime              = 2,
       renderType              = 4,
       rgbColor                = [[0.2 0.6 0]],
       size                    = 8,
@@ -156,7 +157,7 @@ unitDef = {
       craterMult              = 0,
 
       damage                  = {
-        default = 3000,
+        default = 2000,
       },
 
       endsmoke                = [[0]],
@@ -166,8 +167,8 @@ unitDef = {
       interceptedByShieldType = 1,
       lineOfSight             = true,
       noSelfDamage            = true,
-      range                   = 200,
-      reloadtime              = 0.4,
+      range                   = 100,
+      reloadtime              = 1,
       size                    = 0,
       soundStart              = [[monsters/bigchickenbreath]],
       startsmoke              = [[0]],
@@ -190,8 +191,7 @@ unitDef = {
       craterMult              = 2,
 
       damage                  = {
-        default = 10,
-        planes  = [[150]],
+        default = 50,
       },
 
       dance                   = 60,
@@ -210,8 +210,8 @@ unitDef = {
       metalpershot            = 0,
       model                   = [[chickeneggpink.s3o]],
       noSelfDamage            = true,
-      range                   = 400,
-      reloadtime              = 4,
+      range                   = 500,
+      reloadtime              = 3,
       renderType              = 1,
       selfprop                = true,
       smokedelay              = [[0.1]],

@@ -14,6 +14,7 @@ unitDef = {
   category            = [[LAND]],
 
   customParams        = {
+    greenballs = [[3]],
   },
 
   defaultmissiontype  = [[Standby]],
@@ -26,9 +27,9 @@ unitDef = {
   leaveTracks         = true,
   maneuverleashlength = [[640]],
   mass                = 176,
-  maxDamage           = 2500,
+  maxDamage           = 700,
   maxSlope            = 37,
-  maxVelocity         = 1.2,
+  maxVelocity         = 1,
   maxWaterDepth       = 5000,
   minCloakDistance    = 75,
   movementClass       = [[LARGE]],
@@ -84,7 +85,7 @@ unitDef = {
       craterMult              = 2,
 
       damage                  = {
-        default = 1000,
+        default = 200,
       },
 
       endsmoke                = [[0]],
@@ -95,8 +96,8 @@ unitDef = {
       interceptedByShieldType = 1,
       lineOfSight             = true,
       noSelfDamage            = true,
-      range                   = 160,
-      reloadtime              = 7,
+      range                   = 100,
+      reloadtime              = 1.5,
       size                    = 0,
       soundHit                = [[monsters/chickenbig2]],
       soundStart              = [[monsters/chickenbig2]],

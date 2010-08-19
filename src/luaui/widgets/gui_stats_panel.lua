@@ -51,11 +51,15 @@ local storedSettings = {
 -- in-game stats
 local gamestats = {
 	timeElapsed,
-	enemiesKilledTotal
+	timeToNextWave,
+	numOfCurrentWave,
+	numOfWavesTotal,
+	enemiesKilled,
+	enemiesTotal
 }
 
 -- default size
-local defaultWidth, defaultHeight = 250, 60
+local defaultWidth, defaultHeight = 280, 95
 
 
 
@@ -79,13 +83,15 @@ end
 
 -- This function gets a single paremeter from the spawner (backend)
 function GetParamFromSpawner(name)
-	return spGetGameRulesParam(name) or ""
+	return spGetGameRulesParam(name) or "0"
 end
 
 
 -- This function gets the stats from the backend
 local function GetStatsFromBackend()
-	gamestats.enemiesKilledTotal = GetParamFromSpawner("monstersKilledTotal")
+	gamestats.timeToNextWave   = GetParamFromSpawner("timeToNextWave")
+	gamestats.numOfCurrentWave = GetParamFromSpawner("numOfCurrentWave")
+	gamestats.enemiesKilled    = GetParamFromSpawner("monstersKilledTotal")
 end
 
 
@@ -98,8 +104,16 @@ local function UpdateStats()
 		lbl_time:SetCaption(gamestats.timeElapsed)
 	end
 
+	if lbl_timetonext then
+		lbl_timetonext:SetCaption(gamestats.timeToNextWave)
+	end
+
+	if lbl_currentwave then
+		lbl_currentwave:SetCaption(gamestats.numOfCurrentWave)
+	end
+
 	if lbl_enemieskilled then
-		lbl_enemieskilled:SetCaption(gamestats.enemiesKilledTotal)
+		lbl_enemieskilled:SetCaption(gamestats.enemiesKilled)
 	end
 end
 
@@ -114,11 +128,16 @@ local function CreatePanel()
 	end
 
 	-- position x of the stats in the panel
-	local label_x_offset = 180
+	local label_x_offset = 170
+	local font_size = 15
 
 	-- labels which store dynamic data
-	lbl_time = Label:New          { textColor = color.sub_fg, x=label_x_offset, y=0 }
-	lbl_enemiesleft = Label:New   { textColor = color.sub_fg, x=label_x_offset, y=15 }
+	lbl_time          = Label:New { textColor = color.sub_fg, fontSize=font_size, x=label_x_offset, y=0 }
+	lbl_timetonext    = Label:New { textColor = color.sub_fg, fontSize=font_size, x=label_x_offset, y=15 }
+	lbl_currentwave   = Label:New { textColor = color.sub_fg, fontSize=font_size, x=label_x_offset, y=30 }
+	lbl_wavestotal    = Label:New { caption = GetParamFromSpawner("numberOfWaves"), textColor = color.sub_fg, fontSize=font_size, x=label_x_offset+50, y=30 }
+	lbl_enemieskilled = Label:New { textColor = color.sub_fg, fontSize=font_size, x=label_x_offset, y=45 }
+	lbl_enemiestotal  = Label:New { caption = GetParamFromSpawner("enemiesTotal"), textColor = color.sub_fg, fontSize=font_size, x=label_x_offset+50, y=45 }
 
 	-- the ui
 	windowStats = Window:New {
@@ -130,15 +149,23 @@ local function CreatePanel()
 		minimumSize = {defaultWidth, defaultHeight},
 		dockable = true,
 		draggable = true,
-		resizable = true,
+		resizable = false,
 		parent = Screen0,
 		children = {
 			-- static labels
-			Label:New { caption = 'Time survived:',             textColor = color.sub_fg, y=0  },
-			Label:New { caption = 'Enemies killed total:',      textColor = color.sub_fg, y=15 },
+			Label:New { caption = 'Time survived:',         textColor = color.sub_fg, fontSize=font_size, y=0 },
+			Label:New { caption = 'Time to the next wave:', textColor = color.sub_fg, fontSize=font_size, y=15 },
+			Label:New { caption = 'Current wave:',          textColor = color.sub_fg, fontSize=font_size, y=30 },
+			Label:New { caption = 'of ',                    textColor = color.sub_fg, fontSize=font_size, x=label_x_offset+25, y=30 },
+			Label:New { caption = 'Enemies killed:',        textColor = color.sub_fg, fontSize=font_size, y=45 },
+			Label:New { caption = 'of ',                    textColor = color.sub_fg, fontSize=font_size, x=label_x_offset+25, y=45 },
 			-- dynamic labels
 			lbl_time,
-			lbl_enemieskilled
+			lbl_timetonext,
+			lbl_currentwave,
+			lbl_wavestotal,
+			lbl_enemieskilled,
+			lbl_enemiestotal
 		}
 	}
 end
@@ -166,7 +193,7 @@ function widget:Initialize()
 	-- create the panel and get initial stats
 	CreatePanel()
 	UpdateStats()
-	
+
 	spEcho("Darius in-game stats panel enabled")
 end
 
@@ -206,6 +233,6 @@ function widget:Shutdown()
 		windowStats:Dispose() -- free the resources
 		windowStats = nil
 	end
-	
+
 	spEcho("Darius in-game stats panel disabled")
 end

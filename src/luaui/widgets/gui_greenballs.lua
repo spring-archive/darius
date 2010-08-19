@@ -76,14 +76,14 @@ local function CreateGreenballUI()
 	
 	windowGreenballs = Window:New {  
 		name = "greenballs",
-		x = storedSettings.pos_x or 250,
-		y = storedSettings.pos_y or 0,
+		x = storedSettings.pos_x or 0,
+		y = storedSettings.pos_y or 95,
 		clientWidth = storedSettings.width or defaultWidth,
 		clientHeight = storedSettings.height or defaultHeight,
 		minimumSize = {defaultWidth, defaultHeight},
 		dockable = true,
 		draggable = true,
-		resizable = true,
+		resizable = false,
 		backgroundColor = color.main_bg,
 		tooltip = "Greenballs\n\nThe game's currency. Needed to draw cards. You get more by killing monsters.",		
 		children = {

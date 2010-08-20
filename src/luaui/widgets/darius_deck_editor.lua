@@ -30,24 +30,28 @@ local cardLabelLenght = 2		-- Currently not used
 local minimumCardLabelSpaceCount = 2 -- The amount of spaces between the card name and it's amount on card labels (NOTE: this must be more than the amount of sequential spaces in the card names)
 local maxDeckAmount = 10		-- The maximum amount of decks supported by the editor
 
+local labelFontSize = 10
+
 local activatedDeckIndex1 = 0
 local activatedDeckIndex2 = 0
 local useNext = false
 
 -- UI handles
-local deckEditorStack 		= nil
-local deckEditorWindow 		= nil
-local cardPoolLabelStack 	= nil
-local cardPoolScrollStack	= nil
-local decksLabelStack 		= nil
-local selectedCardButton 	= nil
-local cardPoolLabels 		= {}
-local selectedDeckLabels 	= {}
-local decksLabels 			= {}
-local activeDeckLabel 		= nil
-local activeDeck1Label		= nil
-local activeDeck2Label		= nil
-local activeDeckInfoLabel	= nil
+local deckEditorStack 			= nil
+local deckEditorWindow 			= nil
+local cardPoolLabelStack 		= nil
+local cardPoolScrollStack		= nil
+local selectedDeckScrollStack	= nil
+local selectedDeckLabelStack	= nil
+local decksLabelStack 			= nil
+local selectedCardButton 		= nil
+local cardPoolLabels 			= {}
+local selectedDeckLabels 		= {}
+local decksLabels 				= {}
+local activeDeckLabel 			= nil
+local activeDeck1Label			= nil
+local activeDeck2Label			= nil
+local activeDeckInfoLabel		= nil
 
 -- Data flags
 local poolHasChanged 		= false	-- Tells the update function to redraw card pool related data
@@ -482,14 +486,14 @@ local function UpdateDeckEditorUI()
 		local i = 1 -- Used to index the cardPoolLabels-array
 		local sortedKeys = GetSortedKeys(cardPool) -- Used to make the card list alphabetically sorted
 
-		for i = 1, #sortedKeys do
+		for j = 1, #sortedKeys do
 
-			if cardPool[sortedKeys[i]] > 0 then
-				if activatedPoolcard == sortedKeys[i] then
+			if cardPool[sortedKeys[j]] > 0 then
+				if activatedPoolcard == sortedKeys[j] then
 					-- Add colour for the active card
-					cardPoolLabels[i]:SetCaption(activeColour .. GenerateCardLabelString(sortedKeys[i], cardPool[sortedKeys[i]]))
+					cardPoolLabels[i]:SetCaption(activeColour .. GenerateCardLabelString(sortedKeys[j], cardPool[sortedKeys[j]]))
 				else
-					cardPoolLabels[i]:SetCaption(GenerateCardLabelString(sortedKeys[i], cardPool[sortedKeys[i]]))
+					cardPoolLabels[i]:SetCaption(GenerateCardLabelString(sortedKeys[j], cardPool[sortedKeys[j]]))
 				end
 
 				i = i + 1
@@ -509,19 +513,22 @@ local function UpdateDeckEditorUI()
 		--Check that the deck actually exists
 		if decks[selectedDeckIndex] then
 
-			-- Used for indexing the deck label array
-			i = 1
+			local deck = decks[selectedDeckIndex] -- Less writing this way
 
-			for cardName, amount in pairs(decks[selectedDeckIndex]) do
+			-- Used for indexing the deck label array
+			local i = 1
+			local sortedKeys = GetSortedKeys(deck) -- Used to make the list alphabetically sorted
+
+			for j = 1, #sortedKeys do
 
 				-- Check that the card has not been removed from the deck
-				if amount > 0 then
+				if deck[sortedKeys[j]] > 0 then
 
-					if not deckSelectingview and cardName == activatedDeckCard then
+					if not deckSelectingview and sortedKeys[j] == activatedDeckCard then
 						-- Add color for the active card only in the deck editing view
-						selectedDeckLabels[i]:SetCaption(activeColour .. GenerateCardLabelString(cardName, amount))
+						selectedDeckLabels[i]:SetCaption(activeColour .. GenerateCardLabelString(sortedKeys[j], deck[sortedKeys[j]]))
 					else
-						selectedDeckLabels[i]:SetCaption(GenerateCardLabelString(cardName, amount))
+						selectedDeckLabels[i]:SetCaption(GenerateCardLabelString(sortedKeys[j], deck[sortedKeys[j]]))
 					end
 
 					i = i + 1
@@ -560,7 +567,7 @@ local function ChangeDeckEditorView()
 	-- Remove the old view (yes, it is necessary to remove the children individually)
 	cardLabelStack:RemoveChild(decksLabelStack)
 	cardLabelStack:RemoveChild(startDeckEditingButton)
-	cardLabelStack:RemoveChild(selectedDeckLabelStack)
+	cardLabelStack:RemoveChild(selectedDeckScrollStack)
 	cardLabelStack:RemoveChild(addCardToDeckButton)
 	cardLabelStack:RemoveChild(removeCardFromDeckButton)
 	cardLabelStack:RemoveChild(startDeckSelectionButton)
@@ -579,7 +586,7 @@ local function ChangeDeckEditorView()
 		-- Add the stuff required for the deck selection view
 		cardLabelStack:AddChild(decksLabelStack)
 		cardLabelStack:AddChild(startDeckEditingButton)
-		cardLabelStack:AddChild(selectedDeckLabelStack)
+		cardLabelStack:AddChild(selectedDeckScrollStack)
 		cardLabelStack:AddChild(createNewDeckButton)
 		cardLabelStack:AddChild(deleteDeckButton)
 		cardLabelStack:AddChild(activateSelectedDeckButton)
@@ -597,7 +604,7 @@ local function ChangeDeckEditorView()
 		cardLabelStack:AddChild(addCardToDeckButton)
 		cardLabelStack:AddChild(removeCardFromDeckButton)
 		cardLabelStack:AddChild(startDeckSelectionButton)
-		cardLabelStack:AddChild(selectedDeckLabelStack)
+		cardLabelStack:AddChild(selectedDeckScrollStack)
 
 		sideDataPanel:AddChild(selectedCardButton)
 
@@ -667,8 +674,6 @@ local function MakeDeckEditorUI()
 	local windowHeight = 500
 	local posX = 300
 	local posY = 10
-
-	local labelFontSize = 10
 
 	local label = nil
 
@@ -804,14 +809,28 @@ local function MakeDeckEditorUI()
 
 	selectedDeckLabelStack = StackPanel:New{
 		x = 1,
-		y = '62%',
+		y = 1,
 		width = '100%',
-		height = '50%',
+		height = labelFontSize * maxCardAmount,
 		resizeItems = true,
 		autosize = true,
 		preserveChildrenOrder = true,
 
 		children = selectedDeckLabels
+	}
+
+	selectedDeckScrollStack = ScrollPanel:New{
+		x = 1,
+		y = '62%',
+		width = '100%',
+		height = '50%',
+		resizeItems = true,
+		autosize = true,
+		verticalSmartScroll = true,
+		horizontalScrollbar = false,
+		preserveChildrenOrder = true,
+
+		children = {selectedDeckLabelStack,},
 	}
 
 	selectedCardButton = Darius:GetCardButton(nil, 240, 400)
@@ -821,10 +840,8 @@ local function MakeDeckEditorUI()
 	addCardToDeckButton = Button:New{
 		x = 1,
 		y = '51%',
-
 		width = '30%',
 		height = '5%',
-
 		caption = "Add",
 
 		OnMouseUp = {function()
@@ -838,10 +855,8 @@ local function MakeDeckEditorUI()
 	removeCardFromDeckButton = Button:New{
 		x = '32%',
 		y = '51%',
-
 		width = '30%',
 		height = '5%',
-
 		caption = "remove",
 
 		OnMouseUp = {function()
@@ -852,10 +867,8 @@ local function MakeDeckEditorUI()
 	startDeckSelectionButton = Button:New{
 		x = '62%',
 		y = '51%',
-
 		width = '30%',
 		height = '5%',
-
 		caption = "Done",
 
 		OnMouseUp = {function()
@@ -868,10 +881,8 @@ local function MakeDeckEditorUI()
 	startDeckEditingButton = Button:New{
 		x = 1,
 		y = '51%',
-
 		width = '35%',
 		height = '5%',
-
 		caption = "Edit deck",
 
 		OnMouseUp = {function()
@@ -885,10 +896,8 @@ local function MakeDeckEditorUI()
 	createNewDeckButton = Button:New{
 		x = '38%',
 		y = '51%',
-
 		width = '35%',
 		height = '5%',
-
 		caption = "New deck",
 
 		OnMouseUp = {function()
@@ -905,10 +914,8 @@ local function MakeDeckEditorUI()
 	deleteDeckButton = Button:New{
 		x = 1,
 		y = '57%',
-
 		width = '35%',
 		height = '5%',
-
 		caption = "Delete deck",
 
 		OnMouseUp = {function()
@@ -929,10 +936,8 @@ local function MakeDeckEditorUI()
 	activateSelectedDeckButton = Button:New{
 		x = '38%',
 		y = '57%',
-
 		width = '35%',
 		height = '5%',
-
 		caption = "Activate",
 
 		OnMouseUp = {function()
@@ -1012,7 +1017,6 @@ local function MakeDeckEditorUI()
 		resizeItems = true,
 
 		children = {cardLabelStack, sideDataPanel,},
-
 	}
 
 	deckEditorWindow = Window:New {
@@ -1025,6 +1029,7 @@ local function MakeDeckEditorUI()
 		clientHeight = windowHeight,
 		draggable = true,
 		resizable = true,
+
 		children = {deckEditorStack,}
 	}
 

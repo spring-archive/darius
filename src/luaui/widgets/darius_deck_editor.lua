@@ -15,10 +15,9 @@ local spSendLuaRulesMsg = Spring.SendLuaRulesMsg
 local spEcho = Spring.Echo
 
 -- Data Storage
-local cardPool = {}         -- Card pool is stored as (cardName, amount) -pairs e.g. cardPool["Fire"] = 5 The pool has five fire cards
 local cardPool = {}         -- Card pool is stored as (cardName, amount) -pairs e.g. cardPool["Fire"] = 5 => The pool has five fire cards
 
-local decks = {}            -- Decks are stored as ana array of (cardName, amount) -pairs e.g. decks[2]["Fire"] = 3 => Deck number 2 has 3 fire cards
+local decks = {}            -- Decks are stored as an array of (cardName, amount) -pairs e.g. decks[2]["Fire"] = 3 => Deck number 2 has 3 fire cards
 
 local latestCard = {}       -- Cache for the latest card fetched from the pool
 
@@ -29,8 +28,6 @@ local selectedDeckIndex = 0   	-- Index of the deck that is currently under edit
 local cardLabelLenght = 2		-- Currently not used
 local minimumCardLabelSpaceCount = 2 -- The amount of spaces between the card name and it's amount on card labels (NOTE: this must be more than the amount of sequential spaces in the card names)
 local maxDeckAmount = 10		-- The maximum amount of decks supported by the editor
-
-local labelFontSize = 10
 
 local activatedDeckIndex1 = 0
 local activatedDeckIndex2 = 0
@@ -52,6 +49,11 @@ local activeDeckLabel 			= nil
 local activeDeck1Label			= nil
 local activeDeck2Label			= nil
 local activeDeckInfoLabel		= nil
+
+-- UI element sizes
+local labelFontSize = 10
+local cardButtonX = 240
+local cardButtonY = 400
 
 -- Data flags
 local poolHasChanged 		= false	-- Tells the update function to redraw card pool related data
@@ -409,7 +411,7 @@ end
 
 local function CheckActivatedDecks()
 	-- Check that we have two active decks
-	if activatedDeckIndex1 > 0 and activatedDeckIndex2 > 0 then
+	if activatedDeckIndex1 > 0 and activatedDeckIndex2 > 0  and decks[activatedDeckIndex1] and decks[activatedDeckIndex2]then
 
 		-- Check if the decks are valid and save the result
 		decksAreOK = CheckDecks(activatedDeckIndex1, activatedDeckIndex2)
@@ -471,75 +473,9 @@ local function UpdateDeckEditorUI()
 		else
 			activeDeckInfoLabel:SetCaption(redOfDenial .. "You can't play with these decks")
 		end
-	end
+	else --The deck editing view:
 
-
-	if poolHasChanged then -- Pool data has arrived => finish the UI
-
-		poolHasChanged = false
-
-		-- Remove old text
-		for i = 1, #cardPoolLabels do
-			cardPoolLabels[i].caption = ""
-		end
-
-		local i = 1 -- Used to index the cardPoolLabels-array
-		local sortedKeys = GetSortedKeys(cardPool) -- Used to make the card list alphabetically sorted
-
-		for j = 1, #sortedKeys do
-
-			if cardPool[sortedKeys[j]] > 0 then
-				if activatedPoolcard == sortedKeys[j] then
-					-- Add colour for the active card
-					cardPoolLabels[i]:SetCaption(activeColour .. GenerateCardLabelString(sortedKeys[j], cardPool[sortedKeys[j]]))
-				else
-					cardPoolLabels[i]:SetCaption(GenerateCardLabelString(sortedKeys[j], cardPool[sortedKeys[j]]))
-				end
-
-				i = i + 1
-			end
-		end
-	end
-
-	if decksHaveChanged and selectedDeckIndex then -- Rewrite the deck data
-
-		decksHaveChanged = false
-
-		-- Remove old captions
-		for i = 1, #selectedDeckLabels do
-			selectedDeckLabels[i]:SetCaption("")
-		end
-
-		--Check that the deck actually exists
-		if decks[selectedDeckIndex] then
-
-			local deck = decks[selectedDeckIndex] -- Less writing this way
-
-			-- Used for indexing the deck label array
-			local i = 1
-			local sortedKeys = GetSortedKeys(deck) -- Used to make the list alphabetically sorted
-
-			for j = 1, #sortedKeys do
-
-				-- Check that the card has not been removed from the deck
-				if deck[sortedKeys[j]] > 0 then
-
-					if not deckSelectingview and sortedKeys[j] == activatedDeckCard then
-						-- Add color for the active card only in the deck editing view
-						selectedDeckLabels[i]:SetCaption(activeColour .. GenerateCardLabelString(sortedKeys[j], deck[sortedKeys[j]]))
-					else
-						selectedDeckLabels[i]:SetCaption(GenerateCardLabelString(sortedKeys[j], deck[sortedKeys[j]]))
-					end
-
-					i = i + 1
-				end
-			end
-		end
-	end
-
-	if not deckSelectingview then
-		-- The card button should only be drawn while in the deck editing view
-
+		-- Check that a card has been fetched fron the pool
 		if not table.isempty(latestCard) then
 
 			if selectedCardButton and selectedCardButton.card then
@@ -548,13 +484,98 @@ local function UpdateDeckEditorUI()
 					if selectedCardButton.card.name ~= latestCard.name then
 						-- The name in the button is different from the one in the activated card => a new card has been activated and it needs to be updated
 						selectedCardButton.card = latestCard
-						selectedCardButton:UpdateCard(240, 400)
+						selectedCardButton:UpdateCard(cardButtonX, cardButtonY)
 					else
 						-- The names are the same => the active card has not changed => it's enough to update the old button
-						selectedCardButton:UpdateCard(240, 400)
+						selectedCardButton:UpdateCard(cardButtonX, cardButtonY)
 					end
 			end
 		end
+	end
+
+	if poolHasChanged then -- Pool data has changed => redraw
+
+		poolHasChanged = false
+
+		-- Remove the old labels
+		for i = 1, #cardPoolLabels do
+			cardPoolLabelStack:RemoveChild(cardPoolLabels[i])
+		end
+
+		local sortedKeys = GetSortedKeys(cardPool) -- Used to make the card list alphabetically sorted
+
+		for j = 1, #sortedKeys do
+
+			if cardPool[sortedKeys[j]] > 0 then -- FIXME: will the amount of cards in the pool be changeable? Can it be less than 0?
+
+				-- Add a label for this entry
+				cardPoolLabelStack:AddChild(cardPoolLabels[j])
+
+				if activatedPoolcard == sortedKeys[j] then
+					-- Add colour for the active card
+					cardPoolLabels[j]:SetCaption(activeColour .. GenerateCardLabelString(sortedKeys[j], cardPool[sortedKeys[j]]))
+				else
+					cardPoolLabels[j]:SetCaption(GenerateCardLabelString(sortedKeys[j], cardPool[sortedKeys[j]]))
+				end
+			end
+		end
+
+		-- Update the height of the panel, so that the scroll bars will only be drawn if needed
+		-- The +3 and + 10 only add some extra space to the panel, so that it won't be so crammed
+		cardPoolLabelStack.height = (#sortedKeys + 3) * labelFontSize + 10
+
+		-- Update the panels
+		cardPoolLabelStack:UpdateClientArea()
+		cardPoolScrollStack:UpdateLayout()
+		cardPoolLabelStack:Invalidate()
+		cardPoolScrollStack:Invalidate()
+	end
+
+	if decksHaveChanged then -- Rewrite the deck data
+
+		decksHaveChanged = false
+
+		-- Remove old labels
+		for i = 1, #selectedDeckLabels do
+			selectedDeckLabelStack:RemoveChild(selectedDeckLabels[i])
+		end
+
+		--Check that the deck actually exists
+		if decks[selectedDeckIndex] then
+
+			local deck = decks[selectedDeckIndex] -- Less writing this way
+
+			local sortedKeys = GetSortedKeys(deck) -- Used to make the list alphabetically sorted
+
+			for i = 1, #sortedKeys do
+
+				-- Check that the card has not been removed from the deck (if it would, the amount would be 0 or less)
+				if deck[sortedKeys[i]] > 0 then
+
+					-- Add a label for this entry
+					selectedDeckLabelStack:AddChild(selectedDeckLabels[i])
+
+					if not deckSelectingview and sortedKeys[i] == activatedDeckCard then
+						-- Add color for the active card only in the deck editing view
+						selectedDeckLabels[i]:SetCaption(activeColour .. GenerateCardLabelString(sortedKeys[i], deck[sortedKeys[i]]))
+					else
+						selectedDeckLabels[i]:SetCaption(GenerateCardLabelString(sortedKeys[i], deck[sortedKeys[i]]))
+					end
+				end
+			end
+			-- Resize the panel, so that the scroll bars will only be drawn if needed
+			-- The +5 and +10 only add some extra space to the panel, so that the labels won't be so crammed
+			selectedDeckLabelStack.height = #sortedKeys * (labelFontSize + 5) + 10
+
+		else
+			selectedDeckLabelStack.height = 1 -- This is needed so that the scroll bars will not be drawn on an empty panel
+		end
+
+		-- Update the panels FIXME: are all these necessary?
+		selectedDeckLabelStack:UpdateClientArea()
+		selectedDeckScrollStack:UpdateLayout()
+		selectedDeckLabelStack:Invalidate()
+		selectedDeckScrollStack:Invalidate()
 	end
 
 	if deckEditorWindow then
@@ -614,7 +635,6 @@ local function ChangeDeckEditorView()
 		decksHaveChanged = true
 	end
 
-	cardLabelStack:Invalidate() -- FIXME is this needed?
 	UpdateDeckEditorUI()
 end
 local function RunOnCardPoolLabelClick(label)
@@ -729,7 +749,7 @@ local function MakeDeckEditorUI()
 								end},
 					}
 
-		table.insert(cardPoolLabels, i, label)
+		table.insert(cardPoolLabels, label)
 	end
 
 	-- Generate the card labels for the activated deck
@@ -747,7 +767,7 @@ local function MakeDeckEditorUI()
 								end},
 					}
 
-		table.insert(selectedDeckLabels, i, label)
+		table.insert(selectedDeckLabels, label)
 	end
 
 	-- Generate the deck labels for all the decks
@@ -785,19 +805,19 @@ local function MakeDeckEditorUI()
 		x = 1,
 		y = 1,
 		width = '100%',
-		height = labelFontSize * (maxCardAmount + 10), -- The +10 creates some extra space on the panel so that there is more space for the labels
+		height = 1, --labelFontSize * (maxCardAmount + 4) + 15,
 		resizeItems = true,
 		autosize = true,
 		preserveChildrenOrder = true,
 
-		children = cardPoolLabels
+		children = {}
 	}
 
 	cardPoolScrollStack = ScrollPanel:New{
 		x = 1,
 		y = 1,
 		width = '100%',
-		height = '50%',
+		height = '49%',
 		bottom = '50%',
 		autosize = true,
 		preserveChildrenOrder = true,
@@ -811,19 +831,19 @@ local function MakeDeckEditorUI()
 		x = 1,
 		y = 1,
 		width = '100%',
-		height = labelFontSize * maxCardAmount,
+		height = 1, -- The actual height needed is counted in the UpdateDeckEditorUI() -function
 		resizeItems = true,
 		autosize = true,
 		preserveChildrenOrder = true,
 
-		children = selectedDeckLabels
+		children = {} -- The labels will be added in the UpdateDeckEditorUI() -function
 	}
 
 	selectedDeckScrollStack = ScrollPanel:New{
 		x = 1,
 		y = '62%',
 		width = '100%',
-		height = '50%',
+		height = '37%',
 		resizeItems = true,
 		autosize = true,
 		verticalSmartScroll = true,
@@ -833,7 +853,7 @@ local function MakeDeckEditorUI()
 		children = {selectedDeckLabelStack,},
 	}
 
-	selectedCardButton = Darius:GetCardButton(nil, 240, 400)
+	selectedCardButton = Darius:GetCardButton(nil, cardButtonX, cardButtonY)
 	selectedCardButton.OnMouseUp = {function(self) RunOnCardButtonClick(self) end}
 
 

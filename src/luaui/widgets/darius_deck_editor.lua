@@ -34,21 +34,25 @@ local activatedDeckIndex2 = 0
 local useNext = false
 
 -- UI handles
-local deckEditorStack 			= nil
-local deckEditorWindow 			= nil
-local cardPoolLabelStack 		= nil
-local cardPoolScrollStack		= nil
-local selectedDeckScrollStack	= nil
-local selectedDeckLabelStack	= nil
-local decksLabelStack 			= nil
-local selectedCardButton 		= nil
-local cardPoolLabels 			= {}
-local selectedDeckLabels 		= {}
-local decksLabels 				= {}
-local activeDeckLabel 			= nil
-local activeDeck1Label			= nil
-local activeDeck2Label			= nil
-local activeDeckInfoLabel		= nil
+local deckEditorStack 				= nil
+local deckEditorWindow 				= nil
+local cardPoolLabelStack 			= nil
+local cardPoolScrollStack			= nil
+local selectedDeckScrollStack		= nil
+local selectedDeckLabelStack		= nil
+local decksLabelStack 				= nil
+local selectedCardButton 			= nil
+local cardPoolLabels 				= {}
+local selectedDeckLabels 			= {}
+local decksLabels 					= {}
+local activeDeckLabel 				= nil
+local activeDeck1Label				= nil
+local activeDeck2Label				= nil
+local activeDeckInfoLabel			= nil
+local startDeckSelectionButton		= nil
+local deleteDeckButton				= nil
+local createNewDeckButton			= nil
+local activateSelectedDeckButton	= nil
 
 -- UI element sizes
 local labelFontSize = 10
@@ -415,6 +419,9 @@ local function CheckActivatedDecks()
 
 		-- Check if the decks are valid and save the result
 		decksAreOK = CheckDecks(activatedDeckIndex1, activatedDeckIndex2)
+
+	else -- Something wrong with the variables => decks are definately not ok
+		decksAreOK = false
 	end
 end
 ------------------
@@ -459,15 +466,20 @@ local function UpdateDeckEditorUI()
 		end
 
 		-- Update the labels showing the activated decks
-		-- Only draw if a deck has been activated (activatedDeckIndex will be a positive number in this case)
-		if activatedDeckIndex1 > 0 then
+		-- Check that the deck actually exists (this prevents a bug when the user deletes an active deck)
+		if activatedDeckIndex1 > 0 and decks[activatedDeckIndex1] then
 			activeDeck1Label:SetCaption(activatedDeckIndex1)
+		else
+			activeDeck1Label:SetCaption("")
 		end
 
-		if activatedDeckIndex2 > 0 then
+		if activatedDeckIndex2 > 0 and decks[activatedDeckIndex2] then
 			activeDeck2Label:SetCaption(activatedDeckIndex2)
+		else
+			activeDeck2Label:SetCaption("")
 		end
 
+		-- Update the label showing the validnes of the activated decks
 		if decksAreOK then
 			activeDeckInfoLabel:SetCaption(acceptiveGreen .. "You can play with these decks")
 		else
@@ -688,6 +700,76 @@ local function RunOnRemoveCardFromDeckButtonClick()
 	UpdateDeckEditorUI()
 end
 
+local function RunOnDeletedDeckButtonClick()
+	-- Check that we are removing an existing deck
+	if selectedDeckIndex and decks[selectedDeckIndex] then
+		-- remove the deck
+		table.remove(decks, selectedDeckIndex)
+
+		-- Recheck the active decks if the user deleded an active deck
+		if selectedDeckIndex == activatedDeckIndex1 or selectedDeckIndex == activatedDeckIndex2 then
+			reCheckDecks = true
+		end
+
+		-- remove deck selection
+		selectedDeckIndex = 0
+
+		-- Redraw
+		decksHaveChanged = true
+		UpdateDeckEditorUI()
+	end
+end
+
+local function RunOnActivateSelectedDeckButtonClick()
+	-- Only set the deck as active if it has not been activated before
+	if selectedDeckIndex ~= activatedDeckIndex1 and selectedDeckIndex ~= activatedDeckIndex2 then
+
+		-- Check if the first variable has been used before
+		if activatedDeckIndex1 > 0 then
+
+			--Check if the second variable has been used before
+			if activatedDeckIndex2 > 0 then
+
+				-- Check wich of the variables should be used next
+				if useNext then
+					activatedDeckIndex1 = selectedDeckIndex
+				else
+					activatedDeckIndex2 = selectedDeckIndex
+				end
+
+				useNext = not useNext
+			else
+				-- This is the first time the second variable is used
+				activatedDeckIndex2 = selectedDeckIndex
+			end
+
+			-- Force the update function to check if the decks are valid
+			reCheckDecks = true
+
+		else
+			-- This is the first time the first variable is used
+			activatedDeckIndex1 = selectedDeckIndex
+		end
+
+		-- Something has been changed => redraw
+		UpdateDeckEditorUI()
+	end
+end
+
+local function RunOnCreateNewDeckButtonClick()
+	-- Check that we have enough space for this deck
+	if #decks <= maxDeckAmount then
+
+		-- Create a new deck to the decks table
+		selectedDeckIndex = #decks + 1
+		decks[selectedDeckIndex] = {}
+
+		-- Change the view to the deck editing view
+		deckSelectingview = false
+		ChangeDeckEditorView()
+	end
+end
+
 local function MakeDeckEditorUI()
 
 	local windowWidth = 500
@@ -805,7 +887,7 @@ local function MakeDeckEditorUI()
 		x = 1,
 		y = 1,
 		width = '100%',
-		height = 1, --labelFontSize * (maxCardAmount + 4) + 15,
+		height = 1, -- The actual height is determined by the UpdateDeckEditorUI() -function
 		resizeItems = true,
 		autosize = true,
 		preserveChildrenOrder = true,
@@ -921,13 +1003,7 @@ local function MakeDeckEditorUI()
 		caption = "New deck",
 
 		OnMouseUp = {function()
-						-- Create a new deck to the decks table
-						selectedDeckIndex = #decks + 1
-						decks[selectedDeckIndex] = {}
-
-						-- Change the view to the deck editing view
-						deckSelectingview = false
-						ChangeDeckEditorView()
+						RunOnCreateNewDeckButtonClick()
 					end},
 	}
 
@@ -939,17 +1015,7 @@ local function MakeDeckEditorUI()
 		caption = "Delete deck",
 
 		OnMouseUp = {function()
-						if selectedDeckIndex and decks[selectedDeckIndex] then
-							-- remove the deck
-							table.remove(decks, selectedDeckIndex)
-
-							-- remove deck selection
-							selectedDeckIndex = 0
-
-							-- Redraw
-							decksHaveChanged = true
-							UpdateDeckEditorUI()
-						end
+						RunOnDeletedDeckButtonClick()
 					end},
 	}
 
@@ -961,41 +1027,7 @@ local function MakeDeckEditorUI()
 		caption = "Activate",
 
 		OnMouseUp = {function()
-						-- Only set the deck as active if it has not been activated before
-						if selectedDeckIndex ~= activatedDeckIndex1 and selectedDeckIndex ~= activatedDeckIndex2 then
-
-							-- Check if the first variable has been used before
-							if activatedDeckIndex1 > 0 then
-
-								--Check if the second variable has been used before
-								if activatedDeckIndex2 > 0 then
-
-									-- Check wich of the variables should be used next
-									if useNext then
-										activatedDeckIndex1 = selectedDeckIndex
-									else
-										activatedDeckIndex2 = selectedDeckIndex
-									end
-
-									useNext = not useNext
-
-
-								else
-									-- This is the first time the second variable is used
-									activatedDeckIndex2 = selectedDeckIndex
-								end
-
-								-- Force the update function to check if the decks are valid
-								reCheckDecks = true
-
-							else
-								-- This is the first time the first variable is used
-								activatedDeckIndex1 = selectedDeckIndex
-							end
-
-							-- Something has been changed => redraw
-							UpdateDeckEditorUI()
-						end
+						RunOnActivateSelectedDeckButtonClick()
 					end
 		}
 	}

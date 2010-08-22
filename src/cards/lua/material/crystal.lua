@@ -4,9 +4,9 @@ local card = {
 	template    = "generic",
 	img 		= 'cards/images/material/crystal.png',
 	model       = 'armpb',
-	health 		= 300,
+	health 		= 400,
 	reloadTime 	= 0.6,
-	range 		= 100, 
+	range 		= 200,
 	greenballs 	= -1,
 	desc 		= "Create your own glass cannon with this!",
 }

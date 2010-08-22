@@ -8,8 +8,8 @@ local card = {
     reloadTime  = 0.5,
     range       = 50,
     greenballs  = 0,
-    desc        = "Creates tall stone towers with decent range and good amount of health,\n" ..
-                 "but due to tall design, adds additional weapon reloading time."
+    desc        = "Creates a tall stone tower with decent range and good amount of health,\n" ..
+                 "but due to the tall design weapon reloading time is increased."
 }
 
 return card

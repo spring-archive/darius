@@ -6,9 +6,9 @@ local card = {
 	health 		= 0,
 	reloadTime 	= 0.1,
 	range 		= 400,
-	damage 		= 15,
+	damage 		= 50,
 	greenballs 	= 0,
-	desc 		= "Shoots a laser beam at enemies that does constant damage",
+	desc 		= "Omfg laz0rz pew pew",
 }
 
 return card

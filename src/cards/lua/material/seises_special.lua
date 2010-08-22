@@ -4,12 +4,12 @@ local card = {
 	template    = "generic",
 	img 		= 'LuaUI/images/seises_special.png',
 	model       = 'screamer',
-	health 		= 10000,
+	health 		= 5000,
 	reloadTime 	= 0,
-	range 		= 100,
+	range 		= 200,
 	greenballs 	= -15,
-	desc 		= "Ultimate material. Made by puting a bunch of hard materials and bananas into a \n" ..
-				  "blender, throwing the blender into the sun and scooping up the remains.",
+	desc 		= "Ultimate material. Made by combining bananas and excessive\n" ..
+				  "documentation to a substance and exposing it to a fusion reaction.",
 }
 
 return card

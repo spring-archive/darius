@@ -6,9 +6,9 @@ local card = {
 	model       = 'armllt',
 	health 		= 900,
 	reloadTime 	= 0.3,
-	range 		= 20,
+	range 		= 100,
 	greenballs 	= 0,
-	desc 		= "Creates sturdy structures with no clear weakness or strength",
+	desc 		= "Creates sturdy structures with no clear weaknesses or strengths",
 }
 
 return card

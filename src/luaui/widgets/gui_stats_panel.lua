@@ -87,11 +87,21 @@ function GetParamFromSpawner(name)
 end
 
 
+local function CalculateTimeToNextWave(nextWave)
+	local nw = math.floor(nextWave - Spring.GetGameSeconds())
+	if nw < 0 then
+		return 0
+	end
+	return nw
+end
+
 -- This function gets the stats from the backend
 local function GetStatsFromBackend()
-	gamestats.timeToNextWave   = GetParamFromSpawner("timeToNextWave")
-	gamestats.numOfCurrentWave = GetParamFromSpawner("numOfCurrentWave")
-	gamestats.enemiesKilled    = GetParamFromSpawner("monstersKilledTotal")
+	gamestats.timeToNextWave      = CalculateTimeToNextWave(GetParamFromSpawner("NextWave"))
+	gamestats.numOfCurrentWave    = GetParamFromSpawner("numOfCurrentWave")
+	gamestats.enemiesKilled       = GetParamFromSpawner("monstersKilledTotal")
+	gamestats.enemiesTotal = GetParamFromSpawner("monstersSpawnedTotal")
+	gamestats.wavesTotal = GetParamFromSpawner("numberOfWaves")
 end
 
 
@@ -115,6 +125,14 @@ local function UpdateStats()
 	if lbl_enemieskilled then
 		lbl_enemieskilled:SetCaption(gamestats.enemiesKilled)
 	end
+	
+	if lbl_enemiestotal then
+		lbl_enemiestotal:SetCaption(gamestats.enemiesTotal)
+	end
+	
+	if lbl_wavestotal then
+		lbl_wavestotal:SetCaption(gamestats.wavesTotal)
+	end
 end
 
 
@@ -135,9 +153,9 @@ local function CreatePanel()
 	lbl_time          = Label:New { textColor = color.sub_fg, fontSize=font_size, x=label_x_offset, y=0 }
 	lbl_timetonext    = Label:New { textColor = color.sub_fg, fontSize=font_size, x=label_x_offset, y=15 }
 	lbl_currentwave   = Label:New { textColor = color.sub_fg, fontSize=font_size, x=label_x_offset, y=30 }
-	lbl_wavestotal    = Label:New { caption = GetParamFromSpawner("numberOfWaves"), textColor = color.sub_fg, fontSize=font_size, x=label_x_offset+50, y=30 }
+	lbl_wavestotal    = Label:New { textColor = color.sub_fg, fontSize=font_size, x=label_x_offset+50, y=30 }
 	lbl_enemieskilled = Label:New { textColor = color.sub_fg, fontSize=font_size, x=label_x_offset, y=45 }
-	lbl_enemiestotal  = Label:New { caption = GetParamFromSpawner("enemiesTotal"), textColor = color.sub_fg, fontSize=font_size, x=label_x_offset+50, y=45 }
+	lbl_enemiestotal  = Label:New { textColor = color.sub_fg, fontSize=font_size, x=label_x_offset+50, y=45 }
 
 	-- the ui
 	windowStats = Window:New {

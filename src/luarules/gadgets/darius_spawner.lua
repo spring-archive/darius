@@ -23,6 +23,7 @@ local spGetGameSeconds = Spring.GetGameSeconds
 local spSetGameRulesParam = Spring.SetGameRulesParam
 local spSendCommands = Spring.SendCommands
 local spDestroyUnit = Spring.DestroyUnit
+local spGetGroundHeight = Spring.GetGroundHeight
 
 ----------------
 -- Local Vars --
@@ -30,137 +31,78 @@ local spDestroyUnit = Spring.DestroyUnit
 
 local x_src, y_src, z_src
 local x_dest, y_dest, z_dest
+local waves
 
 monsterTeamNumber = 0
+monstersSpawnedTotal = 0
 monstersKilledTotal = 0
 currentWave = 0
+nextWave = 0
+spawning = true
 
 ----------------------
 -- Synced Functions --
 ----------------------
 if (gadgetHandler:IsSyncedCode()) then
 
--- Presently used by the map scripts
-function CreateWave(monsters)
-	local wave = {class = "wave"}
-
-	if not (type(monsters) == "table" and #monsters > 0) then
-		spEcho("Spawner: Wave does not have any monsters")
-		return nil
-	end
-
-	local a = #monsters
-
-	for i = 1, a do
-		m = monsters[i]
-
-		if not (#m == 3 and type(m[1]) == "string" and type(m[2]) == "number" and type(m[3] == "number")) then
-			spEcho("Spawner: Wave definition is not valid")
-			return nil
-		end
-
-		wave[i] = {m[1], m[2], m[3]}
-	end
-
-	return wave
-end
-
 local function LoadMapData()
-	--TODO:Get real map file name
-	local mapfile = "maps/" .. "dunes" .. ".lua"
+	local mapname = string.gsub(Game.mapName,"\.smf$","") -- remove the .smf from the mapName string
+	local mapfile = "maps/" .. mapname .. ".lua"
 
 	--Load map file
 	if not (VFS.FileExists(mapfile)) then return false end
 	mapData = VFS.Include(mapfile)
 	if not (type(mapData) == "table") then return false end
-	if not (type(mapData.waves) == "table") then return false end
+	if not (type(mapData.easy) == "table") then return false end
 	if not (type(mapData.castleposition) == "table") then return false end
 	if not (#mapData.castleposition == 2) then return false end
 	if not (type(mapData.spawningpoints) == "table") then return false end
 	if (#mapData.spawningpoints == 0) then return false end
-
-	waves = mapData.waves.normal --TODO: Get correct wave per difficulty (easy, normal, hard)
+	
+	waves = mapData.easy --TODO: Get correct wave per difficulty (easy, normal, hard)
 
 	castleposition = mapData.castleposition --{x, y}
 	spawningpoints = mapData.spawningpoints --{{x,y},...}
+	return true
 end
 
 local function InitWaves()
-	waves = {}
-	waves[0] = CreateWave({
-			{"chicken", 2, 3},
-		})
-
-	waves[1] = CreateWave({
-			{"corthud", 2, 3},
-		})
-
-	waves[2] = CreateWave({
-			{"armpw", 2, 3},
-		})
-
-	waves[3] = CreateWave({
-			{"arm_venom", 2, 3},
-		})
-
-	waves[4] = CreateWave({
-			{"corstorm", 2, 3},
-		})
-
-	waves[5] = CreateWave({
-			{"corpyro", 2, 3},
-		})
-
-	waves[6] = CreateWave({
-			{"armsptk", 2, 3},
-		})
-
-	waves[7] = CreateWave({
-			{"chickena", 2, 3},
-		})
-
-	waves[8] = CreateWave({
-			{"chicken_dodo", 2, 3},
-		})
-
-	waves[9] = CreateWave({
-			{"chicken_sporeshooter", 2, 3},
-		})
-
-	waves[10] = CreateWave({
-			{"cormortgold", 2, 3},
-		})
-
-	waves[11] = CreateWave({
-			{"armwar", 2, 3},
-		})
-
-	waves[12] = CreateWave({
-			{"chickenc", 2, 3},
-		})
-
-	waves[13] = CreateWave({
-			{"armorco", 2, 3},
-		})
-
-	waves[14] = CreateWave({
-			{"chickenq", 2, 3},
-		})
+	LoadMapData()
+	spSetGameRulesParam("numberOfWaves", #waves)
 end
 
-
 local function SpawnMonsters()
-	local monsters = waves[currentWave]
-	if monsters ~= nil then
+	-- Time for next wave
+	if nextWave < Spring.GetGameSeconds() then
+		currentWave = currentWave + 1
+		local monsters = waves[currentWave]
+		if monsters == nil then
+			spawning = false
+			return
+		end	
 		for i, monster in ipairs(monsters) do
-			if monster[3] > 0 then
-				local unit = spCreateUnit(monster[1], x_src + i * 20, y_src, z_src, "south", monsterTeamNumber, false)
-				spGiveOrderToUnit(unit, CMD.MOVE, {x_dest, y_dest, z_dest}, {})
-				Spring.PlaySoundFile("sounds/ui/monster_spawn.wav")
-				monster[3] = monster[3] - 1
-			else
-					currentWave = currentWave + 1
-			end
+			monster["nextSpawn"] = 0
+		end
+		nextWave = Spring.GetGameSeconds() + waves[currentWave].duration
+		spSetGameRulesParam("NextWave", nextWave);
+		spSetGameRulesParam("numOfCurrentWave", currentWave)
+		Spring.PlaySoundFile("sounds/ui/chip.wav")
+	end
+	if currentWave == 0 then
+		return
+	end
+	local monsters = waves[currentWave]
+	for i, monster in ipairs(monsters) do
+		if monster["amount"] > 0 and monster["nextSpawn"] < Spring.GetGameSeconds() then
+			local src = spawningpoints[monster["location"]]
+			local unit = spCreateUnit(monster["monster"], src[1],src[2],spGetGroundHeight(src[1],src[2]), "south", monsterTeamNumber, false)
+			spGiveOrderToUnit(unit, CMD.MOVE, {x_dest, y_dest, z_dest}, {})
+			--Spring.PlaySoundFile("sounds/ui/monster_spawn.wav")
+			monster["amount"] = monster["amount"] - 1
+			spEcho("Spawning:" .. monster["monster"] .. " amount left: " .. monster["amount"])
+			monstersSpawnedTotal = monstersSpawnedTotal + 1
+			spSetGameRulesParam("monstersSpawnedTotal", monstersSpawnedTotal)
+			monster["nextSpawn"] = Spring.GetGameSeconds() + monster["interval"]
 		end
 	end
 end
@@ -175,10 +117,11 @@ function GameVictory()
 	end
 end
 
-
 function GadgetUpdate(f)
 	if gameFinished == false then
-		SpawnMonsters()
+		if spawning then
+			SpawnMonsters()
+		end
 	else
 		GameVictory()
 	end
@@ -204,7 +147,7 @@ end
 
 function gadget:Initialize()
 	InitWaves()
-
+	
 	spSetGameRulesParam("gameWon", 0)
 	spSetGameRulesParam("monstersKilledTotal", 0)
 	
@@ -212,32 +155,28 @@ function gadget:Initialize()
 	SetLocations()
 end
 
-
-
 function gadget:GameFrame(f)
-	if (f%30 < 1) then
+	if (f%10 < 1) then
 		GadgetUpdate(f);
 	end
 end
-
-
 
 function gadget:GameStart()
 	spSendCommands("cheat")
 	spSendCommands("globallos")
 	spEcho("Darius spawner: Enabled cheats to get rid of the Fog of War")
-
-	SetLocations();
+	SetLocations()
+	LoadMapData()
 end
-
-
 
 function gadget:UnitDestroyed(unitID, unitDefID, teamID, _)
 	if teamID == monsterTeamNumber then
 		UpdateStats()
+		if not spawning and monstersKilledTotal == monstersSpawnedTotal then
+			GameVictory()
+		end
 	end
 end
-
 
 
 end -- end synced

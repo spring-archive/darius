@@ -2,7 +2,7 @@ function widget:GetInfo()
 	return {
 		name = "Greenballs display",
 		desc = "Shows how many greenballs you have",
-		author = "Jammer / malloc",
+		author = "Jammer / malloc / xcompwiz",
 		date = "August 2010",
 		license = "GNU GPL, v2 or later",
 		layer = 0,
@@ -58,7 +58,40 @@ local defaultWidth, defaultHeight = 120, 50
 ---------------------
 
 local function UpdateGreenballUI() 
-	lbl_amount:SetCaption(Darius:GetGreenballs())
+
+	vsx, vsy, _, _ = Spring.GetViewGeometry()
+	if (windowGreenballs.x < 0) then
+		windowGreenballs.x = 0
+	end
+	if (windowGreenballs.y < 0) then
+		windowGreenballs.y = 0
+	end
+	if (windowGreenballs.x > vsx - windowGreenballs.width) then
+		windowGreenballs.x = vsx - windowGreenballs.width
+	end
+	if (windowGreenballs.y > vsy - windowGreenballs.height) then
+		windowGreenballs.y = vsy - windowGreenballs.height
+	end
+
+	if (img_greenball) then
+		img_greenball.x = 0
+		img_greenball.y = 0
+		img_greenball.width = math.min(windowGreenballs.height-25,(windowGreenballs.width-25)/2)
+		img_greenball.height = img_greenball.width
+		img_greenball:Invalidate()
+	end
+	if (lbl_amount) then
+		lbl_amount.x = img_greenball.x + img_greenball.width + 1
+		lbl_amount:SetCaption(Darius:GetGreenballs())
+		while (lbl_amount.font:GetTextWidth(lbl_amount.caption) < img_greenball.width) do
+			lbl_amount.font.size = lbl_amount.font.size + 1
+		end
+		while (lbl_amount.font:GetTextWidth(lbl_amount.caption) > img_greenball.width) do
+			lbl_amount.font.size = lbl_amount.font.size - 1
+		end
+		lbl_amount.y = lbl_amount.font.size/6
+		lbl_amount:Invalidate()
+	end
 end
 
 
@@ -80,12 +113,12 @@ local function CreateGreenballUI()
 		y = storedSettings.pos_y or 95,
 		clientWidth = storedSettings.width or defaultWidth,
 		clientHeight = storedSettings.height or defaultHeight,
-		minimumSize = {defaultWidth, defaultHeight},
-		dockable = true,
+		minimumSize = {20, 20},
+		dockable = false,
 		draggable = true,
-		resizable = false,
+		resizable = true,
 		backgroundColor = color.main_bg,
-		tooltip = "Greenballs\n\nThe game's currency. Needed to draw cards. You get more by killing monsters.",		
+		tooltip = "Greenballs\n\nThe game's currency. Needed to draw and play cards. You get more by killing monsters.",		
 		children = {
 			img_greenball,
 			lbl_amount

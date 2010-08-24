@@ -5,7 +5,7 @@
 --   Overwrites all the files in the generatedtowers directory
 
 -- where all generated towers are put into
-local outputDirectory = "generatedtowers\\"
+local outputDirectory = "..\\units\\"
 
 -- set to true to enable more debug output
 local verbose = false

@@ -113,12 +113,12 @@ local function MakeHandMenu()
 		caption="Hand",
 		x = hand_pos_x,
 		y = hand_pos_y,
-		dockable = false,
 		name = "hand_window",
 		width = hand_width,
 		height = hand_height,
 		minWidth  = 400,
 		minHeight = 100,
+		dockable = false,
 		draggable = true,
 		resizable = true,
 		children = {

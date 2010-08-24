@@ -20,8 +20,6 @@ local spEcho              = Spring.Echo
 local spGetSeconds        = Spring.GetGameSeconds
 local spGetGameRulesParam = Spring.GetGameRulesParam
 
-
-
 -------------------
 -- ChiliUI stuff --
 -------------------
@@ -41,27 +39,29 @@ local color    = confdata.color
 local windowStats
 
 -- settings of the status panel
-local storedSettings = {
+local settings = {
 	pos_x,
 	pos_y,
 	width,
-	height
+	height,
+}
+
+local defaults = {
+	pos_x = -1,
+	pos_y = 0,
+	width = 280,
+	height = 95,
 }
 
 -- in-game stats
 local gamestats = {
 	timeElapsed,
 	timeToNextWave,
-	numOfCurrentWave,
-	numOfWavesTotal,
+	currentWave,
+	wavesTotal,
 	enemiesKilled,
-	enemiesTotal
+	enemiesTotal,
 }
-
--- default size
-local defaultWidth, defaultHeight = 280, 95
-
-
 
 ---------------------
 -- Local functions --
@@ -99,11 +99,11 @@ end
 
 -- This function gets the stats from the backend
 local function GetStatsFromBackend()
-	gamestats.timeToNextWave   = CalculateTimeToNextWave(GetParamFromSpawner("NextWave"))
-	gamestats.numOfCurrentWave = GetParamFromSpawner("numOfCurrentWave")
-	gamestats.enemiesKilled    = GetParamFromSpawner("monstersKilledTotal")
-	gamestats.enemiesTotal     = GetParamFromSpawner("monstersSpawnedTotal")
-	gamestats.wavesTotal       = GetParamFromSpawner("numberOfWaves")
+	gamestats.timeToNextWave = CalculateTimeToNextWave(GetParamFromSpawner("NextWave"))
+	gamestats.currentWave    = GetParamFromSpawner("numOfCurrentWave")
+	gamestats.wavesTotal     = GetParamFromSpawner("numberOfWaves")
+	gamestats.enemiesKilled  = GetParamFromSpawner("monstersKilledTotal")
+	gamestats.enemiesTotal   = GetParamFromSpawner("monstersSpawnedTotal")
 end
 
 
@@ -115,8 +115,8 @@ local function UpdateStats()
 	GetStatsFromBackend()
 
 	vsx, vsy, _, _ = Spring.GetViewGeometry()
-	local maxWidth = defaultWidth
-	local maxHeight = defaultHeight
+	local maxWidth = defaults.width
+	local maxHeight = defaults.height
 	if (windowStats.width > maxWidth) then
 		windowStats.width = maxWidth
 	end
@@ -139,21 +139,20 @@ local function UpdateStats()
 	local font_size = 15
 	local width = windowStats.width - 30
 
-	local last_y = 0
-	local last_size = 0
+	local next_y = 0
 	local left_offset = 0
 	for _, lbl in pairs(windowStats.labels) do
-		lbl.y = last_y + last_size
-		last_y = lbl.y
+		lbl.y = next_y
 		lbl.font.size = font_size
 		while (lbl.font:GetTextWidth(lbl.caption) > width*3/4 and lbl.font.size ~= 0) do
 			lbl.font.size = lbl.font.size - 1
 		end
-		last_size = lbl.font.size
 		if (lbl.font:GetTextWidth(lbl.caption) > left_offset) then
 			left_offset = lbl.font:GetTextWidth(lbl.caption)
 		end
 		lbl:Invalidate()
+
+		next_y = lbl.y + lbl.font.size
 	end
 	left_offset = left_offset + 5
 
@@ -180,7 +179,7 @@ local function UpdateStats()
 	end
 
 	if lbl_currentwave then
-		lbl_currentwave:SetCaption(gamestats.numOfCurrentWave)
+		lbl_currentwave:SetCaption(gamestats.currentWave)
 		lbl_currentwave.x = left_offset
 		lbl_currentwave.y = lbl_timetonext.y + lbl_timetonext.font.size
 		lbl_currentwave.font.size = font_size
@@ -191,7 +190,7 @@ local function UpdateStats()
 	end
 
 	if lbl_wavestotal then
-		lbl_wavestotal:SetCaption("/" .. gamestats.wavesTotal)
+		lbl_wavestotal:SetCaption(" of " .. gamestats.wavesTotal)
 		lbl_wavestotal.x = lbl_currentwave.x + lbl_currentwave.font:GetTextWidth(lbl_currentwave.caption)
 		lbl_wavestotal.y = lbl_currentwave.y
 		lbl_wavestotal.font.size = font_size
@@ -212,7 +211,7 @@ local function UpdateStats()
 	end
 	
 	if lbl_enemiestotal then
-		lbl_enemiestotal:SetCaption("/" .. gamestats.enemiesTotal)
+		lbl_enemiestotal:SetCaption(" of " .. gamestats.enemiesTotal)
 		lbl_enemiestotal.x = lbl_enemieskilled.x + lbl_enemieskilled.font:GetTextWidth(lbl_enemieskilled.caption)
 		lbl_enemiestotal.y = lbl_enemieskilled.y
 		lbl_enemiestotal.font.size = font_size
@@ -222,9 +221,7 @@ local function UpdateStats()
 		lbl_enemiestotal:Invalidate()
 	end
 
-	if (windowStats.height < lbl_enemiestotal.y + lbl_enemiestotal.font.size) then
-		windowStats.height = lbl_enemiestotal.y + lbl_enemiestotal.font.size
-	end
+	windowStats:Invalidate()
 end
 
 
@@ -238,7 +235,7 @@ local function CreatePanel()
 	end
 
 	-- position x of the stats in the panel
-	local label_x_offset = 170
+	local label_x_offset = (settings.width or defaults.width) * 0.6
 	local font_size = 15
 
 	-- labels which store dynamic data
@@ -252,10 +249,10 @@ local function CreatePanel()
 	-- the ui
 	windowStats = Window:New {
 		name = 'stats_panel',
-		x = storedSettings.pos_x or 10,
-		y = storedSettings.pos_y or 10,
-		clientWidth = storedSettings.width or defaultWidth,
-		clientHeight = storedSettings.height or defaultHeight,
+		x = settings.pos_x or defaults.pos_x,
+		y = settings.pos_y or defaults.pos_y,
+		clientWidth = settings.width or defaults.width,
+		clientHeight = settings.height or defaults.height,
 		minimumSize = {50, 20},
 		dockable = false,
 		draggable = true,
@@ -308,7 +305,7 @@ function widget:Initialize()
 	CreatePanel()
 	UpdateStats()
 
-	spEcho("Darius in-game stats panel enabled")
+	WG.Darius:RegisterWidget(widget)
 end
 
 
@@ -322,31 +319,54 @@ end
 function widget:GetConfigData()
 	-- only get the stored settings if the window has been initialized
 	if (windowStats) then
-		storedSettings.pos_x = windowStats.x
-		storedSettings.pos_y = windowStats.y
-		storedSettings.width = windowStats.width
-		storedSettings.height = windowStats.height
+		settings.pos_x = windowStats.x
+		settings.pos_y = windowStats.y
+		settings.width = windowStats.width
+		settings.height = windowStats.height
 	end
 
-	return storedSettings
+	return settings
 end
 
 
 -- stores the ui settings
 function widget:SetConfigData(data)
 	if (data and type(data) == 'table') then
-		storedSettings = data -- store the settings
+		settings = data -- store the settings
 	end
 end
 
 
 function widget:Shutdown()
+	WG.Darius:RemoveWidget(widget)
 	-- delete the window
 	if (windowStats) then
 		Screen0:RemoveChild(windowStats) -- remove window
 		windowStats:Dispose() -- free the resources
 		windowStats = nil
 	end
+end
 
-	spEcho("Darius in-game stats panel disabled")
+-----------------------------
+-- Darius Message Handling --
+-----------------------------
+
+local function WrapScreen(point, vsa)
+	if (point >= 0) then return point end
+	return vsa + point
+end
+
+function widget:RcvMessage(message)
+	if (message == "reset") then
+		if (windowStats) then
+			windowStats.x = WrapScreen(defaults.pos_x, vsx)
+			windowStats.y = WrapScreen(defaults.pos_y, vsy)
+			windowStats.width = WrapScreen(defaults.width, vsx)
+			windowStats.height = WrapScreen(defaults.height, vsy)
+		end
+	elseif (message == "show") then
+		if (windowStats) then Screen0:AddChild(windowStats) end
+	elseif (message == "hide") then
+		if (windowStats) then Screen0:RemoveChild(windowStats) end
+	end
 end

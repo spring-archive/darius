@@ -41,24 +41,26 @@ local color    = confdata.color
 local windowGreenballs
 
 -- settings of the status panel
-local storedSettings = {
+local settings = {
 	pos_x,
 	pos_y,
 	width,
-	height
+	height,
 }
 
--- default size
-local defaultWidth, defaultHeight = 120, 50
-
-
+local defaults = {
+	pos_x = -400,
+	pos_y = 0,
+	width = 120,
+	height = 50,
+}
 
 ---------------------
 -- Local functions --
 ---------------------
 
 local function UpdateGreenballUI() 
-
+	if not (windowGreenballs) then return end
 	vsx, vsy, _, _ = Spring.GetViewGeometry()
 	if (windowGreenballs.x < 0) then
 		windowGreenballs.x = 0
@@ -96,6 +98,7 @@ local function UpdateGreenballUI()
 		end
 		lbl_amount:Invalidate()
 	end
+	windowGreenballs:Invalidate()
 end
 
 
@@ -113,17 +116,18 @@ local function CreateGreenballUI()
 
 	windowGreenballs = Window:New {
 		name = "greenballs",
-		x = storedSettings.pos_x or 0,
-		y = storedSettings.pos_y or 95,
-		width = storedSettings.width or defaultWidth,
-		height = storedSettings.height or defaultHeight,
+		x = settings.pos_x or defaults.pos_x,
+		y = settings.pos_y or defaults.pos_y,
+		width = settings.width or defaults.width,
+		height = settings.height or defaults.height,
 		minimumSize = {20, 20},
 		dockable = false,
 		draggable = true,
 		resizable = true,
 		--fixedRatio = true, --Does strange behavior
 		backgroundColor = color.main_bg,
-		tooltip = "Greenballs\n\nThe game's currency. Needed to draw and play cards. You get more by killing monsters.",		
+		tooltip = "Greenballs\n\nThe game's currency. Needed to draw and play cards. You get more by killing monsters.",
+
 		children = {
 			img_greenball,
 			lbl_amount
@@ -161,6 +165,7 @@ function widget:Initialize()
 	UpdateGreenballUI()
 	
 	spEcho("Darius greenballs widget enabled")
+	Darius:RegisterWidget(widget)
 end
 
 
@@ -173,25 +178,26 @@ end
 function widget:GetConfigData()
 	-- only get the stored settings if the window has been initialized
 	if (windowGreenballs) then
-		storedSettings.pos_x = windowGreenballs.x
-		storedSettings.pos_y = windowGreenballs.y
-		storedSettings.width = windowGreenballs.width
-		storedSettings.height = windowGreenballs.height
+		settings.pos_x = windowGreenballs.x
+		settings.pos_y = windowGreenballs.y
+		settings.width = windowGreenballs.width
+		settings.height = windowGreenballs.height
 	end
 
-	return storedSettings
+	return settings
 end
 
 
 -- stores the ui settings
 function widget:SetConfigData(data)
 	if (data and type(data) == 'table') then
-		storedSettings = data
+		settings = data
 	end
 end
 
 
 function widget:Shutdown()
+	Darius:RemoveWidget(widget)
 	-- delete the window
 	if (windowGreenballs) then
 		Screen0:RemoveChild(windowGreenballs) -- remove window
@@ -200,4 +206,28 @@ function widget:Shutdown()
 	end
 	
 	spEcho("Darius greenballs widget disabled")
+end
+
+-----------------------------
+-- Darius Message Handling --
+-----------------------------
+
+local function WrapScreen(point, vsa)
+	if (point >= 0) then return point end
+	return vsa + point
+end
+
+function widget:RcvMessage(message)
+	if (message == "reset") then
+		if (windowGreenballs) then
+			windowGreenballs.x = WrapScreen(defaults.pos_x, vsx)
+			windowGreenballs.y = WrapScreen(defaults.pos_y, vsy)
+			windowGreenballs.width = WrapScreen(defaults.width, vsx)
+			windowGreenballs.height = WrapScreen(defaults.height, vsy)
+		end
+	elseif (message == "show") then
+		if (windowGreenballs) then Screen0:AddChild(windowGreenballs) end
+	elseif (message == "hide") then
+		if (windowGreenballs) then Screen0:RemoveChild(windowGreenballs) end
+	end
 end

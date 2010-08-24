@@ -147,7 +147,8 @@ local function DeckEditor(ReturnTo)
 	AddFrame("Back",{x=vsx*0.5,y=vsy*0.1},vsy/24,{0,0,1,0.5},"cc","c",ReturnTo)
 end
 
-local function ReadMe()
+local function ResetUI()
+	WG.Darius:SendUIMessage("reset")
 end
 
 local function MainMenu()
@@ -155,7 +156,7 @@ local function MainMenu()
 	disableWidgets() --disabled so that the player can't accidently draw cards or move the windows while in menu 	
 	AddFrame("Back",{x=vsx*0.1,y=vsy*0.9},vsy/24,{0,1,0,0.5},"cc","c", SwitchOff)
 	AddFrame("Darius Tower Defence",{x=vsx*0.5,y=vsy*0.98},vsy/14,{0,1,1,0.5},"ct","c")
-	AddFrame("Readme",{x=vsx*0.9,y=vsy*0.9},vsy/24,{0,1,0,0.5},"cc","c", ReadMe)
+	AddFrame("ResetUI",{x=vsx*0.9,y=vsy*0.9},vsy/24,{0,1,0,0.5},"cc","c", ResetUI)
 	AddFrame("Deck editor",{x=vsx*0.5,y=vsy*0.7},vsy/18,{0,1,0,0.5},"cc","c", DeckEditor, MainMenu)
 	AddFrame("Map:"..selectedMap.ClearName,{x=vsx*0.5,y=vsy*0.5},vsy/15,{0.1,1,0,0.5},"cc","c",ListMap, MainMenu) --opens maplist and returns back to main menu
 	AddFrame("Run!",{x=vsx*0.5,y=vsy*0.1},vsy/18,{0,0,1,0.5},"cc","c", StartNewGame, selectedMap.InternalFileName) --starts a new game with the selected map
@@ -364,27 +365,17 @@ function SwitchOff()
 		--spSendCmds("endgraph 1")
 		--spSendCmds("hideinterface 0")
 		--spSendCmds("pause") --unpauses the game when the menu is turned off
-		
 	end
 end
 
 
 function enableWidgets()
-	widgetHandler:EnableWidget("Deck GUI")
-	widgetHandler:EnableWidget("Card Hand GUI")
-	widgetHandler:EnableWidget("Darius stats panel")
-	widgetHandler:EnableWidget("Greenballs display")
-	widgetHandler:EnableWidget("Darius Minimap")
+	WG.Darius:SendUIMessage("show")
 end
 
 --have to disable widgets so that the player can't accidently draw cards or move the windows while in menu 	
 function disableWidgets()
-	widgetHandler:DisableWidget("Deck GUI")
-	widgetHandler:DisableWidget("Card Hand GUI")
-	widgetHandler:DisableWidget("Darius stats panel")
-	widgetHandler:DisableWidget("Greenballs display")
-	widgetHandler:DisableWidget("The deck editor")
-	widgetHandler:DisableWidget("Darius Minimap")
+	WG.Darius:SendUIMessage("hide")
 end
 
 --------------

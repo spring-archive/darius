@@ -17,8 +17,6 @@ end
 
 local spEcho = Spring.Echo
 
-
-
 ----------------
 -- Local Vars --
 ----------------
@@ -26,10 +24,21 @@ local spEcho = Spring.Echo
 -- the minimap UI element
 local windowMinimap
 
--- default size
-local defaultWidth, defaultHeight = 200, 200
+local settings = {
+	pos_x,
+	pos_y,
+	width,
+	height,
+}
 
+local defaults = {
+	pos_x = 0,
+	pos_y = 0,
+	width = 200,
+	height = 200,
+}
 
+local displayMiniMap = true
 
 ---------------------
 -- Local functions --
@@ -44,7 +53,23 @@ local function AdjustMapToFrame(width, height)
 	return height*Game.mapX/Game.mapY, height
 end
 
+local function AdjustWindow()
+	if not (windowMinimap) then return end
 
+	vsx, vsy, _, _ = Spring.GetViewGeometry()
+	if (windowMinimap.x < 0) then
+		windowMinimap.x = 0
+	end
+	if (windowMinimap.y < 0) then
+		windowMinimap.y = 0
+	end
+	if (windowMinimap.x > vsx - windowMinimap.width) then
+		windowMinimap.x = vsx - windowMinimap.width
+	end
+	if (windowMinimap.y > vsy - windowMinimap.height) then
+		windowMinimap.y = vsy - windowMinimap.height
+	end
+end
 
 --------------
 -- Call-ins --
@@ -69,57 +94,99 @@ function widget:Initialize()
 	Window = Chili.Window
 	Screen0 = Chili.Screen0
 
-	-- adjust map to fit into the frame
-	defaultWidth, defaultHeight = AdjustMapToFrame(defaultWidth, defaultHeight)
-
-	-- default position is in the lower-left corner
-	local _, defaultPosY = gl.GetViewSizes()
-	defaultPosY = defaultPosY - defaultHeight
-
 	-- create a window for minimap
 	windowMinimap = Window:New {
 		name = "minimap",
-		x = 0,
-		y = defaultPosY,
-		width  = defaultWidth,
-		height = defaultHeight,
+		x = settings.pos_x or defaults.pos_x,
+		y = settings.pos_y or defaults.pos_y,
+		width  = settings.width or defaults.width,
+		height = settings.height or defaults.height,
 		parent = Screen0,
 		draggable = true,
 		dragUseGrip = true,
 		resizable = true,
-		dockable = true,
+		dockable = false,
 		fixedRatio = true,
-		minimumSize = {defaultWidth, defaultHeight}
+		minWidth = 100,
+		minHeight = 100,
 	}
+
+	-- adjust map to fit into the frame
+	windowMinimap.width, windowMinimap.height = AdjustMapToFrame(windowMinimap.width, windowMinimap.height)
 
 	-- hide the original minimap
 	gl.SlaveMiniMap(true)
 
-	spEcho("Darius minimap enabled")
+	WG.Darius:RegisterWidget(widget)
 end
 
+function widget:Update(...)
+	AdjustWindow()
+end
+
+-- saves the ui settings
+function widget:GetConfigData()
+	-- only get the stored settings if the window has been initialized
+	if (windowMinimap) then
+		settings.pos_x = windowMinimap.x
+		settings.pos_y = windowMinimap.y
+		settings.width = windowMinimap.width
+		settings.height = windowMinimap.height
+	end
+
+	return settings
+end
+
+-- loads the ui settings
+function widget:SetConfigData(data)
+	if (data and type(data) == 'table') then
+		settings = data -- store the settings
+	end
+end
 
 function widget:Shutdown()
+	WG.Darius:RemoveWidget(widget)
 	-- delete the window
 	if (windowMinimap) then
 		Screen0:RemoveChild(windowMinimap)
 		windowMinimap:Dispose()
 		WindowMinimap = nil
 	end
-
-	spEcho("Darius minimap disabled")
 end
 
 
 function widget:DrawScreen()
-	-- calculate minimap size
-	local _, _, mapElemWidth, mapElemHeight = Chili.unpack4(windowMinimap.clientArea)
-	local _, viewSizeY = gl.GetViewSizes()
+	if (displayMiniMap) then
+		-- calculate minimap size
+		local _, _, mapElemWidth, mapElemHeight = Chili.unpack4(windowMinimap.clientArea)
+		local _, viewSizeY = gl.GetViewSizes()
 
-	-- set minimap graphics position inside the ui element
-	local mapElemXPos, mapElemYPos = windowMinimap:LocalToScreen(15, 9) -- margins hardcoded
-	gl.ConfigMiniMap(mapElemXPos, viewSizeY - mapElemHeight - mapElemYPos, mapElemWidth - 5, mapElemHeight)
+		-- set minimap graphics position inside the ui element
+		local mapElemXPos, mapElemYPos = windowMinimap:LocalToScreen(15, 9) -- margins hardcoded
+		gl.ConfigMiniMap(mapElemXPos, viewSizeY - mapElemHeight - mapElemYPos, mapElemWidth - 5, mapElemHeight)
 
-	-- the actual drawing related stuff
-	gl.DrawMiniMap()
+		-- the actual drawing related stuff
+		gl.DrawMiniMap()
+	end
+end
+
+-----------------------------
+-- Darius Message Handling --
+-----------------------------
+
+function widget:RcvMessage(message)
+	if (message == "reset") then
+		if (windowMinimap) then
+			windowMinimap.x = defaults.pos_x
+			windowMinimap.y = defaults.pos_y
+			windowMinimap.width = defaults.width
+			windowMinimap.height = defaults.height
+		end
+	elseif (message == "show") then
+		if (windowMinimap) then Screen0:AddChild(windowMinimap) end
+		displayMiniMap = true
+	elseif (message == "hide") then
+		if (windowMinimap) then Screen0:RemoveChild(windowMinimap) end
+		displayMiniMap = false
+	end
 end

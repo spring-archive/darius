@@ -28,10 +28,10 @@ local settings = {
 }
 
 local defaults = {
-	width = settings.cardsize_x * 5 + 35,
-	height = settings.cardsize_y + 35,
-	x = 0, --0.5 * vsx - defaults.width * 0.5,
-	y = 0, --0.05 * vsy + defaults.height * 0.5,
+	pos_x = 0,
+	pos_y = -1, --vsy
+	width = -1,
+	height = 250,
 }
 
 ----------------
@@ -94,8 +94,8 @@ local function MakeHandMenu()
 
 	local hand_width = settings.width or defaults.width
 	local hand_height = settings.height or defaults.height
-	local hand_pos_x = settings.pos_x or defaults.x
-	local hand_pos_y = settings.pos_y or defaults.y
+	local hand_pos_x = settings.pos_x or defaults.pos_x
+	local hand_pos_y = settings.pos_y or defaults.pos_y
 
 	stack_hand = StackPanel:New{
 		name='stack_hand',
@@ -220,7 +220,6 @@ end
 function widget:Shutdown()
 	Darius:RemoveWidget(widget)
 
-	spEcho( "Hand widget OFF" )
 	if (window_hand) then
 		screen0:RemoveChild(window_hand)
 		window_hand:Dispose()
@@ -232,13 +231,18 @@ end
 -- Darius Message Handling --
 -----------------------------
 
+local function WrapScreen(point, vsa)
+	if (point >= 0) then return point end
+	return vsa + point
+end
+
 function widget:RcvMessage(message)
 	if (message == "reset") then
 		if (window_hand) then
-			window_hand.x = defaults.x
-			window_hand.y = defaults.y
-			window_hand.width = defaults.width
-			window_hand.height = defaults.height
+			window_hand.x = WrapScreen(defaults.pos_x, vsx)
+			window_hand.y = WrapScreen(defaults.pos_y, vsy)
+			window_hand.width = WrapScreen(defaults.width, vsx)
+			window_hand.height = WrapScreen(defaults.height, vsy)
 		end
 	elseif (message == "show") then
 		if (window_hand) then screen0:AddChild(window_hand) end

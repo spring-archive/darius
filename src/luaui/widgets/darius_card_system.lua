@@ -82,7 +82,8 @@ function Darius:RemoveWidget(widget)
 	widgets = newwidgets
 end
 
-function Darius:SendMessage(message)
+--Messages registered widgets
+function Darius:SendUIMessage(message)
 	for _, w in pairs(widgets) do
 		if (w.RcvMessage) then w:RcvMessage(message) end
 	end

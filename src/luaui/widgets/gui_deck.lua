@@ -27,7 +27,7 @@ local color = confdata.color
 --------------
 local settings = {
 	cardsize_x = 100,
-	cardsize_y = 170,
+	cardsize_y = 160,
 	pos_x,
 	pos_y,
 	width,
@@ -35,10 +35,10 @@ local settings = {
 }
 
 local defaults = {
-	width = settings.cardsize_x * 5 + 35,
-	height = settings.cardsize_y + 35,
-	x = settings.cardsize_x * 5 + 35, --vsx,
-	y = 0
+	pos_x = -1, --vsx,
+	pos_y = -450,
+	width = settings.cardsize_x * 2,
+	height = settings.cardsize_y + 10,
 }
 
 ----------------
@@ -113,16 +113,11 @@ local function MakeWindow()
 		window_deck = nil
 	end
 
-	local deck_width = settings.width or defaults.width
-	local deck_height = settings.height or defaults.height
-	local deck_pos_x = settings.pos_x or defaults.x
-	local deck_pos_y = settings.pos_y or defaults.y
-	
 	stack_deck = StackPanel:New{
 		name='stack_deck',
 		orientation = 'horizontal',
 		width = -1,
-		height = hand_height,
+		height = -1,
 		resizeItems = false,
 		padding = {0,10,0,0},
 		itemPadding = {0,0,0,0},
@@ -135,14 +130,14 @@ local function MakeWindow()
 
 	window_deck = Window:New {  
 		caption="carddeck",
-		x = deck_pos_x,
-		y = deck_pos_y,
-		dockable = false,
+		x = settings.pos_x or defaults.pos_x,
+		y = settings.pos_y or defaults.pos_y,
 		name = "deckwindow",
-		width = deck_width,
-		height = deck_height,
+		width = settings.width or defaults.width,
+		height = settings.height or defaults.height,
 		minWidth  = 100,
 		minHeight = 100,
+		dockable = false,
 		draggable = true,
 		resizable = true,
 		OnMouseUp = {},
@@ -226,13 +221,18 @@ end
 -- Darius Message Handling --
 -----------------------------
 
+local function WrapScreen(point, vsa)
+	if (point >= 0) then return point end
+	return vsa + point
+end
+
 function widget:RcvMessage(message)
 	if (message == "reset") then
 		if (window_deck) then
-			window_deck.x = defaults.x
-			window_deck.y = defaults.y
-			window_deck.width = defaults.width
-			window_deck.height = defaults.height
+			window_deck.x = WrapScreen(defaults.pos_x, vsx)
+			window_deck.y = WrapScreen(defaults.pos_y, vsy)
+			window_deck.width = WrapScreen(defaults.width, vsx)
+			window_deck.height = WrapScreen(defaults.height, vsy)
 		end
 	elseif (message == "show") then
 		if (window_deck) then screen0:AddChild(window_deck) end

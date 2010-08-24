@@ -83,25 +83,27 @@ end
 
 -- This function gets a single paremeter from the spawner (backend)
 function GetParamFromSpawner(name)
-	return spGetGameRulesParam(name) or "0"
+	return spGetGameRulesParam(name) or 0
 end
 
 
+-- Calculates seconds to next wave
 local function CalculateTimeToNextWave(nextWave)
-	local nw = math.floor(nextWave - Spring.GetGameSeconds())
-	if nw < 0 then
+	local secondsToNextWave = math.floor(nextWave - Spring.GetGameSeconds())
+	if secondsToNextWave < 0 then
 		return 0
 	end
-	return nw
+	return secondsToNextWave
 end
+
 
 -- This function gets the stats from the backend
 local function GetStatsFromBackend()
-	gamestats.timeToNextWave      = CalculateTimeToNextWave(GetParamFromSpawner("NextWave"))
-	gamestats.numOfCurrentWave    = GetParamFromSpawner("numOfCurrentWave")
-	gamestats.enemiesKilled       = GetParamFromSpawner("monstersKilledTotal")
-	gamestats.enemiesTotal = GetParamFromSpawner("monstersSpawnedTotal")
-	gamestats.wavesTotal = GetParamFromSpawner("numberOfWaves")
+	gamestats.timeToNextWave   = CalculateTimeToNextWave(GetParamFromSpawner("NextWave"))
+	gamestats.numOfCurrentWave = GetParamFromSpawner("numOfCurrentWave")
+	gamestats.enemiesKilled    = GetParamFromSpawner("monstersKilledTotal")
+	gamestats.enemiesTotal     = GetParamFromSpawner("monstersSpawnedTotal")
+	gamestats.wavesTotal       = GetParamFromSpawner("numberOfWaves")
 end
 
 
@@ -172,7 +174,7 @@ local function CreatePanel()
 		children = {
 			-- static labels
 			Label:New { caption = 'Time survived:',         textColor = color.sub_fg, fontSize=font_size, y=0 },
-			Label:New { caption = 'Time to the next wave:', textColor = color.sub_fg, fontSize=font_size, y=15 },
+			Label:New { caption = 'Seconds to next wave:',  textColor = color.sub_fg, fontSize=font_size, y=15 },
 			Label:New { caption = 'Current wave:',          textColor = color.sub_fg, fontSize=font_size, y=30 },
 			Label:New { caption = 'of ',                    textColor = color.sub_fg, fontSize=font_size, x=label_x_offset+25, y=30 },
 			Label:New { caption = 'Enemies killed:',        textColor = color.sub_fg, fontSize=font_size, y=45 },

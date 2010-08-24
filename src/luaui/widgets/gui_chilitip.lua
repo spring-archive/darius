@@ -439,10 +439,6 @@ local function GetResourceStack(unitID, ud, tooltip, fontSize)
 		itemPadding = {0,0,0,0},
 		itemMargin = {5,0,0,0},
 		children = {
-			Image:New{file='LuaUI/images/ibeam.png',height= icon_size,width= icon_size, fontSize=options.fontsize.value,},
-			lbl_metal,
-			Image:New{file='LuaUI/images/energy.png',height= icon_size,width= icon_size, fontSize=options.fontsize.value,},
-			lbl_energy,
 		},
 	}
 
@@ -496,8 +492,7 @@ local function MakeToolTip(x,y, tooltip_type, unitID, ud, tooltip, morph_time, m
 			local team           = spGetUnitTeam(unitID)
 			local _, player      = spGetTeamInfo(team)
 			local playerName     = spGetPlayerInfo(player) or 'noname'
-			local teamColor      = Chili.color2incolor(spGetTeamColor(team))
-			ttstr = ud.humanName .. ' (' .. teamColor .. playerName .. '\255\255\255\255)'
+			ttstr = ud.humanName
 			difftarget = true
 		end
 	elseif tooltip_type == 'feature' then
@@ -663,6 +658,7 @@ local function MakeToolTip(x,y, tooltip_type, unitID, ud, tooltip, morph_time, m
 		end
 	end
 	
+	--[[
 	local showingExtendedTip = false
 	local _,_,_,buildUnitName = Spring.GetActiveCommand()
 	local sc_label 
@@ -691,6 +687,8 @@ local function MakeToolTip(x,y, tooltip_type, unitID, ud, tooltip, morph_time, m
 		sc_label = TextBox:New{ text = sc_caption, textColor=color.tooltip_help, width=250, fontSize=newFontSize,  }
 		tt_children[#tt_children+1] = sc_label
 	end
+	]]--
+	
 	iconstack = 
 		StackPanel:New{
 			orientation='horizontal',
@@ -701,7 +699,6 @@ local function MakeToolTip(x,y, tooltip_type, unitID, ud, tooltip, morph_time, m
 			autosize=true,
 			width   = 60;
 
-			
 			children = {
 				Image:New{
 					file2 = (WG.GetBuildIconFrame)and(WG.GetBuildIconFrame(ud)),
@@ -711,9 +708,8 @@ local function MakeToolTip(x,y, tooltip_type, unitID, ud, tooltip, morph_time, m
 					width   = 55;
 				},
 				--{},
-				 Image:New{file='LuaUI/images/ibeam.png',height= icon_size,width= icon_size,},
+				 Image:New{file='bitmaps/greenball.png',height= icon_size,width= icon_size,},
 				 Label:New{ caption = mcost, valign='center', textColor=color.tooltip_info, width=35, autoSize=false , fontSize=newFontSize,},
-		
 			}
 		}
 	stack_tooltip = StackPanel:New{
@@ -991,7 +987,6 @@ function widget:Initialize()
 			caption = 'a',
 
 			children = {
-				Image:New{file='LuaUI/images/health.png',height= icon_size,width= icon_size,  x=0,y=0},
 			},
 		}
 

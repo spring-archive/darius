@@ -24,6 +24,8 @@ local spSetGameRulesParam = Spring.SetGameRulesParam
 local spSendCommands = Spring.SendCommands
 local spDestroyUnit = Spring.DestroyUnit
 local spGetGroundHeight = Spring.GetGroundHeight
+local spGetTeamUnits = Spring.GetTeamUnits
+local spGetUnitDefID = Spring.GetUnitDefID
 
 ----------------
 -- Local Vars --
@@ -62,13 +64,10 @@ local function LoadMapData()
 	waves = mapData.easy --TODO: Get correct wave per difficulty (easy, normal, hard)
 
 	castleposition = mapData.castleposition --{x, z}
+	castleposition[3] = castleposition[2]
+	castleposition[2] = spGetGroundHeight(castleposition[1],castleposition[3])
 	spawningpoints = mapData.spawningpoints --{{x, z},...}
 	return true
-end
-
-local function InitWaves()
-	LoadMapData()
-	spSetGameRulesParam("numberOfWaves", #waves)
 end
 
 local function SpawnMonsters()
@@ -96,10 +95,9 @@ local function SpawnMonsters()
 		if monster["amount"] > 0 and monster["nextSpawn"] < Spring.GetGameSeconds() then
 			local src = spawningpoints[monster["location"]]
 			local unit = spCreateUnit(monster["monster"], src[1], spGetGroundHeight(src[1],src[2]), src[2], "south", monsterTeamNumber, false)
-			spGiveOrderToUnit(unit, CMD.MOVE, {x_dest, y_dest, z_dest}, {})
-			Spring.PlaySoundFile("sounds/ui/monster_spawn.wav")
+			spGiveOrderToUnit(unit, CMD.MOVE, castleposition, {})
+			--Spring.PlaySoundFile("sounds/ui/monster_spawn.wav")
 			monster["amount"] = monster["amount"] - 1
-			spEcho("Spawning:" .. monster["monster"] .. " amount left: " .. monster["amount"])
 			monstersSpawnedTotal = monstersSpawnedTotal + 1
 			spSetGameRulesParam("monstersSpawnedTotal", monstersSpawnedTotal)
 			monster["nextSpawn"] = Spring.GetGameSeconds() + monster["interval"]
@@ -118,12 +116,8 @@ function GameVictory()
 end
 
 function GadgetUpdate(f)
-	if gameFinished == false then
-		if spawning then
-			SpawnMonsters()
-		end
-	else
-		GameVictory()
+	if spawning then
+		SpawnMonsters()
 	end
 end
 
@@ -139,6 +133,26 @@ function SetLocations()
 	x_dest, y_dest, z_dest = spGetTeamStartPosition(1)
 end
 
+local function GetCommanders(teamID) --Finds the commander IDs for the given team
+
+	local units = spGetTeamUnits(teamID)
+	local commanders = {}
+
+	for _,unitID in ipairs(units) do
+		if (UnitDefs[spGetUnitDefID(unitID)].isCommander) then
+			--checks if the isCommander attribute is true in current unit's unitDef -file
+			commanders[#commanders + 1] = unitID
+		end
+	end
+
+	return commanders
+
+end
+
+function MoveCastle()
+	Spring.MoveCtrl.Enable(GetCommanders(1)[1])
+	Spring.MoveCtrl.SetPosition(GetCommanders(1)[1],castleposition[1],castleposition[2],castleposition[3])
+end
 
 
 --------------
@@ -146,18 +160,21 @@ end
 --------------
 
 function gadget:Initialize()
-	InitWaves()
+	LoadMapData()
+	spSetGameRulesParam("numberOfWaves", #waves)
 	
 	spSetGameRulesParam("gameWon", 0)
 	spSetGameRulesParam("monstersKilledTotal", 0)
 	
-	gameFinished = false
 	SetLocations()
 end
 
 function gadget:GameFrame(f)
-	if (f%10 < 1) then
+	if f%10 < 1 then
 		GadgetUpdate(f);
+	end
+	if f == 7 then
+		MoveCastle()
 	end
 end
 

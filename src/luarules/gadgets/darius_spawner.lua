@@ -97,7 +97,7 @@ local function SpawnMonsters()
 			local src = spawningpoints[monster["location"]]
 			local unit = spCreateUnit(monster["monster"], src[1], spGetGroundHeight(src[1],src[2]), src[2], "south", monsterTeamNumber, false)
 			spGiveOrderToUnit(unit, CMD.MOVE, {x_dest, y_dest, z_dest}, {})
-			--Spring.PlaySoundFile("sounds/ui/monster_spawn.wav")
+			Spring.PlaySoundFile("sounds/ui/monster_spawn.wav")
 			monster["amount"] = monster["amount"] - 1
 			spEcho("Spawning:" .. monster["monster"] .. " amount left: " .. monster["amount"])
 			monstersSpawnedTotal = monstersSpawnedTotal + 1

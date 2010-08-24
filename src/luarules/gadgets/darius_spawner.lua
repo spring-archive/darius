@@ -61,8 +61,8 @@ local function LoadMapData()
 	
 	waves = mapData.easy --TODO: Get correct wave per difficulty (easy, normal, hard)
 
-	castleposition = mapData.castleposition --{x, y}
-	spawningpoints = mapData.spawningpoints --{{x,y},...}
+	castleposition = mapData.castleposition --{x, z}
+	spawningpoints = mapData.spawningpoints --{{x, z},...}
 	return true
 end
 
@@ -95,7 +95,7 @@ local function SpawnMonsters()
 	for i, monster in ipairs(monsters) do
 		if monster["amount"] > 0 and monster["nextSpawn"] < Spring.GetGameSeconds() then
 			local src = spawningpoints[monster["location"]]
-			local unit = spCreateUnit(monster["monster"], src[1],src[2],spGetGroundHeight(src[1],src[2]), "south", monsterTeamNumber, false)
+			local unit = spCreateUnit(monster["monster"], src[1], spGetGroundHeight(src[1],src[2]), src[2], "south", monsterTeamNumber, false)
 			spGiveOrderToUnit(unit, CMD.MOVE, {x_dest, y_dest, z_dest}, {})
 			--Spring.PlaySoundFile("sounds/ui/monster_spawn.wav")
 			monster["amount"] = monster["amount"] - 1

@@ -225,38 +225,58 @@ local function LoadCardsFromFiles()
 	local weaponFiles = VFS.DirList('cards/lua/weapon', '*.lua')
 	local specialFiles = VFS.DirList('cards/lua/special', '*.lua')
 
-	startpool = {}
-	startdecks = {{},{},{}}
 	for i=1, #materialFiles do
 		local card = VFS.Include(materialFiles[i])
 		table.insert(cardData, card)
-		table.insert(startpool, card) --Generates basic starting pool (This should be more controlled later)
-		table.insert(startdecks[1], card) --Generates one of the basic starting decks (This should be more controlled later)
 	end
 	for i=1, #weaponFiles do
 		local card = VFS.Include(weaponFiles[i])
 		table.insert(cardData, card)
-		table.insert(startpool, card) --Generates basic starting pool (This should be more controlled later)
-		table.insert(startdecks[2], card) --Generates one of the basic starting decks (This should be more controlled later)
 	end
 
 	for i=1, #specialFiles do
 		local card = VFS.Include(specialFiles[i])
 		table.insert(cardData, card)
-		table.insert(startpool, card) --Generates basic starting pool (This should be more controlled later)
-		table.insert(startdecks[3], card) --Generates one of the basic starting decks (This should be more controlled later)
 	end
-	--If the player doesn't have a pool or any decks (possibly because the data hasn't been loaded yet) then give them the standard
---	if not (#pool == 0) then
-		pool = startpool
---	end
---	if not (#decks == 0) then
-		decks = startdecks
-		deck1Index = 1
-		deck2Index = 2
---	end
 
 	Spring.SetGameRulesParam("maximumcardamount", #cardData) -- Used by the deck editor. DO NOT remove
+end
+
+local function LoadDefaultDecks()
+	spEcho(gadget:GetInfo().name .. ": Loading Default Decks")
+
+	local default_decks_filename = 'gamedata/default.lua'
+
+	spEcho(gadget:GetInfo().name .. ": Checking File Exists")
+	if not (VFS.FileExists(default_decks_filename)) then return false end
+	spEcho(gadget:GetInfo().name .. ": File Exists")
+
+	local default = VFS.Include(default_decks_filename)
+	if not (type(default) == "table") then return false end
+
+	spEcho(gadget:GetInfo().name .. ": Data Obtained")
+	--If the player doesn't have a pool or any decks (possibly because the data hasn't been loaded yet) then give them the standard
+	if (#pool == 0) or (#decks == 0) then
+		spEcho(gadget:GetInfo().name .. ": Player lacks pool/decks")
+		for _, deck in pairs(default) do
+			if (type(deck) == "table") then
+				spEcho(gadget:GetInfo().name .. ": Creating new deck")
+				newdeck = {}
+				for _, cardname in pairs(deck) do
+					spEcho(gadget:GetInfo().name .. ": Adding Card " .. cardname)
+					local card = gadget:GetCardDataByName(cardname)
+					if (type(card) == "table") then --Makes sure data exists
+						spEcho(gadget:GetInfo().name .. ": " .. cardname .. " Exists")
+						table.insert(pool, card)
+						table.insert(newdeck, card)
+					end
+				end
+				table.insert(decks, newdeck)
+			end
+		end
+		deck1Index = 1
+		deck2Index = 2
+	end
 end
 
 local function SendDecksToSession()  -- Sends the decks to the instance game manager
@@ -362,6 +382,7 @@ function gadget:Initialize()
 	end
 
 	LoadCardsFromFiles()
+	LoadDefaultDecks()
 end
 
 function gadget:GameFrame(f) --This is a temporary thing for testing
@@ -432,17 +453,17 @@ selection = {1,2} -- Stores deck ids
 
 function gadget:LoadData()
 	if (debug_message) then debug_message("Loading Player Data") end
-	--Get table by executing script file
-
-	--TODO: Make sure exists
+	--Make sure exists
 	if not (VFS.FileExists(GAMEDATA_FILENAME)) then return false end
 
+	--Get table by executing script file
 	if (debug_message) then debug_message("Loading " .. GAMEDATA_FILENAME) end
 	data = VFS.Include(GAMEDATA_FILENAME)
 
 	if (not data) then return end
 	if (type(data) == 'table') then
 		if (data.pool and type(data.pool) == 'table') then
+			if (#data.pool == 0) then return false end
 			poolString = CreatePoolString(data.pool)
 			spSendLuaRulesMsg("SetCardPool:"..poolString)
 			if (debug_message) then debug_message("Pool = " .. table.tostring(data.pool)) end

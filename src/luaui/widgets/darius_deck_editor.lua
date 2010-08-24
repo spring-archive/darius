@@ -1097,6 +1097,7 @@ function widget:Initialize()
 	widgetHandler:RegisterGlobal("SetDeckEditorDeckSelection", SetDeckSelection)
 
 	maxCardAmount = Spring.GetGameRulesParam("maximumcardamount") --Fetch the amount of cards from the pool. Yes, it is *necessary* to do it like this.
+	if not (maxCardAmount) then maxCardAmount = 0 end --Minor bug fix for if the card pool fails
 
 	-- Obtain the required data from the card pool
 	GetDecks()

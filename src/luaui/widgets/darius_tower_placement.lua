@@ -21,15 +21,17 @@ function widget:Update()
 end
 
 function widget:MousePress(x,y,button)
-	-- If we are over a chili element then return
-	if (WG.Chili) then if (WG.Chili:IsAbove(x,y)) then return end end
-	if not (tower == nil) then
-		-- Converts 2d coordinates of the mouse position to 3d coordinates
-		local _,pos = Spring.TraceScreenRay(x,y,true,false) 
-		-- Widgets can't create units so sends message to a gadget
-		if (pos) then
-			Spring.SendLuaRulesMsg("PlaceTower "..tower.." "..tostring(pos[1]).." "..tostring(pos[2]).." "..tostring(pos[3]))
-			--spEcho("PlaceTower "..tower.." "..tostring(pos[1]).." "..tostring(pos[2]).." "..tostring(pos[3]))
+	if (button == 1) then
+		-- If we are over a chili element then return
+		if (WG.Chili) then if (WG.Chili:IsAbove(x,y)) then return end end
+		if not (tower == nil) then
+			-- Converts 2d coordinates of the mouse position to 3d coordinates
+			local _,pos = Spring.TraceScreenRay(x,y,true,false) 
+			-- Widgets can't create units so sends message to a gadget
+			if (pos) then
+				Spring.SendLuaRulesMsg("PlaceTower "..tower.." "..tostring(pos[1]).." "..tostring(pos[2]).." "..tostring(pos[3]))
+				--spEcho("PlaceTower "..tower.." "..tostring(pos[1]).." "..tostring(pos[2]).." "..tostring(pos[3]))
+			end
 		end
 	end	
 end

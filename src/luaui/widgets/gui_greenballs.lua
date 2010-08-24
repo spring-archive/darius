@@ -80,16 +80,20 @@ local function UpdateGreenballUI()
 		img_greenball.height = img_greenball.width
 		img_greenball:Invalidate()
 	end
+	local lbl_width = windowGreenballs.width-25 - img_greenball.width
 	if (lbl_amount) then
 		lbl_amount.x = img_greenball.x + img_greenball.width + 1
+		lbl_amount.y = 0
 		lbl_amount:SetCaption(Darius:GetGreenballs())
-		while (lbl_amount.font:GetTextWidth(lbl_amount.caption) < img_greenball.width) do
+		while (lbl_amount.font:GetTextWidth(lbl_amount.caption) < lbl_width) do
 			lbl_amount.font.size = lbl_amount.font.size + 1
 		end
-		while (lbl_amount.font:GetTextWidth(lbl_amount.caption) > img_greenball.width) do
+		while (lbl_amount.font:GetTextWidth(lbl_amount.caption) > lbl_width) do
 			lbl_amount.font.size = lbl_amount.font.size - 1
 		end
-		lbl_amount.y = lbl_amount.font.size/6
+		while (lbl_amount.font:GetTextHeight(lbl_amount.caption) > img_greenball.height) do
+			lbl_amount.font.size = lbl_amount.font.size - 1
+		end
 		lbl_amount:Invalidate()
 	end
 end
@@ -99,24 +103,25 @@ end
 local function CreateGreenballUI()
 
 	-- if window hasn't been initialized, free the resources associated
-	if windowStats then
-		windowStats:Dispose()
-		windowStats = nil
+	if windowGreenballs then
+		windowGreenballs:Dispose()
+		windowGreenballs = nil
 	end
 	
 	lbl_amount    = Label:New { x=10, width=60, align="right", textColor = color.game_fg, caption = '', fontSize=30 }
 	img_greenball = Image:New { width=25, height=25, file = 'bitmaps/greenball.png' }
-	
-	windowGreenballs = Window:New {  
+
+	windowGreenballs = Window:New {
 		name = "greenballs",
 		x = storedSettings.pos_x or 0,
 		y = storedSettings.pos_y or 95,
-		clientWidth = storedSettings.width or defaultWidth,
-		clientHeight = storedSettings.height or defaultHeight,
+		width = storedSettings.width or defaultWidth,
+		height = storedSettings.height or defaultHeight,
 		minimumSize = {20, 20},
 		dockable = false,
 		draggable = true,
 		resizable = true,
+		--fixedRatio = true, --Does strange behavior
 		backgroundColor = color.main_bg,
 		tooltip = "Greenballs\n\nThe game's currency. Needed to draw and play cards. You get more by killing monsters.",		
 		children = {
@@ -181,7 +186,7 @@ end
 -- stores the ui settings
 function widget:SetConfigData(data)
 	if (data and type(data) == 'table') then
-		storedSettings = data -- store the settings
+		storedSettings = data
 	end
 end
 

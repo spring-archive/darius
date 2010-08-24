@@ -26,9 +26,9 @@ unitDef = {
   explodeAs              = [[SMALL_BUILDINGEX]],
   footprintX             = 2,
   footprintZ             = 2,
-  healtime               = [[4]],
+  healtime               = [[0]],
   iconType               = [[defenseraider]],
-  idleAutoHeal           = 5,
+  idleAutoHeal           = 0,
   idleTime               = 1800,
   levelGround            = false,
   mass                   = 45,
@@ -42,7 +42,7 @@ unitDef = {
   noChaseCategory        = [[FIXEDWING LAND SHIP SATELLITE SWIM GUNSHIP SUB HOVER]],
   objectName             = [[armarch.3do]],
   seismicSignature       = 4,
-  selfDestructAs         = [[SMALL_BUILDINGEX]],
+  selfDestructAs         = [[SUICIDE]],
 
   sfxtypes               = {
 
@@ -56,66 +56,61 @@ unitDef = {
   sightDistance          = 473,
   smoothAnim             = true,
   TEDClass               = [[FORT]],
-  turnRate               = 0,
+  turnRate               = 110,
   workerTime             = 0,
   yardMap                = [[oooo]],
 
-  weapons                = {
+  weapons               = {
 
     {
-      def                = [[LASER]],
+      def                = [[GAUSS]],
       badTargetCategory  = [[FIXEDWING]],
       onlyTargetCategory = [[FIXEDWING LAND SINK SHIP SWIM FLOAT GUNSHIP HOVER]],
     },
-
   },
 
 
-  weaponDefs             = {
+  weaponDefs            = {
 
-    LASER = {
-      name                    = [[Laser Blaster]],
-      areaOfEffect            = 24,
-      beamWeapon              = true,
-      canattackground         = true,
-      cegTag                  = [[redlaser_llt]],
-      coreThickness           = 0.5,
+    GAUSS         = {
+      name                    = [[Gauss Battery]],
+      alphaDecay              = 0.12,
+      areaOfEffect            = 40,
+      cegTag                  = [[gauss_tag_h]],
       craterBoost             = 1,
       craterMult              = 2,
 
       damage                  = {
-        default = 20,
+        default = 3,
       },
 
-      duration                = 0.02,
-      energypershot           = 0.0,
-      explosionGenerator      = [[custom:BEAMWEAPON_HIT_RED]],
-      fireStarter             = 30,
-      heightMod               = 1,
+      explosionGenerator      = [[custom:gauss_hit_h]],
       impactOnly              = true,
       impulseBoost            = 0,
-      impulseFactor           = 0.4,
+      impulseFactor           = 0,
       interceptedByShieldType = 1,
       lineOfSight             = true,
-      lodDistance             = 10000,
+      minbarrelangle          = [[-15]],
+      noExplode               = true,
       noSelfDamage            = true,
       range                   = 400,
       reloadtime              = 0.7,
-      renderType              = 0,
-      rgbColor                = [[1 0 0]],
-      soundHit                = [[weapons/laserhit]],
-      soundStart              = [[weapons/laser]],
-      soundTrigger            = true,
-      sweepfire               = false,
-      targetMoveError         = 0.1,
-      thickness               = 4.03112887414927,
-      tolerance               = 5000,
+      renderType              = 4,
+      rgbColor                = [[0 0.7 1]],
+      separation              = 0.5,
+      size                    = 0.8,
+      sizeDecay               = -0.1,
+      soundHit                = [[weapons/armcomhit]],
+      soundStart              = [[weapons/armcomgun]],
+      sprayangle              = 800,
+      stages                  = 32,
+      startsmoke              = [[1]],
+      tolerance               = 4096,
       turret                  = true,
-      weaponType              = [[LaserCannon]],
-      weaponVelocity          = 1720,
+      weaponType              = [[Cannon]],
+      weaponVelocity          = 500,
     },
-
-  }
+  },
 
 }
 

@@ -26,13 +26,13 @@ unitDef = {
   explodeAs              = [[SMALL_BUILDINGEX]],
   footprintX             = 2,
   footprintZ             = 2,
-  healtime               = [[4]],
+  healtime               = [[0]],
   iconType               = [[defenseraider]],
-  idleAutoHeal           = 5,
+  idleAutoHeal           = 0,
   idleTime               = 1800,
   levelGround            = false,
   mass                   = 45,
-  maxDamage              = 300,
+  maxDamage              = 400,
   maxSlope               = 36,
   maxVelocity            = 0,
   maxWaterDepth          = 0,
@@ -42,7 +42,7 @@ unitDef = {
   noChaseCategory        = [[FIXEDWING LAND SHIP SATELLITE SWIM GUNSHIP SUB HOVER]],
   objectName             = [[armpb.3do]],
   seismicSignature       = 4,
-  selfDestructAs         = [[SMALL_BUILDINGEX]],
+  selfDestructAs         = [[SUICIDE]],
 
   sfxtypes               = {
 
@@ -56,7 +56,7 @@ unitDef = {
   sightDistance          = 473,
   smoothAnim             = true,
   TEDClass               = [[FORT]],
-  turnRate               = 0,
+  turnRate               = 110,
   workerTime             = 0,
   yardMap                = [[oooo]],
 
@@ -84,13 +84,13 @@ unitDef = {
       craterMult              = 2,
 
       damage                  = {
-        default = 15,
+        default = 3,
       },
 
       duration                = 0.02,
       energypershot           = 0.0,
       explosionGenerator      = [[custom:BEAMWEAPON_HIT_RED]],
-      fireStarter             = 30,
+      fireStarter             = 0,
       heightMod               = 1,
       impactOnly              = true,
       impulseBoost            = 0,
@@ -99,7 +99,7 @@ unitDef = {
       lineOfSight             = true,
       lodDistance             = 10000,
       noSelfDamage            = true,
-      range                   = 500,
+      range                   = 550,
       reloadtime              = 0.7,
       renderType              = 0,
       rgbColor                = [[1 0 0]],

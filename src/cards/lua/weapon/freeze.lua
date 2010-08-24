@@ -1,14 +1,14 @@
 local card = {
 	name 		= "Freeze",
 	type 		= "Weapon",
-	template    = "generic",
+	template    = "ice",
 	img 		= 'cards/images/weapon/freeze.png',
 	health 		= 0,
-	reloadTime 	= 2.0,
-	range 		= 200,
-	damage 		= 0,
-	greenballs 	= -1,
-	desc 		= "Does no damage, but slows monsters within range."
+	paralyze	= 1,
+	reloadTime 	= 1,
+	range 		= 150,
+	greenballs 	= 0,
+	desc 		= "Does no damage, but freezes monsters within range."
 }
 
 return card

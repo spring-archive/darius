@@ -26,9 +26,9 @@ unitDef = {
   explodeAs              = [[SMALL_BUILDINGEX]],
   footprintX             = 2,
   footprintZ             = 2,
-  healtime               = [[4]],
+  healtime               = [[0]],
   iconType               = [[defenseraider]],
-  idleAutoHeal           = 5,
+  idleAutoHeal           = 0,
   idleTime               = 1800,
   levelGround            = false,
   mass                   = 45,
@@ -42,7 +42,7 @@ unitDef = {
   noChaseCategory        = [[FIXEDWING LAND SHIP SATELLITE SWIM GUNSHIP SUB HOVER]],
   objectName             = [[armartic.3do]],
   seismicSignature       = 4,
-  selfDestructAs         = [[SMALL_BUILDINGEX]],
+  selfDestructAs         = [[SUICIDE]],
 
   sfxtypes               = {
 
@@ -56,66 +56,64 @@ unitDef = {
   sightDistance          = 473,
   smoothAnim             = true,
   TEDClass               = [[FORT]],
-  turnRate               = 0,
+  turnRate               = 110,
   workerTime             = 0,
   yardMap                = [[oooo]],
 
-  weapons                = {
+weapons             = {
 
     {
-      def                = [[LASER]],
-      badTargetCategory  = [[FIXEDWING]],
-      onlyTargetCategory = [[FIXEDWING LAND SINK SHIP SWIM FLOAT GUNSHIP HOVER]],
+      def                = [[NUKE]],
+      onlyTargetCategory = [[SWIM LAND SINK FLOAT SHIP HOVER]],
     },
 
   },
 
 
-  weaponDefs             = {
+  weaponDefs          = {
 
-    LASER = {
-      name                    = [[Laser Blaster]],
-      areaOfEffect            = 24,
-      beamWeapon              = true,
-      canattackground         = true,
-      cegTag                  = [[redlaser_llt]],
-      coreThickness           = 0.5,
-      craterBoost             = 1,
+    NUKE = {
+      name                    = [[Nuclear missile]],
+      areaOfEffect            = 300,
+      craterBoost             = 0,
       craterMult              = 2,
 
       damage                  = {
         default = 3000,
       },
 
-      duration                = 0.02,
-      energypershot           = 0.0,
-      explosionGenerator      = [[custom:BEAMWEAPON_HIT_RED]],
-      fireStarter             = 30,
-      heightMod               = 1,
-      impactOnly              = true,
+	  explosionGenerator      = [[custom:NUKE_150]],
+      fireStarter             = 70,
+      flightTime              = 15,
+      guidance                = true,
       impulseBoost            = 0,
       impulseFactor           = 0.4,
-      interceptedByShieldType = 1,
+      interceptedByShieldType = 2,
       lineOfSight             = true,
-      lodDistance             = 10000,
+      model                   = [[wep_m_avalanche.s3o]],
       noSelfDamage            = true,
-      range                   = 600,
-      reloadtime              = 44,
-      renderType              = 0,
-      rgbColor                = [[1 0 0]],
-      soundHit                = [[weapons/laserhit]],
-      soundStart              = [[weapons/laser]],
-      soundTrigger            = true,
-      sweepfire               = false,
-      targetMoveError         = 0.1,
-      thickness               = 4.03112887414927,
-      tolerance               = 5000,
+      predictBoost            = 1,
+      range                   = 700,
+      reloadtime              = 31.5,
+      renderType              = 1,
+      selfprop                = true,
+      smokedelay              = [[.1]],
+      smokeTrail              = true,
+      soundHit                = [[weapons/xplosml2]],
+      soundHitVolume          = 8,
+      soundStart              = [[weapons/rocklit1]],
+      soundStartVolume        = 7,
+      startsmoke              = [[1]],
+      startVelocity           = 370,
+      tracks                  = false,
+      trajectoryHeight        = 0.6,
       turret                  = true,
-      weaponType              = [[LaserCannon]],
-      weaponVelocity          = 1720,
+      weaponTimer             = 3,
+      weaponType              = [[MissileLauncher]],
+      weaponVelocity          = 700,
     },
 
-  }
+}
 
 }
 

@@ -1,14 +1,15 @@
 local card = {
     name       = "Sniper",
     type       = "Weapon",
-	template    = "generic",
+	template   = "sniper",
     img        = 'cards/images/weapon/sniper.png',
     health     = 0,
-    reloadTime = 1,
+    reloadTime = 5,
     range      = 1500,
     damage     = 100,
     greenballs = -2,
-    desc       = "Shoots monsters from a great distance."
+    desc       = "Shoots monsters from a great distance, but the kicker\n" ..
+				 "is that the projectiles can actually travel through walls. "
 }
 
 return card

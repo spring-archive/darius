@@ -61,6 +61,7 @@ local resources = {
 			wake='GPL/wake.png',
 			flare='flare.tga',
 			flame='GPL/flame.tga',
+			poison='GPL/poison.tga',
 			explofade='explofade.tga',
 			heatcloud='GPL/explo.png',
 			explo='GPL/fire.png',

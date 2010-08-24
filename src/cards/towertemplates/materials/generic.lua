@@ -23,9 +23,9 @@ unitDef = {
   explodeAs              = [[SMALL_BUILDINGEX]],
   footprintX             = 2,
   footprintZ             = 2,
-  healtime               = [[4]],
+  healtime               = [[0]],
   iconType               = [[defenseraider]],
-  idleAutoHeal           = 5,
+  idleAutoHeal           = 0,
   idleTime               = 1800,
   levelGround            = false,
   mass                   = 45,
@@ -39,7 +39,7 @@ unitDef = {
   noChaseCategory        = [[FIXEDWING LAND SHIP SATELLITE SWIM GUNSHIP SUB HOVER]],
   objectName             = [[%%MODEL%%.3do]],
   seismicSignature       = 4,
-  selfDestructAs         = [[SMALL_BUILDINGEX]],
+  selfDestructAs         = [[SUICIDE]],
 
   sfxtypes               = {
 
@@ -53,7 +53,7 @@ unitDef = {
   sightDistance          = 473,
   smoothAnim             = true,
   TEDClass               = [[FORT]],
-  turnRate               = 0,
+  turnRate               = 110,
   workerTime             = 0,
   yardMap                = [[oooo]],
 

@@ -1,14 +1,14 @@
 local card = {
 	name 		= "Laser",
 	type 		= "Weapon",
-	template    = "generic",
+	template    = "laser",
 	img 		= 'cards/images/weapon/laser.png',
 	health 		= 0,
 	reloadTime 	= 0.1,
-	range 		= 400,
-	damage 		= 50,
+	range 		= 350,
+	damage 		= 3,
 	greenballs 	= 0,
-	desc 		= "Omfg laz0rz pew pew",
+	desc 		= "Shoots a laser beam at enemies that does constant damage",
 }
 
 return card

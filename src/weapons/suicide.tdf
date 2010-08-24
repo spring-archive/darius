@@ -1,0 +1,23 @@
+[SUICIDE]
+{
+  name=TowerSelfdestruct;
+  areaofeffect=300;
+  craterboost=1;
+  cratermult=1;
+  edgeeffectiveness=0.4;
+  impulseboost=0;
+  impulsefactor=0.4;
+  explosiongenerator=custom:meteor_tag;
+  interceptedbyshieldtype=1;
+  range=400;
+  reloadtime=0.1;
+  rendertype=4;
+  soundhit=weapons/xplonuk3;
+  soundstart=weapons/largegun;
+  turret=1;
+  weaponvelocity=200;
+  [DAMAGE]
+  {
+    default=700;
+  }
+}

@@ -26,13 +26,13 @@ unitDef = {
   explodeAs              = [[SMALL_BUILDINGEX]],
   footprintX             = 2,
   footprintZ             = 2,
-  healtime               = [[4]],
+  healtime               = [[0]],
   iconType               = [[defenseraider]],
-  idleAutoHeal           = 5,
+  idleAutoHeal           = 0,
   idleTime               = 1800,
   levelGround            = false,
   mass                   = 45,
-  maxDamage              = 300,
+  maxDamage              = 400,
   maxSlope               = 36,
   maxVelocity            = 0,
   maxWaterDepth          = 0,
@@ -42,7 +42,7 @@ unitDef = {
   noChaseCategory        = [[FIXEDWING LAND SHIP SATELLITE SWIM GUNSHIP SUB HOVER]],
   objectName             = [[armpb.3do]],
   seismicSignature       = 4,
-  selfDestructAs         = [[SMALL_BUILDINGEX]],
+  selfDestructAs         = [[SUICIDE]],
 
   sfxtypes               = {
 
@@ -56,14 +56,14 @@ unitDef = {
   sightDistance          = 473,
   smoothAnim             = true,
   TEDClass               = [[FORT]],
-  turnRate               = 0,
+  turnRate               = 110,
   workerTime             = 0,
   yardMap                = [[oooo]],
 
-  weapons                = {
+weapons             = {
 
     {
-      def                = [[LASER]],
+      def                = [[Sniper]],
       badTargetCategory  = [[FIXEDWING]],
       onlyTargetCategory = [[FIXEDWING LAND SINK SHIP SWIM FLOAT GUNSHIP HOVER]],
     },
@@ -71,51 +71,44 @@ unitDef = {
   },
 
 
-  weaponDefs             = {
+  weaponDefs          = {
 
-    LASER = {
-      name                    = [[Laser Blaster]],
-      areaOfEffect            = 24,
-      beamWeapon              = true,
-      canattackground         = true,
-      cegTag                  = [[redlaser_llt]],
-      coreThickness           = 0.5,
-      craterBoost             = 1,
-      craterMult              = 2,
+    Sniper = {
+      name                    = [[Long Range Pulse Rifle]],
+      areaOfEffect            = 1,
+      craterBoost             = 0,
+      craterMult              = 0,
 
       damage                  = {
         default = 100,
       },
 
-      duration                = 0.02,
-      energypershot           = 0.0,
-      explosionGenerator      = [[custom:BEAMWEAPON_HIT_RED]],
-      fireStarter             = 30,
-      heightMod               = 1,
-      impactOnly              = true,
+      endsmoke                = [[0]],
+      explosionGenerator      = [[custom:smoke]],
+      impactOnly              = false,
       impulseBoost            = 0,
-      impulseFactor           = 0.4,
+      impulseFactor           = 0,
+      intensity               = 0,
       interceptedByShieldType = 1,
       lineOfSight             = true,
-      lodDistance             = 10000,
+      noGap                   = true,
       noSelfDamage            = true,
-      range                   = 1600,
-      reloadtime              = 1.8,
-      renderType              = 0,
-      rgbColor                = [[1 0 0]],
-      soundHit                = [[weapons/laserhit]],
-      soundStart              = [[weapons/laser]],
-      soundTrigger            = true,
-      sweepfire               = false,
-      targetMoveError         = 0.1,
-      thickness               = 4.03112887414927,
+      range                   = 1550,
+      reloadtime              = 1.7,
+      renderType              = 1,
+      separation              = 0.5,
+      sizeDecay               = 0,
+      soundStart              = [[weapons/flashemg]],
+      sprayAngle              = 1,
+      startsmoke              = [[0]],
       tolerance               = 5000,
       turret                  = true,
-      weaponType              = [[LaserCannon]],
-      weaponVelocity          = 1720,
+      weaponTimer             = 0.1,
+      weaponType              = [[Melee]],
+      weaponVelocity          = 1,
     },
 
-  }
+  },
 
 }
 

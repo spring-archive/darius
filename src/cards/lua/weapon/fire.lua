@@ -1,16 +1,15 @@
 local card = {
     name       = "Fire",
     type       = "Weapon",
-	template    = "generic",
+	template   = "fire",
     img        = 'cards/images/weapon/fire.png',
     health     = -150,
-    reloadTime = 0.50,
-    range      = 350,
-    damage     = 100,
+    reloadTime = 0.1,
+    range      = 180,
+    damage     = 2,
     greenballs = 0,
-    desc       = "Shoots fireballs that do good damage, but with limited range and\n" ..
-                 "projectile speed. Also due to the unpredictable nature of fire,\n" ..
-                 "costs tower health points."
+    desc       = "Shoots a wall of fire that does good damage, but with limited range\n" ..
+                 "Also due to the unpredictable nature of fire, costs tower health points."
 }
 
 return card

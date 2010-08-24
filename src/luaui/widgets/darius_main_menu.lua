@@ -5,7 +5,7 @@ function widget:GetInfo()
 		author = "kap89/xcompwiz",
 		date = "July 27th, 2010",
 		layer = 100,
-		enabled = false,
+		enabled = true,
 		handler = true,
 	}
 end
@@ -147,26 +147,19 @@ local function DeckEditor(ReturnTo)
 	AddFrame("Back",{x=vsx*0.5,y=vsy*0.1},vsy/24,{0,0,1,0.5},"cc","c",ReturnTo)
 end
 
-local function Load()
-end
-
-local function Save()
-end
-
 local function ReadMe()
 end
 
 local function MainMenu()
 	RemoveAllFrames()
 	disableWidgets() --disabled so that the player can't accidently draw cards or move the windows while in menu 	
-	AddFrame("Save",{x=vsx*0.1,y=vsy*0.9},vsy/24,{0,1,0,0.5},"cc","c", Save)
-	AddFrame("Load",{x=vsx*0.2,y=vsy*0.9},vsy/24,{0,1,0,0.5},"cc","c", Load)
+	AddFrame("Back",{x=vsx*0.1,y=vsy*0.9},vsy/24,{0,1,0,0.5},"cc","c", SwitchOff)
 	AddFrame("Darius Tower Defence",{x=vsx*0.5,y=vsy*0.98},vsy/14,{0,1,1,0.5},"ct","c")
-	AddFrame("Readme",{x=vsx*0.83,y=vsy*0.9},vsy/24,{0,1,0,0.5},"cc","c", ReadMe)
-	AddFrame("Quit",{x=vsx*0.95 ,y=vsy*0.9},vsy/24,{0,0,1,0.5},"cc","c", Quit)
+	AddFrame("Readme",{x=vsx*0.9,y=vsy*0.9},vsy/24,{0,1,0,0.5},"cc","c", ReadMe)
 	AddFrame("Deck editor",{x=vsx*0.5,y=vsy*0.7},vsy/18,{0,1,0,0.5},"cc","c", DeckEditor, MainMenu)
 	AddFrame("Map:"..selectedMap.ClearName,{x=vsx*0.5,y=vsy*0.5},vsy/15,{0.1,1,0,0.5},"cc","c",ListMap, MainMenu) --opens maplist and returns back to main menu
 	AddFrame("Run!",{x=vsx*0.5,y=vsy*0.1},vsy/18,{0,0,1,0.5},"cc","c", StartNewGame, selectedMap.InternalFileName) --starts a new game with the selected map
+	AddFrame("Quit",{x=vsx*0.95 ,y=vsy*0.05},vsy/24,{0,0,1,0.5},"cc","c", Quit)
 	
 end
 
@@ -352,7 +345,7 @@ end
 local function SwitchOn()
 	if not IsActive then
 		IsActive = true
-		FramesList={}
+		FramesList={}	
 		--spSendCmds("endgraph 0")
 		--spSendCmds("hideinterface 1")
 		--spSendCmds("pause") --pauses the game when the menu is turned on
@@ -360,12 +353,14 @@ local function SwitchOn()
 end
 
 
-local function SwitchOff()
+function SwitchOff()
 	if IsActive then
 		IsActive = false
 		RemoveAllFrames()
 		widgetHandler:DisableWidget("The deck editor") --just to make sure the deck editor is off while in game
-		enableWidgets()
+		if not gameOver then 
+			enableWidgets()
+		end	
 		--spSendCmds("endgraph 1")
 		--spSendCmds("hideinterface 0")
 		--spSendCmds("pause") --unpauses the game when the menu is turned off
@@ -461,7 +456,7 @@ function widget:KeyPress(key)
 	if key==esc then
 		local _,cmd=Spring.GetActiveCommand()
 		local alt,ctrl,meta,shift=Spring.GetModKeyState()
-		if not alt and not ctrl and not meta and not shift and not cmd and not gameOver then
+		if not alt and not ctrl and not meta and not shift and not cmd then
 			if IsActive and not HideView then
 				SwitchOff()
 				return true
@@ -543,6 +538,7 @@ function widget:GameOver()
 end
 
 function widget:Initialize()
+
 	FramesList={}
 	spSendCmds({'NoSound 1'}) -- Disable sound when menu pops up straight after running Spring.exe
 	HideView = false

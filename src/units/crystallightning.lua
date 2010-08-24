@@ -26,13 +26,13 @@ unitDef = {
   explodeAs              = [[SMALL_BUILDINGEX]],
   footprintX             = 2,
   footprintZ             = 2,
-  healtime               = [[4]],
+  healtime               = [[0]],
   iconType               = [[defenseraider]],
-  idleAutoHeal           = 5,
+  idleAutoHeal           = 0,
   idleTime               = 1800,
   levelGround            = false,
   mass                   = 45,
-  maxDamage              = 300,
+  maxDamage              = 400,
   maxSlope               = 36,
   maxVelocity            = 0,
   maxWaterDepth          = 0,
@@ -42,7 +42,7 @@ unitDef = {
   noChaseCategory        = [[FIXEDWING LAND SHIP SATELLITE SWIM GUNSHIP SUB HOVER]],
   objectName             = [[armpb.3do]],
   seismicSignature       = 4,
-  selfDestructAs         = [[SMALL_BUILDINGEX]],
+  selfDestructAs         = [[SUICIDE]],
 
   sfxtypes               = {
 
@@ -56,66 +56,63 @@ unitDef = {
   sightDistance          = 473,
   smoothAnim             = true,
   TEDClass               = [[FORT]],
-  turnRate               = 0,
+  turnRate               = 110,
   workerTime             = 0,
   yardMap                = [[oooo]],
 
-  weapons                = {
+weapons             = {
 
     {
-      def                = [[LASER]],
-      badTargetCategory  = [[FIXEDWING]],
-      onlyTargetCategory = [[FIXEDWING LAND SINK SHIP SWIM FLOAT GUNSHIP HOVER]],
+      def                = [[Lightning]],
+      onlyTargetCategory = [[SWIM LAND SINK FLOAT SHIP HOVER FIXEDWING GUNSHIP]],
     },
 
   },
 
 
-  weaponDefs             = {
+  weaponDefs          = {
 
-    LASER = {
-      name                    = [[Laser Blaster]],
-      areaOfEffect            = 24,
+    Lightning  = {
+      name                    = [[Electro-Stunner]],
+      areaOfEffect            = 1,
       beamWeapon              = true,
-      canattackground         = true,
-      cegTag                  = [[redlaser_llt]],
-      coreThickness           = 0.5,
-      craterBoost             = 1,
-      craterMult              = 2,
+      collideFriendly         = true,
+      craterBoost             = 0,
+      craterMult              = 0,
 
       damage                  = {
-        default = 250,
+        default        = 99999,
       },
 
-      duration                = 0.02,
-      energypershot           = 0.0,
-      explosionGenerator      = [[custom:BEAMWEAPON_HIT_RED]],
-      fireStarter             = 30,
+      duration                = 8,
+      energypershot           = 0,
+      explosionGenerator      = [[custom:YELLOW_LIGHTNINGPLOSION]],
+      fireStarter             = 0,
       heightMod               = 1,
-      impactOnly              = true,
       impulseBoost            = 0,
-      impulseFactor           = 0.4,
+      impulseFactor           = 0,
+      intensity               = 12,
       interceptedByShieldType = 1,
       lineOfSight             = true,
-      lodDistance             = 10000,
       noSelfDamage            = true,
-      range                   = 400,
-      reloadtime              = 4.1,
-      renderType              = 0,
-      rgbColor                = [[1 0 0]],
-      soundHit                = [[weapons/laserhit]],
-      soundStart              = [[weapons/laser]],
+      paralyzer               = true,
+      paralyzeTime            =	3,
+      range                   = 500,
+      reloadtime              = 2.1,
+      renderType              = 7,
+      rgbColor                = [[1 1 0.25]],
+      soundHit                = [[weapons/laser_hit]],
+      soundStart              = [[weapons/laser_shoot]],
       soundTrigger            = true,
-      sweepfire               = false,
-      targetMoveError         = 0.1,
-      thickness               = 4.03112887414927,
-      tolerance               = 5000,
+      targetMoveError         = 0.2,
+      texture1                = [[lightning]],
+      thickness               = 10,
       turret                  = true,
-      weaponType              = [[LaserCannon]],
-      weaponVelocity          = 1720,
+      weaponType              = [[LightingCannon]],
+      weaponVelocity          = 450,
     },
 
-  }
+  },
 
 }
 

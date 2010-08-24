@@ -26,9 +26,9 @@ unitDef = {
   explodeAs              = [[SMALL_BUILDINGEX]],
   footprintX             = 2,
   footprintZ             = 2,
-  healtime               = [[4]],
+  healtime               = [[0]],
   iconType               = [[defenseraider]],
-  idleAutoHeal           = 5,
+  idleAutoHeal           = 0,
   idleTime               = 1800,
   levelGround            = false,
   mass                   = 45,
@@ -42,7 +42,7 @@ unitDef = {
   noChaseCategory        = [[FIXEDWING LAND SHIP SATELLITE SWIM GUNSHIP SUB HOVER]],
   objectName             = [[novahlt.3do]],
   seismicSignature       = 4,
-  selfDestructAs         = [[SMALL_BUILDINGEX]],
+  selfDestructAs         = [[SUICIDE]],
 
   sfxtypes               = {
 
@@ -56,66 +56,60 @@ unitDef = {
   sightDistance          = 473,
   smoothAnim             = true,
   TEDClass               = [[FORT]],
-  turnRate               = 0,
+  turnRate               = 110,
   workerTime             = 0,
   yardMap                = [[oooo]],
 
-  weapons                = {
+  weapons               = {
 
     {
-      def                = [[LASER]],
-      badTargetCategory  = [[FIXEDWING]],
-      onlyTargetCategory = [[FIXEDWING LAND SINK SHIP SWIM FLOAT GUNSHIP HOVER]],
+      def                = [[FLAMETHROWER]],
+      badTargetCategory  = [[FIREPROOF]],
+      onlyTargetCategory = [[SWIM LAND SINK FLOAT SHIP HOVER GUNSHIP FIXEDWING]],
     },
 
   },
 
 
-  weaponDefs             = {
+  weaponDefs            = {
 
-    LASER = {
-      name                    = [[Laser Blaster]],
-      areaOfEffect            = 24,
-      beamWeapon              = true,
-      canattackground         = true,
-      cegTag                  = [[redlaser_llt]],
-      coreThickness           = 0.5,
-      craterBoost             = 1,
-      craterMult              = 2,
-
+    FLAMETHROWER = {
+      name                    = [[Flame Thrower]],
+      areaOfEffect            = 250,
+      avoidFeature            = false,
+      collideFeature          = false,
+      craterBoost             = 0,
+      craterMult              = 0,
+	  cegTag                  = [[fire1_burn1_flame1]],
       damage                  = {
-        default = 100,
+        default       = 2,
       },
 
-      duration                = 0.02,
-      energypershot           = 0.0,
-      explosionGenerator      = [[custom:BEAMWEAPON_HIT_RED]],
-      fireStarter             = 30,
-      heightMod               = 1,
-      impactOnly              = true,
+      explosionGenerator      = [[custom:SMOKE]],
+      fireStarter             = 0,
+      flameGfxTime            = 2.6,
       impulseBoost            = 0,
-      impulseFactor           = 0.4,
-      interceptedByShieldType = 1,
+      impulseFactor           = 0,
+      intensity               = 1.1,
+      interceptedByShieldType = 0,
       lineOfSight             = true,
-      lodDistance             = 10000,
-      noSelfDamage            = true,
-      range                   = 400,
-      reloadtime              = 1.3,
-      renderType              = 0,
-      rgbColor                = [[1 0 0]],
-      soundHit                = [[weapons/laserhit]],
-      soundStart              = [[weapons/laser]],
+      noExplode               = true,
+      noSelfDamage            = true,	 
+      range                   = 230,
+      reloadtime              = 0.6,
+      renderType              = 5,
+      sizeGrowth              = 2.5,
+      soundStart              = [[weapons/flamhvy1]],
       soundTrigger            = true,
-      sweepfire               = false,
-      targetMoveError         = 0.1,
-      thickness               = 4.03112887414927,
-      tolerance               = 5000,
+      tolerance               = 2500,
+	  sprayAngle			  = 50000,
       turret                  = true,
-      weaponType              = [[LaserCannon]],
-      weaponVelocity          = 1720,
+	  texture1				  = [[fire2]],
+      weaponType              = [[Flame]],
+      weaponVelocity          = 100,
     },
 
-  }
+  },
 
 }
 

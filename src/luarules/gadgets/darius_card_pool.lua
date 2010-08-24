@@ -298,7 +298,7 @@ function gadget:StartGame()
 		spEcho("Could not start game, decks are not valid ("..deck1Index..", "..deck2Index..")")
 		return false
 	end
-	Darius:AddGreenballs(20)
+	Darius:AddGreenballs(100)
 	return true
 end
 

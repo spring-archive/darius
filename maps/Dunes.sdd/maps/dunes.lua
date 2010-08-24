@@ -64,6 +64,14 @@ return {
 		}
 	},
 	
+	--[[
+	normal = {
+	},
+	
+	hard = {
+	},
+	]]--
+	
 	castleposition = {950, 950},
 	spawningpoints = {
 		{20, 600},

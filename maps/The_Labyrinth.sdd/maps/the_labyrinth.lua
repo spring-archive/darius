@@ -1,61 +1,79 @@
 return {
 	name = "The Labyrinth",
-	waves = {
-		easy = {
-			--CreateWave({monster1 = {"id", interval, count}, monster2 = {"id", interval, count}, ...})
-			CreateWave({{"chicken", 2, 20},}), --Chickens
-			CreateWave({{"corthud", 2, 3},}), --Thug
-			CreateWave({{"armpw", 2, 5},}),
-			CreateWave({{"arm_venom", 2, 3},}),  --Venom
-			CreateWave({{"corstorm", 2, 3},}),
-			CreateWave({{"corpyro", 2, 3},}),
-			CreateWave({{"armsptk", 2, 3},}),
-			CreateWave({{"chickena", 2, 3},}),
-			CreateWave({{"chicken_dodo", 2, 4},}),
-			CreateWave({{"chicken_sporeshooter", 2, 4},}),
-			CreateWave({{"cormortgold", 2, 2},}),
-			CreateWave({{"armwar", 2, 3},}),
-			CreateWave({{"chickenc", 2, 2},}),
-			CreateWave({{"armorco", 2, 2},}),
-			CreateWave({{"chickenq", 2, 1},}),
+
+	easy = {
+		{ -- wave 1
+			duration = 30,
+			{ monster = "chicken", interval = 2, amount = 10, location = 1 },
 		},
-		normal = {
-			CreateWave({{"chicken", 2, 40},}), --Chickens
-			CreateWave({{"corthud", 2, 10},}), --Thug
-			CreateWave({{"armpw", 2, 5},}),
-			CreateWave({{"arm_venom", 2, 3},}),  --Venom
-			CreateWave({{"corstorm", 2, 3},}),
-			CreateWave({{"corpyro", 2, 3},}),
-			CreateWave({{"armsptk", 2, 3},}),
-			CreateWave({{"chickena", 2, 3},}),
-			CreateWave({{"chicken_dodo", 2, 4},}),
-			CreateWave({{"chicken_sporeshooter", 2, 4},}),
-			CreateWave({{"cormortgold", 2, 2},}),
-			CreateWave({{"armwar", 2, 3},}),
-			CreateWave({{"chickenc", 2, 2},}),
-			CreateWave({{"armorco", 2, 2},}),
-			CreateWave({{"chickenq", 2, 1},}),
+		{ -- wave 2
+			duration = 30,
+			{ monster = "corthud", interval = 3, amount = 3, location = 1 },
 		},
-		hard = {
-			CreateWave({{"chicken", 2, 80},}), --Chickens
-			CreateWave({{"corthud", 2, 10},}), --Thug
-			CreateWave({{"armpw", 2, 9},}),
-			CreateWave({{"arm_venom", 2, 12},}), --Venom
-			CreateWave({{"corstorm", 2, 8},}),
-			CreateWave({{"corpyro", 2, 8},}),
-			CreateWave({{"armsptk", 2, 5},}),
-			CreateWave({{"chickena", 2, 5},}),
-			CreateWave({{"chicken_dodo", 2, 5},}),
-			CreateWave({{"chicken_sporeshooter", 2, 5},}),
-			CreateWave({{"cormortgold", 2, 5},}),
-			CreateWave({{"armwar", 2, 5},}),
-			CreateWave({{"chickenc", 2, 5},}),
-			CreateWave({{"armorco", 2, 5},}),
-			CreateWave({{"chickenq", 2, 3},}),
+		{ -- wave 3
+			duration = 30,
+			{ monster = "armpw", interval = 3, amount = 5, location = 1 },
 		},
+		{ -- wave 4
+			duration = 30,
+			{ monster = "arm_venom", interval = 3, amount = 3, location = 1 },
+		},
+		{ -- wave 5
+			duration = 30,
+			{ monster = "corstorm", interval = 4, amount = 3, location = 1 },
+		},
+		{ -- wave 6
+			duration = 30,
+			{ monster = "corpyro", interval = 5, amount = 3, location = 1 },
+		},
+		{ -- wave 7
+			duration = 30,
+			{ monster = "armsptk", interval = 3, amount = 3, location = 1 },
+		},
+		{ -- wave 8
+			duration = 30,
+			{ monster = "chickena", interval = 3, amount = 3, location = 1 },
+		},
+		{ -- wave 9
+			duration = 30,
+			{ monster = "chicken_dodo", interval = 5, amount = 4, location = 1 },
+		},
+		{ -- wave 10
+			duration = 30,
+			{ monster = "chicken_sporeshooter", interval = 5, amount = 4, location = 1 },
+		},
+		{ -- wave 11
+			duration = 30,
+			{ monster = "cormortgold", interval = 5, amount = 2, location = 1 },
+		},
+		{ -- wave 12
+			duration = 30,
+			{ monster = "armwar", interval = 3, amount = 3, location = 1 },
+		},
+		{ -- wave 13
+			duration = 30,
+			{ monster = "chickenc", interval = 5, amount = 2, location = 1 },
+		},
+		{ -- wave 14
+			duration = 30,
+			{ monster = "armorco", interval = 5, amount = 2, location = 1 },
+		},
+		{ -- wave 15
+			duration = 30,
+			{ monster = "chickenq", interval = 5, amount = 2, location = 1 },
+		}
 	},
+	
+	--[[
+	normal = {
+	},
+	
+	hard = {
+	},
+	]]--
+	
 	castleposition = {90, 100},
 	spawningpoints = {
-		{950,100},
+		{950, 100},
   	},
 }

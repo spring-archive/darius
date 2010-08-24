@@ -16,7 +16,7 @@ return {
 	},
 	castleposition = {850, 200},
 	spawningpoints = {
-		{500,1000},
-		{1000,500},
+		{50, 900},
+		{100, 900},
   	},
 }

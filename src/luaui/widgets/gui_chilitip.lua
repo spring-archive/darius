@@ -689,29 +689,30 @@ local function MakeToolTip(x,y, tooltip_type, unitID, ud, tooltip, morph_time, m
 	end
 	]]--
 	
-	iconstack = 
-		StackPanel:New{
-			orientation='horizontal',
-			padding = {0,0,0,0},
-			itemPadding = {1,0,0,0},
-			itemMargin = {0,0,0,0},
-			resizeItems=false,
-			autosize=true,
-			width   = 60;
+	iconstack = StackPanel:New{
+		orientation='horizontal',
+		padding = {0,0,0,0},
+		itemPadding = {1,0,0,0},
+		itemMargin = {0,0,0,0},
+		resizeItems=false,
+		autosize=true,
+		width   = 60,
 
-			children = {
-				Image:New{
-					file2 = (WG.GetBuildIconFrame)and(WG.GetBuildIconFrame(ud)),
-					file = "#" .. ud.id,
-					keepAspect = false;
-					height  = 55*(4/5);
-					width   = 55;
-				},
-				--{},
-				 Image:New{file='bitmaps/greenball.png',height= icon_size,width= icon_size,},
-				 Label:New{ caption = mcost, valign='center', textColor=color.tooltip_info, width=35, autoSize=false , fontSize=newFontSize,},
-			}
-		}
+		children = {
+			Image:New{
+				file2 = (WG.GetBuildIconFrame)and(WG.GetBuildIconFrame(ud)),
+				file = "#" .. ud.id,
+				keepAspect = false;
+				height  = 55*(4/5);
+				width   = 55;
+			},
+		},
+	}
+	if (ud.customParams.greenballs) then
+		table.insert(iconstack.children, Image:New{file='bitmaps/greenball.png',height= icon_size,width= icon_size,})
+		table.insert(iconstack.children, Label:New{ caption = ud.customParams.greenballs, valign='center', textColor=color.tooltip_info, width=35, autoSize=false , fontSize=newFontSize,})
+	end
+
 	stack_tooltip = StackPanel:New{
 		autosize=true,
 		x=60,y=0,

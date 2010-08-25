@@ -16,18 +16,11 @@ end
 
 local spEcho = Spring.Echo
 
-------------------------------------------------
-if (gadgetHandler:IsSyncedCode()) then -- synced
-------------------------------------------------
+---------------------
+-- Local Functions --
+---------------------
 
-function gadget:GameOver()
-	if (Spring.GetGameRulesParam("gameWon") ~= 1) then return end
-
-	if (debug_message) then debug_message(gadget:GetInfo().name .. ": Selecting Award") end
-	--Decide on award
-	--TODO: Generate Award
-	award = {"Stone", "Lightning", "Nuclear"} --Test example
-
+local function AwardCards(award)
 	if (debug_message) then debug_message(gadget:GetInfo().name .. ": Awarding Player") end
 	str = ""
 	for _, name in pairs(award) do
@@ -38,7 +31,26 @@ function gadget:GameOver()
 
 	--Notify UI
 	if (debug_message) then debug_message(gadget:GetInfo().name .. ": Awarded player with " .. str) end
-	SendToUnsynced("awardstr", str) --Note: Could be sent seperately too
+	SendToUnsynced("awardstr", str)
+end
+
+------------------------------------------------
+if (gadgetHandler:IsSyncedCode()) then -- synced
+------------------------------------------------
+
+function gadget:Initialize()
+	if (GG.Darius) then
+		GG.Darius.AwardCards = AwardCards
+	end
+end
+
+function gadget:GameOver()
+	if (Spring.GetGameRulesParam("gameWon") ~= 1) then return end
+
+	--Decide on award
+	if (debug_message) then debug_message(gadget:GetInfo().name .. ": Selecting Award") end
+	--TODO: Generate Award
+	AwardCards({"Metal", "Lightning", "Sonic"}) --Test example
 end
 
 ------------------------------------------------

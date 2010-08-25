@@ -21,7 +21,8 @@ if (gadgetHandler:IsSyncedCode()) then -- synced
 ------------------------------------------------
 
 function gadget:GameOver()
-	--TODO: Check victory
+	if (Spring.GetGameRulesParam("gameWon") ~= 1) then return end
+
 	if (debug_message) then debug_message(gadget:GetInfo().name .. ": Selecting Award") end
 	--Decide on award
 	--TODO: Generate Award

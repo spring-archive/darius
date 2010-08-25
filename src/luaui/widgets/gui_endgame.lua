@@ -61,6 +61,7 @@ local defaults = {
 -- in-game stats
 local gamestats = {
 	awards = {},
+	victory = false,
 	timeElapsed = 0,
 	wavesTotal = 0,
 	enemiesKilled = 0,
@@ -102,6 +103,7 @@ end
 
 -- gets the game stats
 local function GetStats()
+	gamestats.victory          = (spGetGameRulesParam("gameWon") == 1)
 	gamestats.enemiesKilled    = spGetGameRulesParam("monstersKilledTotal")
 	gamestats.enemiesTotal     = spGetGameRulesParam("monstersSpawnedTotal")
 	gamestats.wavesCompleted   = spGetGameRulesParam("numOfCurrentWave")
@@ -179,6 +181,13 @@ local function CreatePanel()
 
 	-- label list
 	window_endgame.labels = {}
+	local victorystr = ""
+	if (gamestats.victory) then
+		victorystr = "\255\092\255\092" .. "Victory!"
+	else
+		victorystr = "\255\255\092\092" .. "Defeat!"
+	end
+	table.insert(window_endgame.labels, Label:New { textColor = color.sub_fg, fontSize=font_size, x=0, y= 0, caption = victorystr })
 	table.insert(window_endgame.labels, Label:New { textColor = color.sub_fg, fontSize=font_size, x=0, y= 0, caption = 'Game Time: ' .. SecondsToHHMMSS(gamestats.timeElapsed) })
 	table.insert(window_endgame.labels, Label:New { textColor = color.sub_fg, fontSize=font_size, x=0, y=15, caption = 'Enemies Killed: ' .. gamestats.enemiesKilled .. ' of ' .. gamestats.enemiesTotal })
 	table.insert(window_endgame.labels, Label:New { textColor = color.sub_fg, fontSize=font_size, x=0, y=45, caption = 'Waves completed: ' .. gamestats.wavesCompleted .. ' of ' .. gamestats.wavesTotal })

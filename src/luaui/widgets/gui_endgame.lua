@@ -108,8 +108,35 @@ local function GetStats()
 	gamestats.wavesTotal       = spGetGameRulesParam("numberOfWaves")
 end
 
+local function ShowAward()
+	--If the window hasn't been created then we don't want to do this
+	if not window_endgame then return end
+
+	--Create the award text if necessary
+	if not (lbl_awards) then
+		lbl_awards = Label:New { textColor = color.sub_fg, fontSize=15+5, x=0, y= 0, caption = 'Cards Awarded' }
+		table.insert(window_endgame.children, lbl_awards)
+	end
+
+	--If there are already card buttons, remove them
+	if (window_endgame.cards) then
+		for _, btn in pairs(window_endgame.cards) do
+			window_endgame:RemoveChild(btn)
+			btn:Dispose()
+		end
+	end
+
+	--Create card buttons
+	window_endgame.cards = {}
+	for _, card in pairs(gamestats.awards) do
+		local button = WG.Darius:GetCardButton(card, settings.cardsize_x, settings.cardsize_y)
+		table.insert(window_endgame.cards, button)
+		table.insert(window_endgame.children, button)
+	end
+end
+
 --Award str should be whitespace seperated
-local function SetAward(awardstr)
+local function AddAward(awardstr)
 	if (awardstr) then
 		-- iterate over whitespace-separated components
 		for id in awardstr:gmatch("%S+") do
@@ -117,6 +144,9 @@ local function SetAward(awardstr)
 			if (type(card) == "table") then
 				table.insert(gamestats.awards, card)
 			end
+		end
+		if (window_endgame) then
+			ShowAward()
 		end
 	end
 end
@@ -158,17 +188,7 @@ local function CreatePanel()
 
 	--Card awards
 	if (#gamestats.awards ~= 0) then
-		lbl_awards = Label:New { textColor = color.sub_fg, fontSize=font_size+5, x=0, y= 0, caption = 'Cards Awarded' }
-		table.insert(window_endgame.children, lbl_awards)
-
-		window_endgame.cards = {}
-		for _, card in pairs(gamestats.awards) do
-			local button = WG.Darius:GetCardButton(card, settings.cardsize_x, settings.cardsize_y)
-			table.insert(window_endgame.cards, button)
-		end
-		for _, btn in pairs(window_endgame.cards) do
-			table.insert(window_endgame.children, btn)
-		end
+		ShowAward()
 	end
 end
 
@@ -255,7 +275,7 @@ end
 -- inits Chili-stuff, creates the panel and gets initial stats
 function widget:Initialize()
 	LoadCardData()
-	widgetHandler:RegisterGlobal("SetAwardDisplay" , SetAward)
+	widgetHandler:RegisterGlobal("AddAwardDisplay" , AddAward)
 	WG.Darius:RegisterWidget(widget)
 end
 

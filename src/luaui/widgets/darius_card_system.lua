@@ -275,6 +275,13 @@ function Darius:GetCardButton(card, width, height)
 				while (lbl_health.font:GetTextWidth(lbl_health.caption) > width) do
 					lbl_health.font.size = lbl_health.font.size - 1
 				end
+			elseif (card.type == "Special" and img_center.width ~= width) then 
+				--Display the special card's description instead
+				lbl_health:SetCaption(card.desc)
+				lbl_health.font.size = height/15
+				while (lbl_health.font:GetTextWidth(lbl_health.caption) > width) do
+					lbl_health.font.size = lbl_health.font.size - 1
+				end
 			else
 				lbl_health:SetCaption("")
 				lbl_health.font.size = 0

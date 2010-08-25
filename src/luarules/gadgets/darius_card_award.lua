@@ -21,8 +21,10 @@ if (gadgetHandler:IsSyncedCode()) then -- synced
 ------------------------------------------------
 
 function gadget:GameOver()
+	--TODO: Check victory
 	if (debug_message) then debug_message(gadget:GetInfo().name .. ": Selecting Award") end
 	--Decide on award
+	--TODO: Generate Award
 	award = {"Stone", "Lightning", "Nuclear"} --Test example
 
 	if (debug_message) then debug_message(gadget:GetInfo().name .. ": Awarding Player") end

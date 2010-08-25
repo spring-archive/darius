@@ -32,7 +32,7 @@ unitDef = {
   idleTime               = 1800,
   levelGround            = false,
   mass                   = 45,
-  maxDamage              = 3900,
+  maxDamage              = 2900,
   maxSlope               = 36,
   maxVelocity            = 0,
   maxWaterDepth          = 0,
@@ -81,7 +81,7 @@ weapons             = {
       craterMult              = 0,
 
       damage                  = {
-        default = 100,
+        default = 35,
       },
 
       endsmoke                = [[0]],
@@ -93,7 +93,7 @@ weapons             = {
       lineOfSight             = true,
       noSelfDamage            = true,
       range                   = 500,
-      reloadtime              = 9.2,
+      reloadtime              = 10,
       renderType              = 4,
       rgbColor                = [[0.2 0.6 0]],
       size                    = 8,

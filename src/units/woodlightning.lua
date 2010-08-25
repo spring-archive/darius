@@ -40,7 +40,7 @@ unitDef = {
   modelCenterOffset      = [[0 32 0]],
   noAutoFire             = false,
   noChaseCategory        = [[FIXEDWING LAND SHIP SATELLITE SWIM GUNSHIP SUB HOVER]],
-  objectName             = [[armbrtha.3do]],
+  objectName             = [[corllt.s3o]],
   seismicSignature       = 4,
   selfDestructAs         = [[SUICIDE]],
 
@@ -98,7 +98,7 @@ weapons             = {
       paralyzer               = true,
       paralyzeTime            =	3,
       range                   = 400,
-      reloadtime              = 1.5,
+      reloadtime              = 3,
       renderType              = 7,
       rgbColor                = [[1 1 0.25]],
       soundHit                = [[weapons/laser_hit]],

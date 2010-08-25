@@ -81,7 +81,7 @@ unitDef = {
       craterBoost             = 0,
       craterMult              = 0,
       damage                  = {
-        default       = 3,
+        default       = 2,
       },
 
       fireStarter             = 1000,
@@ -102,7 +102,7 @@ unitDef = {
 	  texture1				  = [[poison]],
       turret                  = true,
       weaponType              = [[Flame]],
-      weaponVelocity          = 100,
+      weaponVelocity          = 200,
     },
 
   },

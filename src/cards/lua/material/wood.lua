@@ -1,9 +1,9 @@
 local card = {
 	name 		= "Wood",
 	type 		= "Material",
-	template    = "generic",
+	template    = "s3o_template",
 	img 		= 'cards/images/material/wood.png',
-	model       = 'armbrtha',
+	model       = 'corllt',
 	health 		= 500,
 	reloadTime 	= 0,
 	range 		= 100,

@@ -6,7 +6,7 @@ local card = {
 	health 		= 0,
 	reloadTime 	= 0.2,
 	range 		= 220,
-	damage 		= 3,
+	damage 		= 2,
 	greenballs 	= -1,
 	desc 		= "Poisons the enemies, causing their life points to reduce over time."
 }

@@ -81,7 +81,7 @@ weapons             = {
       craterMult              = 0,
 
       damage                  = {
-        default = 100,
+        default = 35,
       },
 
       endsmoke                = [[0]],
@@ -93,7 +93,7 @@ weapons             = {
       lineOfSight             = true,
       noSelfDamage            = true,
       range                   = 300,
-      reloadtime              = 3.2,
+      reloadtime              = 4,
       renderType              = 4,
       rgbColor                = [[0.2 0.6 0]],
       size                    = 8,

@@ -1,9 +1,9 @@
 local card = {
 	name 		= "Seise's special",
 	type 		= "Material",
-	template    = "generic",
+	template    = "s3o_template",
 	img 		= 'LuaUI/images/seises_special.png',
-	model       = 'screamer',
+	model       = 'corhlt',
 	health 		= 5000,
 	reloadTime 	= 0,
 	range 		= 200,

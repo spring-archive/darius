@@ -44,7 +44,7 @@
       turret                  = true,
 	  texture1				  = [[fire2]],
       weaponType              = [[Flame]],
-      weaponVelocity          = 100,
+      weaponVelocity          = 200,
     },
 
   },

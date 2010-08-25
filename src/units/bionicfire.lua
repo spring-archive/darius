@@ -32,7 +32,7 @@ unitDef = {
   idleTime               = 1800,
   levelGround            = false,
   mass                   = 45,
-  maxDamage              = 850,
+  maxDamage              = 650,
   maxSlope               = 36,
   maxVelocity            = 0,
   maxWaterDepth          = 0,
@@ -106,7 +106,7 @@ unitDef = {
       turret                  = true,
 	  texture1				  = [[fire2]],
       weaponType              = [[Flame]],
-      weaponVelocity          = 100,
+      weaponVelocity          = 200,
     },
 
   },

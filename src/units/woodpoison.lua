@@ -40,7 +40,7 @@ unitDef = {
   modelCenterOffset      = [[0 32 0]],
   noAutoFire             = false,
   noChaseCategory        = [[FIXEDWING LAND SHIP SATELLITE SWIM GUNSHIP SUB HOVER]],
-  objectName             = [[armbrtha.3do]],
+  objectName             = [[corllt.s3o]],
   seismicSignature       = 4,
   selfDestructAs         = [[SUICIDE]],
 
@@ -81,7 +81,7 @@ unitDef = {
       craterBoost             = 0,
       craterMult              = 0,
       damage                  = {
-        default       = 3,
+        default       = 2,
       },
 
       fireStarter             = 1000,
@@ -102,7 +102,7 @@ unitDef = {
 	  texture1				  = [[poison]],
       turret                  = true,
       weaponType              = [[Flame]],
-      weaponVelocity          = 100,
+      weaponVelocity          = 200,
     },
 
   },

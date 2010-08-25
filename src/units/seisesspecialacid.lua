@@ -40,7 +40,7 @@ unitDef = {
   modelCenterOffset      = [[0 32 0]],
   noAutoFire             = false,
   noChaseCategory        = [[FIXEDWING LAND SHIP SATELLITE SWIM GUNSHIP SUB HOVER]],
-  objectName             = [[screamer.3do]],
+  objectName             = [[corhlt.s3o]],
   seismicSignature       = 4,
   selfDestructAs         = [[SUICIDE]],
 
@@ -81,7 +81,7 @@ weapons             = {
       craterMult              = 0,
 
       damage                  = {
-        default = 100,
+        default = 35,
       },
 
       endsmoke                = [[0]],
@@ -93,7 +93,7 @@ weapons             = {
       lineOfSight             = true,
       noSelfDamage            = true,
       range                   = 500,
-      reloadtime              = 1.2,
+      reloadtime              = 2,
       renderType              = 4,
       rgbColor                = [[0.2 0.6 0]],
       size                    = 8,

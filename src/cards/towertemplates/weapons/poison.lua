@@ -40,7 +40,7 @@
 	  texture1				  = [[poison]],
       turret                  = true,
       weaponType              = [[Flame]],
-      weaponVelocity          = 100,
+      weaponVelocity          = 200,
     },
 
   },

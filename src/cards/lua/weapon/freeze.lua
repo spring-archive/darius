@@ -5,8 +5,8 @@ local card = {
 	img 		= 'cards/images/weapon/freeze.png',
 	health 		= 0,
 	paralyze	= 1,
-	reloadTime 	= 1,
-	range 		= 150,
+	reloadTime 	= 2.5,
+	range 		= 200,
 	greenballs 	= 0,
 	desc 		= "Does no damage, but freezes monsters within range."
 }

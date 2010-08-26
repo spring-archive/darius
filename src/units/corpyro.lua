@@ -90,11 +90,10 @@ unitDef = {
       craterMult              = 0,
 
       damage                  = {
-        default       = 2,
+        default       = 1,
       },
 
       explosionGenerator      = [[custom:SMOKE]],
-      fireStarter             = 100,
       flameGfxTime            = 1.6,
       impulseBoost            = 0,
       impulseFactor           = 0,

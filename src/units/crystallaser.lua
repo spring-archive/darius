@@ -9,7 +9,7 @@ unitDef = {
   activateWhenBuilt      = false,
   bmcode                 = [[0]],
   brakeRate              = 0,
-  buildPic               = [[CORLLT.png]],
+  buildPic               = [[armpb.png]],
   canAttack              = true,
   canstop                = [[1]],
   category               = [[SINK]],
@@ -84,7 +84,7 @@ unitDef = {
       craterMult              = 2,
 
       damage                  = {
-        default = 3,
+        default = 300,
       },
 
       duration                = 0.02,
@@ -100,7 +100,7 @@ unitDef = {
       lodDistance             = 10000,
       noSelfDamage            = true,
       range                   = 550,
-      reloadtime              = 0.7,
+      reloadtime              = 7.2,
       renderType              = 0,
       rgbColor                = [[1 0 0]],
       soundHit                = [[weapons/laserhit]],
@@ -108,7 +108,7 @@ unitDef = {
       soundTrigger            = true,
       sweepfire               = false,
       targetMoveError         = 0.1,
-      thickness               = 4.03112887414927,
+      thickness               = 10,
       tolerance               = 5000,
       turret                  = true,
       weaponType              = [[LaserCannon]],

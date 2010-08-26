@@ -50,7 +50,7 @@ local flameFX = {
     sizeGrowth   = 0.9,
     emitVector   = {0,1,0},
     emitRotSpread = 60,
-    texture      = 'bitmaps/GPL/flame.png',
+    texture      = 'bitmaps/GPL/poison.png',
     count        = 7,
 }
 

@@ -9,7 +9,7 @@ unitDef = {
   activateWhenBuilt      = false,
   bmcode                 = [[0]],
   brakeRate              = 0,
-  buildPic               = [[CORLLT.png]],
+  buildPic               = [[armartic.png]],
   canAttack              = true,
   canstop                = [[1]],
   category               = [[SINK]],
@@ -28,8 +28,8 @@ unitDef = {
   footprintZ             = 2,
   healtime               = [[0]],
   iconType               = [[defenseraider]],
-  idleAutoHeal           = 0,
-  idleTime               = 1800,
+  idleAutoHeal           = 70,
+  idleTime               = 0,
   levelGround            = false,
   mass                   = 45,
   maxDamage              = 700,
@@ -81,7 +81,7 @@ weapons             = {
       craterMult              = 0,
 
       damage                  = {
-        default = 35,
+        default = 60,
       },
 
       endsmoke                = [[0]],
@@ -93,7 +93,7 @@ weapons             = {
       lineOfSight             = true,
       noSelfDamage            = true,
       range                   = 400,
-      reloadtime              = 3.5,
+      reloadtime              = 3.8,
       renderType              = 4,
       rgbColor                = [[0.2 0.6 0]],
       size                    = 8,

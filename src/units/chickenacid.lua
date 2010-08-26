@@ -9,7 +9,7 @@ unitDef = {
   activateWhenBuilt      = false,
   bmcode                 = [[0]],
   brakeRate              = 0,
-  buildPic               = [[CORLLT.png]],
+  buildPic               = [[mercury.png]],
   canAttack              = true,
   canstop                = [[1]],
   category               = [[SINK]],
@@ -32,7 +32,7 @@ unitDef = {
   idleTime               = 1800,
   levelGround            = false,
   mass                   = 45,
-  maxDamage              = 1200,
+  maxDamage              = 1400,
   maxSlope               = 36,
   maxVelocity            = 0,
   maxWaterDepth          = 0,
@@ -81,7 +81,7 @@ weapons             = {
       craterMult              = 0,
 
       damage                  = {
-        default = 35,
+        default = 60,
       },
 
       endsmoke                = [[0]],
@@ -93,7 +93,7 @@ weapons             = {
       lineOfSight             = true,
       noSelfDamage            = true,
       range                   = 300,
-      reloadtime              = 2.4,
+      reloadtime              = 3.3,
       renderType              = 4,
       rgbColor                = [[0.2 0.6 0]],
       size                    = 8,

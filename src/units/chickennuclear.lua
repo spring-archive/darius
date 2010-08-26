@@ -9,7 +9,7 @@ unitDef = {
   activateWhenBuilt      = false,
   bmcode                 = [[0]],
   brakeRate              = 0,
-  buildPic               = [[CORLLT.png]],
+  buildPic               = [[mercury.png]],
   canAttack              = true,
   canstop                = [[1]],
   category               = [[SINK]],
@@ -32,7 +32,7 @@ unitDef = {
   idleTime               = 1800,
   levelGround            = false,
   mass                   = 45,
-  maxDamage              = 1000,
+  maxDamage              = 1200,
   maxSlope               = 36,
   maxVelocity            = 0,
   maxWaterDepth          = 0,
@@ -79,7 +79,7 @@ weapons             = {
       craterMult              = 2,
 
       damage                  = {
-        default = 3000,
+        default = 3500,
       },
 
 	  explosionGenerator      = [[custom:NUKE_150]],
@@ -93,8 +93,8 @@ weapons             = {
       model                   = [[wep_m_avalanche.s3o]],
       noSelfDamage            = true,
       predictBoost            = 1,
-      range                   = 600,
-      reloadtime              = 30.4,
+      range                   = 700,
+      reloadtime              = 50.3,
       renderType              = 1,
       selfprop                = true,
       smokedelay              = [[.1]],

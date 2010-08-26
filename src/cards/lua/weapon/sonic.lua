@@ -6,8 +6,8 @@ local card = {
 	health 		= 0,
 	reloadTime 	= 0.1,
 	range 		= 400,
-	damage 		= 3, --chicken only
-	greenballs 	= 0,
+	damage 		= 3,
+	greenballs 	= -2,
 	desc 		= "Emits constant high frequency sound waves that are lethal to chickens. \n" ..
 				  "The waves have no affect on mechs.",
 }

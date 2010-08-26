@@ -9,7 +9,7 @@ unitDef = {
   activateWhenBuilt      = false,
   bmcode                 = [[0]],
   brakeRate              = 0,
-  buildPic               = [[CORLLT.png]],
+  buildPic               = [[novahlt.png]],
   canAttack              = true,
   canstop                = [[1]],
   category               = [[SINK]],
@@ -79,7 +79,7 @@ weapons             = {
       craterMult              = 2,
 
       damage                  = {
-        default = 3000,
+        default = 3500,
       },
 
 	  explosionGenerator      = [[custom:NUKE_150]],
@@ -93,8 +93,8 @@ weapons             = {
       model                   = [[wep_m_avalanche.s3o]],
       noSelfDamage            = true,
       predictBoost            = 1,
-      range                   = 650,
-      reloadtime              = 30.5,
+      range                   = 750,
+      reloadtime              = 50.4,
       renderType              = 1,
       selfprop                = true,
       smokedelay              = [[.1]],

@@ -23,7 +23,7 @@ Spring.SetGameRulesParam("unitsOnFire",1)
 
 --//SETTINGS
 
-local fireDmg   = 0.5 --// in 1/gameframe
+local fireDmg   = 0.1 --// in 1/gameframe
 local allyBonus = 1 --// do less damage to allied units
 
 --//VARS

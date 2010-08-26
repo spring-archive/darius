@@ -9,7 +9,7 @@ unitDef = {
   activateWhenBuilt      = false,
   bmcode                 = [[0]],
   brakeRate              = 0,
-  buildPic               = [[CORLLT.png]],
+  buildPic               = [[armpb.png]],
   canAttack              = true,
   canstop                = [[1]],
   category               = [[SINK]],
@@ -81,7 +81,7 @@ weapons             = {
       craterMult              = 0,
 
       damage                  = {
-        default = 35,
+        default = 60,
       },
 
       endsmoke                = [[0]],
@@ -93,7 +93,7 @@ weapons             = {
       lineOfSight             = true,
       noSelfDamage            = true,
       range                   = 500,
-      reloadtime              = 2.6,
+      reloadtime              = 3.2,
       renderType              = 4,
       rgbColor                = [[0.2 0.6 0]],
       size                    = 8,

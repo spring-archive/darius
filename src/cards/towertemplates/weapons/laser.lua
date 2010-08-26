@@ -46,7 +46,7 @@
       soundTrigger            = true,
       sweepfire               = false,
       targetMoveError         = 0.1,
-      thickness               = 4.03112887414927,
+      thickness               = 10,
       tolerance               = 5000,
       turret                  = true,
       weaponType              = [[LaserCannon]],

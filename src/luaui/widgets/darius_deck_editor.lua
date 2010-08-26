@@ -10,7 +10,6 @@ function widget:GetInfo()
 	}
 end
 
-
 local spSendLuaRulesMsg = Spring.SendLuaRulesMsg
 local spEcho = Spring.Echo
 
@@ -45,6 +44,8 @@ local selectedCardButton 			= nil
 local cardPoolLabels 				= {}
 local selectedDeckLabels 			= {}
 local decksLabels 					= {}
+local conflictLabels				= {}
+local conflictStack					= nil
 local activeDeckLabel 				= nil
 local activeDeck1Label				= nil
 local activeDeck2Label				= nil
@@ -265,7 +266,7 @@ end
 local function SetDecks(deckCollection)
 	-- Modify the data to the format used by the deck editor
 	for i = 1, #deckCollection do
-		table.insert(decks, i, GenerateOccuranceTable(deckCollection[i]))
+		table.insert(decks, GenerateOccuranceTable(deckCollection[i]))
 	end
 
 	-- Order the redraw of the deck data
@@ -338,8 +339,7 @@ local function RemoveCardFromDeck(cardName, deckID, amount)
 end
 
 local function CheckDecks(deckID1, deckID2)
-
-	-- Use the first deck as a base for the calculation (copy is needed, bacause we don't want to brake the existing deck)
+	-- Use the first deck as a base for the calculation (copy is needed, because we don't want to break the existing deck)
 	local cardTotals = table.copy(decks[deckID1])
 
 	-- Counts the total amount of each card in the decks supplied
@@ -353,21 +353,28 @@ local function CheckDecks(deckID1, deckID2)
 			cardTotals[cardName] = amount
 		end
 	end
+	
+	-- Stores the conflicts found between the decks and the pool
+	local conflicts = {}
 
 	-- Check that the card pool has enough cards to support the deck candidates
 	for cardName, amount in pairs(cardTotals) do
 
 		-- Check that the card is in the pool and that we have enough of them
-		if not cardPool[cardName] or cardPool[cardName] < amount then
-			-- Not enough cards to support the decks
-			return false
+		if not cardPool[cardName] then
+			-- There are no cards of this name in the pool (is this even possible...?) => add as a conflict
+			conflicts[cardName] = amount
+			
+		elseif cardPool[cardName] < amount then
+			-- The decks have too many cards of this name => add as a conflict
+			conflicts[cardName] = amount - cardPool[cardName] -- The actual amount of cards conflicting
 		end
-
 	end
 
-	-- All checks were passed
-	return true
+	-- return all the conflicts found
+	return conflicts
 end
+
 ----------------
 -- UI helpers --
 ----------------
@@ -402,9 +409,7 @@ local function SetUpHandles()
 end
 
 local function GetLabelByCaption(labelArray, caption) -- Currently not used
-
 	for i = 1, #labelArray do
-
 		if string.find(labelArray[i].caption, caption) then
 			return labelArray[i]
 		end
@@ -417,11 +422,21 @@ local function CheckActivatedDecks()
 	-- Check that we have two active decks
 	if activatedDeckIndex1 > 0 and activatedDeckIndex2 > 0  and decks[activatedDeckIndex1] and decks[activatedDeckIndex2]then
 
-		-- Check if the decks are valid and save the result
-		decksAreOK = CheckDecks(activatedDeckIndex1, activatedDeckIndex2)
-
+		-- Check if the decks are valid and save the results
+		local conflicts = CheckDecks(activatedDeckIndex1, activatedDeckIndex2)
+		
+		if table.isempty(conflicts) then
+			-- There are no conflicts => the decks are OK
+			decksAreOK = true
+			return nil
+		else
+			-- There were conflicts => the decks are not OK
+			decksAreOK = false
+			return conflicts
+		end
 	else -- Something wrong with the variables => decks are definately not ok
 		decksAreOK = false
+		return {}
 	end
 end
 ------------------
@@ -462,7 +477,21 @@ local function UpdateDeckEditorUI()
 		-- Check if the activated decks need a re-check
 		if reCheckDecks then
 			reCheckDecks = false
-			CheckActivatedDecks()
+			--Remove the old conflictions
+			for i = 1, #conflictLabels do
+				sideDataPanel:RemoveChild(conflictLabels[i])
+			end
+			-- Check for new conflicts
+			local conflicts = CheckActivatedDecks()
+
+			if conflicts then -- Conflictions were found
+				local i = 1 -- Used to index the conflictLabels -array
+				for cardName, amount in pairs(conflicts) do
+					sideDataPanel:AddChild(conflictLabels[i])
+					conflictLabels[i]:SetCaption(redOfDenial .. GenerateCardLabelString(cardName, amount)) 
+					i = i + 1
+				end
+			end
 		end
 
 		-- Update the labels showing the activated decks
@@ -483,24 +512,24 @@ local function UpdateDeckEditorUI()
 		if decksAreOK then
 			activeDeckInfoLabel:SetCaption(acceptiveGreen .. "You can play with these decks")
 		else
-			activeDeckInfoLabel:SetCaption(redOfDenial .. "You can't play with these decks")
+			activeDeckInfoLabel:SetCaption(redOfDenial .. "You can't play with these decks because\nyou have exceeded the card pool as follows:")
 		end
 	else --The deck editing view:
 
-		-- Check that a card has been fetched fron the pool
+		-- Check if a card has been fetched fron the pool
 		if not table.isempty(latestCard) then
 
 			if selectedCardButton and selectedCardButton.card then
-				-- The card button has been made => we need to only update it
-
-					if selectedCardButton.card.name ~= latestCard.name then
-						-- The name in the button is different from the one in the activated card => a new card has been activated and it needs to be updated
-						selectedCardButton.card = latestCard
-						selectedCardButton:UpdateCard(cardButtonX, cardButtonY)
-					else
-						-- The names are the same => the active card has not changed => it's enough to update the old button
-						selectedCardButton:UpdateCard(cardButtonX, cardButtonY)
-					end
+				-- The card button has been made => we need only to update it
+				
+				if selectedCardButton.card.name ~= latestCard.name then
+					-- The name in the button is different from the one in the activated card => a new card has been activated and it needs to be updated
+					selectedCardButton.card = latestCard
+					selectedCardButton:UpdateCard(cardButtonX, cardButtonY)
+				else
+					-- The names are the same => the active card has not changed => it's enough to update the old button
+					selectedCardButton:UpdateCard(cardButtonX, cardButtonY)
+				end
 			end
 		end
 	end
@@ -614,6 +643,9 @@ local function ChangeDeckEditorView()
 	sideDataPanel:RemoveChild(activeDeck1Label)
 	sideDataPanel:RemoveChild(activeDeck2Label)
 	sideDataPanel:RemoveChild(activeDeckInfoLabel)
+	for i = 1, #conflictLabels do
+		sideDataPanel:RemoveChild(conflictLabels[i])
+	end
 
 	if deckSelectingview then
 		-- Add the stuff required for the deck selection view
@@ -649,6 +681,7 @@ local function ChangeDeckEditorView()
 
 	UpdateDeckEditorUI()
 end
+
 local function RunOnCardPoolLabelClick(label)
 	if label and label.caption and label.caption ~= "" then
 
@@ -815,10 +848,22 @@ local function MakeDeckEditorUI()
 		valign = "left",
 		fontSize = labelFontSize,
 	}
+	
+	-- Generate the labels for the possible conflicts
+	for i = 1, maxCardAmount do
+		label = Label:New{
+					caption = "",
+					textColor = color.sub_fg,
+					align = "left",
+					valign = "left",
+					fontSize = labelFontSize,
+					fontColor = redOfDenial,
+					}
+		table.insert(conflictLabels, label)
+	end
 
 	-- Generate the card pool labels
 	for i = 1, maxCardAmount do
-
 		label = Label:New{
 					caption = "",
 					textColor = color.sub_fg,
@@ -830,13 +875,11 @@ local function MakeDeckEditorUI()
 									RunOnCardPoolLabelClick(self)
 								end},
 					}
-
 		table.insert(cardPoolLabels, label)
 	end
 
 	-- Generate the card labels for the activated deck
 	for i = 1, maxCardAmount do
-
 		label = Label:New{
 					caption = "",
 					textColor = color.sub_fg,
@@ -848,13 +891,11 @@ local function MakeDeckEditorUI()
 									RunOnSelectedDeckLabelClick(self)
 								end},
 					}
-
 		table.insert(selectedDeckLabels, label)
 	end
 
 	-- Generate the deck labels for all the decks
 	for i = 1, maxDeckAmount do
-
 		label = Label:New{
 					caption = "",
 					textColor = color.sub_fg,

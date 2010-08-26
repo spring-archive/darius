@@ -19,6 +19,7 @@ end
 local spEcho              = Spring.Echo
 local spGetSeconds        = Spring.GetGameSeconds
 local spGetGameRulesParam = Spring.GetGameRulesParam
+local spSendLuaRulesMsg   = Spring.SendLuaRulesMsg
 
 -------------------
 -- ChiliUI stuff --
@@ -66,6 +67,10 @@ local gamestats = {
 ---------------------
 -- Local functions --
 ---------------------
+
+local function NextWave()
+	spSendLuaRulesMsg("SendNextWave")
+end
 
 -- This function converts seconds to hh:mm:ss or mm:ss (if an hour isn't reached yet)
 local function SecondsToHHMMSS(numOfSecs)
@@ -221,6 +226,15 @@ local function UpdateStats()
 		lbl_enemiestotal:Invalidate()
 	end
 
+	if btn_sendwave then
+		if GetParamFromSpawner("allowSendingNextWave") == 1 then
+			btn_sendwave:SetCaption("Force next wave!")
+		else
+			btn_sendwave:SetCaption("Spawning in progress!")
+		end
+		btn_sendwave:Invalidate()
+	end
+	
 	windowStats:Invalidate()
 end
 
@@ -245,6 +259,10 @@ local function CreatePanel()
 	lbl_wavestotal    = Label:New { textColor = color.sub_fg, fontSize=font_size, x=label_x_offset+50, y=30 }
 	lbl_enemieskilled = Label:New { textColor = color.sub_fg, fontSize=font_size, x=label_x_offset, y=45 }
 	lbl_enemiestotal  = Label:New { textColor = color.sub_fg, fontSize=font_size, x=label_x_offset+50, y=45 }
+	
+	-- FIXME: Button does not really fit into the UI ...
+	-- button to send new wave
+	btn_sendwave = Button:New{ caption = "Force next wave!", OnMouseUp = { NextWave }, y=60, width=200 }
 
 	-- the ui
 	windowStats = Window:New {
@@ -265,7 +283,8 @@ local function CreatePanel()
 			lbl_currentwave,
 			lbl_wavestotal,
 			lbl_enemieskilled,
-			lbl_enemiestotal
+			lbl_enemiestotal,
+			btn_sendwave
 		}
 	}
 
@@ -299,6 +318,7 @@ function widget:Initialize()
 	Chili = WG.Chili
 	Window = Chili.Window
 	Label = Chili.Label
+	Button = Chili.Button
 	Screen0 = Chili.Screen0
 
 	-- create the panel and get initial stats

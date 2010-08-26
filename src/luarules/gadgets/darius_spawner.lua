@@ -21,6 +21,7 @@ local spGetTeamStartPosition = Spring.GetTeamStartPosition
 local spGiveOrderToUnit = Spring.GiveOrderToUnit
 local spGetGameSeconds = Spring.GetGameSeconds
 local spSetGameRulesParam = Spring.SetGameRulesParam
+local spGetGameRulesParam = Spring.GetGameRulesParam
 local spSendCommands = Spring.SendCommands
 local spDestroyUnit = Spring.DestroyUnit
 local spGetGroundHeight = Spring.GetGroundHeight
@@ -71,8 +72,9 @@ local function LoadMapData()
 end
 
 local function SpawnMonsters()
-	-- Time for next wave
+	nextWave = spGetGameRulesParam("NextWave");
 	if nextWave < Spring.GetGameSeconds() then
+		-- Sending next wave
 		currentWave = currentWave + 1
 		local monsters = waves[currentWave]
 		if monsters == nil then
@@ -91,17 +93,26 @@ local function SpawnMonsters()
 		return
 	end
 	local monsters = waves[currentWave]
+	local zeroMonsters = true
 	for i, monster in ipairs(monsters) do
-		if monster["amount"] > 0 and monster["nextSpawn"] < Spring.GetGameSeconds() then
-			local src = spawningpoints[monster["location"]]
-			local unit = spCreateUnit(monster["monster"], src[1], spGetGroundHeight(src[1],src[2]), src[2], "south", monsterTeamNumber, false)
-			spGiveOrderToUnit(unit, CMD.MOVE, castleposition, {})
-			--Spring.PlaySoundFile("sounds/ui/monster_spawn.wav")
-			monster["amount"] = monster["amount"] - 1
-			monstersSpawnedTotal = monstersSpawnedTotal + 1
-			spSetGameRulesParam("monstersSpawnedTotal", monstersSpawnedTotal)
-			monster["nextSpawn"] = Spring.GetGameSeconds() + monster["interval"]
+		if monster["amount"] > 0 then
+			zeroMonsters = false
+			if monster["nextSpawn"] < Spring.GetGameSeconds() then
+				local src = spawningpoints[monster["location"]]
+				local unit = spCreateUnit(monster["monster"], src[1], spGetGroundHeight(src[1],src[2]), src[2], "south", monsterTeamNumber, false)
+				spGiveOrderToUnit(unit, CMD.MOVE, castleposition, {})
+				--Spring.PlaySoundFile("sounds/ui/monster_spawn.wav")
+				monster["amount"] = monster["amount"] - 1
+				monstersSpawnedTotal = monstersSpawnedTotal + 1
+				spSetGameRulesParam("monstersSpawnedTotal", monstersSpawnedTotal)
+				monster["nextSpawn"] = Spring.GetGameSeconds() + monster["interval"]
+			end
 		end
+	end
+	if zeroMonsters then
+		spSetGameRulesParam("allowSendingNextWave", 1)
+	else
+		spSetGameRulesParam("allowSendingNextWave", 0)
 	end
 end
 
@@ -154,6 +165,18 @@ function MoveCastle()
 	Spring.MoveCtrl.SetPosition(GetCommanders(1)[1],castleposition[1],castleposition[2],castleposition[3])
 end
 
+-- If no more monsters are to be spawned in the current wave then this function will set the duration to zero causing the spawner to move to the next wave
+function SendNextWave()
+		local monsters = waves[currentWave]
+		for i, monster in ipairs(monsters) do
+			if (monster["amount"] > 0) then
+				spEcho("Monsters still spawning in this wave!")
+				return
+			end
+		end
+		-- No monsters spawning so safe to set the wave duration to zero
+		spSetGameRulesParam("NextWave", 0)
+end
 
 --------------
 -- Call-ins --
@@ -163,10 +186,17 @@ function gadget:Initialize()
 	LoadMapData()
 	spSetGameRulesParam("numberOfWaves", #waves)
 	
+	spSetGameRulesParam("NextWave", 0)
 	spSetGameRulesParam("gameWon", 0)
 	spSetGameRulesParam("monstersKilledTotal", 0)
 	
 	SetLocations()
+end
+
+function gadget:RecvLuaMsg(msg, playerID)
+	if string.find(msg, "SendNextWave") then
+		SendNextWave()
+	end
 end
 
 function gadget:GameFrame(f)

@@ -56,13 +56,24 @@ local function LoadMapData()
 	if not (VFS.FileExists(mapfile)) then return false end
 	mapData = VFS.Include(mapfile)
 	if not (type(mapData) == "table") then return false end
-	if not (type(mapData.easy) == "table") then return false end
+	if not (type(mapData.waves) == "table") then return false end
 	if not (type(mapData.castleposition) == "table") then return false end
 	if not (#mapData.castleposition == 2) then return false end
 	if not (type(mapData.spawningpoints) == "table") then return false end
 	if (#mapData.spawningpoints == 0) then return false end
-	
-	waves = mapData.easy --TODO: Get correct wave per difficulty (easy, normal, hard)
+
+	local difficulty = "easy"
+
+	if (difficulty == "easy") then
+		if not (type(mapData.waves.easy) == "table") then return false end
+		waves = mapData.waves.easy
+	elseif (difficulty == "normal") then
+		if not (type(mapData.waves.normal) == "table") then return false end
+		waves = mapData.waves.normal
+	elseif (difficulty == "hard") then
+		if not (type(mapData.waves.hard) == "table") then return false end
+		waves = mapData.waves.hard
+	end
 
 	castleposition = mapData.castleposition --{x, z}
 	castleposition[3] = castleposition[2]

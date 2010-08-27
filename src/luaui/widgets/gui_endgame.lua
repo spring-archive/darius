@@ -5,7 +5,7 @@ function widget:GetInfo()
 		author    = "xcompwiz",
 		date      = "July 1, 2010",
 		license   = "GNU GPL, v2 or later",
-		layer     = 100,
+		layer     = 0,
 		enabled   = true
 	}
 end
@@ -190,7 +190,7 @@ local function CreatePanel()
 	table.insert(window_endgame.labels, Label:New { textColor = color.sub_fg, fontSize=font_size, x=0, y= 0, caption = victorystr })
 	table.insert(window_endgame.labels, Label:New { textColor = color.sub_fg, fontSize=font_size, x=0, y= 0, caption = 'Game Time: ' .. SecondsToHHMMSS(gamestats.timeElapsed) })
 	table.insert(window_endgame.labels, Label:New { textColor = color.sub_fg, fontSize=font_size, x=0, y=15, caption = 'Enemies Killed: ' .. gamestats.enemiesKilled .. ' of ' .. gamestats.enemiesTotal })
-	table.insert(window_endgame.labels, Label:New { textColor = color.sub_fg, fontSize=font_size, x=0, y=45, caption = 'Waves completed: ' .. gamestats.wavesCompleted .. ' of ' .. gamestats.wavesTotal })
+	table.insert(window_endgame.labels, Label:New { textColor = color.sub_fg, fontSize=font_size, x=0, y=45, caption = 'Waves Spawned: ' .. gamestats.wavesCompleted .. ' of ' .. gamestats.wavesTotal })
 	for _, lbl in pairs(window_endgame.labels) do
 		table.insert(window_endgame.children, lbl)
 	end
@@ -274,6 +274,7 @@ local function AdjustWindow()
 		window_endgame.minHeight = grid_btn_y + settings.cardsize_y + 50
 	end
 
+	window_endgame.maxHeight = window_endgame.minHeight
 	window_endgame:Invalidate()
 end
 

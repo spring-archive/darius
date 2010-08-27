@@ -6,7 +6,7 @@ local card = {
 	reloadTime = 0,
 	range      = 0,
 	damage     = 0,
-	greenballs = 0,
+	greenballs = 1,
 	effect     = {
 		effect = function()
 		end,

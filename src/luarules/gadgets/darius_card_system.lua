@@ -146,7 +146,7 @@ end
 
 function Darius:AddGreenballs(num)
 	--spEcho("Greenballs = " .. greenballs .. " + " .. num)
-	greenballs = greenballs + num
+	greenballs = greenballs + (num or 0)
 	--spEcho("Greenballs = " .. greenballs)
 	UnsyncGreenballs()
 end

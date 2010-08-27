@@ -149,6 +149,7 @@ end
 
 local function ResetUI()
 	WG.Darius:SendUIMessage("reset")
+	SwitchOff()
 end
 
 local function MainMenu()
@@ -376,6 +377,7 @@ end
 --have to disable widgets so that the player can't accidently draw cards or move the windows while in menu 	
 function disableWidgets()
 	WG.Darius:SendUIMessage("hide")
+	widgetHandler:DisableWidget("The deck editor")
 end
 
 --------------

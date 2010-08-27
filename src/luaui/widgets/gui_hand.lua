@@ -31,7 +31,7 @@ local defaults = {
 	pos_x = 0,
 	pos_y = -1, --vsy
 	width = -1,
-	height = 250,
+	height = 200,
 }
 
 ----------------

@@ -26,6 +26,7 @@ local glPopMatrix        = gl.PopMatrix
 local glPushMatrix       = gl.PushMatrix
 local glTranslate        = gl.Translate
 local glUnitShape        = gl.UnitShape
+local glDrawGroundCircle = gl.DrawGroundCircle
 
 ----------------
 -- Local Vars --
@@ -55,7 +56,6 @@ end
 -- Callins --
 -------------
 function widget:Initialize()
-	spEcho("Tower Ghost ON")
 	team = Spring.GetMyTeamID()
 end
 
@@ -71,14 +71,17 @@ function widget:DrawWorld()
 		-- If we are over a chili element then return
 		if (WG.Chili) then if (WG.Chili:IsAbove(mx,my)) then return end end
 		local _, pos = spTraceScreenRay(mx, my, true, false)
-		glColor(GetTeamColor(team))
 		if (pos) then
+			--Draw Tower
+			glColor(GetTeamColor(team))
 			glPushMatrix()
 			glTranslate(pos[1], pos[2], pos[3])
-
 			glUnitShape(tower, team)
-
 			glPopMatrix()
+
+			--Draw Range
+			glColor(255, 200, 200, 0.8)
+			glDrawGroundCircle(pos[1], pos[2], pos[3], WeaponDefs[UnitDefs[tower].weapons[1].weaponDef].range, 16)
 		end
 		--local hoverType, hoverData = spTraceScreenRay(mx, my)
 		--if (hoverType == "unit") then
@@ -86,8 +89,4 @@ function widget:DrawWorld()
 		--end
 	--	spEcho("Draw Tower "..tostring(pos[1]).." "..tostring(pos[2]).." "..tostring(pos[3]))
 	end
-end
-
-function widget:Shutdown()
-	spEcho("Tower Ghost OFF")
 end

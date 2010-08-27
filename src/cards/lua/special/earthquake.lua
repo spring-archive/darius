@@ -7,10 +7,18 @@ local card = {
 	range      = 0,
 	damage     = 0,
 	greenballs = 0,
-	effect     = {effect = function(pos, unit)
-				-- shake camera for some time
-			end},
-	desc       = "Quickly lowers HP of the enemies to 30% of their maximum."
+	effect     = {
+		effect = function(pos, unit)
+			local units = Spring.GetAllUnits()
+			for _,unitID in ipairs(units) do
+				local health, maxhealth, _,_,_ = Spring.GetUnitHealth(unitID)
+				if (health > maxhealth * 0.3) then
+					Spring.SetUnitHealth(unitID, {health = maxhealth*0.3})
+				end
+			end
+		end,
+	},
+	desc       = "Reduces the health of everything to 30% of its maximum."
 }
 
 return card

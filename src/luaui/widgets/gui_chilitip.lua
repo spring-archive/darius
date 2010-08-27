@@ -632,7 +632,7 @@ local function MakeToolTip(x,y, tooltip_type, unitID, ud, tooltip, morph_time, m
 	
 	--tt_children[#tt_children + 1] = Image:New{file='LuaUI/images/ibeam.png',height= icon_size,width= icon_size,}
 	--tt_children[#tt_children + 1] = Label:New{ caption = mcost, valign='center', textColor=color.tooltip_info, width='80%', autoSize=false , fontSize=options.fontsize.value,}
-	
+
 	if tooltip_type == 'morph' then
 		tt_children[#tt_children + 1] = Label:New{ caption = 'Morph: ', height= icon_size, valign='center', textColor=color.tooltip_info, autoSize=false, width=45, fontSize=newFontSize,}
 		tt_children[#tt_children + 1] = Image:New{file='LuaUI/images/clock.png',height= icon_size,width= icon_size, fontSize=newFontSize,}
@@ -645,11 +645,12 @@ local function MakeToolTip(x,y, tooltip_type, unitID, ud, tooltip, morph_time, m
 		end
 		
 	end
-	
+
 	if tooltip_type == 'unit' then
 		tt_children[#tt_children + 1] = tt_healthbar
 	end
-	
+
+	--[[
 	--resources
 	if unitID then
 		local resStack = GetResourceStack(unitID, ud, tooltip, newFontSize)
@@ -657,8 +658,7 @@ local function MakeToolTip(x,y, tooltip_type, unitID, ud, tooltip, morph_time, m
 			tt_children[#tt_children+1] = resStack
 		end
 	end
-	
-	--[[
+
 	local showingExtendedTip = false
 	local _,_,_,buildUnitName = Spring.GetActiveCommand()
 	local sc_label 
@@ -689,6 +689,12 @@ local function MakeToolTip(x,y, tooltip_type, unitID, ud, tooltip, morph_time, m
 	end
 	]]--
 	
+	if (ud.weapons) then if (ud.weapons[1]) then
+		weapon = WeaponDefs[ud.weapons[1].weaponDef]
+		tt_children[#tt_children + 1] = Label:New{ caption = "Dmg " .. tostring(weapon.damages[2]) , valign='center', textColor=color.tooltip_info, width=55, autoSize=false, fontSize=newFontSize,}
+		tt_children[#tt_children + 1] = Label:New{ caption = "Rng " .. string.format("%.0f",weapon.range) , valign='center', textColor=color.tooltip_info, width=50, autoSize=false, fontSize=newFontSize,}
+		tt_children[#tt_children + 1] = Label:New{ caption = "Reload " .. string.format("%.1f",weapon.reload) , valign='center', textColor=color.tooltip_info, width=60, autoSize=false, fontSize=newFontSize,}
+	end end
 	iconstack = StackPanel:New{
 		orientation='horizontal',
 		padding = {0,0,0,0},

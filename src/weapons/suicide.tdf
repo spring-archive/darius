@@ -1,6 +1,7 @@
 [SUICIDE]
 {
   name=TowerSelfdestruct;
+  avoidFriendly=false;
   areaofeffect=300;
   craterboost=1;
   cratermult=1;

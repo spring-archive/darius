@@ -7,7 +7,7 @@ local card = {
 	health 		= 3000,
 	reloadTime 	= 3,
 	range 		= 200,
-	greenballs 	= -4,
+	greenballs 	= -7,
 	desc 		= "An indestructible tower. Slow and mild, but won't leave you alone"
 }
 

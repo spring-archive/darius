@@ -7,7 +7,7 @@ local card = {
     health      = 1000,
     reloadTime  = 0.4,
     range       = 50,
-    greenballs  = 0,
+    greenballs  = -3,
     desc        = "Creates a tall stone tower with decent range and good amount of health,\n" ..
                  "but due to the tall design weapon reloading time is increased."
 }

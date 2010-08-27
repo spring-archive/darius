@@ -5,9 +5,9 @@ local card = {
 	img 		= 'cards/images/material/dariusium.png',
 	model       = 'armarch',
 	health 		= 4000,
-	reloadTime 	= 0.5,
-	range 		= 0,
-	greenballs 	= -5,
+	reloadTime 	= 0.4,
+	range 		= 50,
+	greenballs 	= -12,
 	desc 		= "Hardest known material in the universe. Very rare and expensive.",
 }
 

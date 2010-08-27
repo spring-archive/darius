@@ -76,6 +76,7 @@ weapons             = {
     Sniper = {
       name                    = [[Long Range Pulse Rifle]],
       areaOfEffect            = 1,
+	  avoidFriendly			  = false,
       craterBoost             = 0,
       craterMult              = 0,
 
@@ -94,7 +95,7 @@ weapons             = {
       noGap                   = true,
       noSelfDamage            = true,
       range                   = 1600,
-      reloadtime              = 4.2,
+      reloadtime              = 4.3,
       renderType              = 1,
       separation              = 0.5,
       sizeDecay               = 0,

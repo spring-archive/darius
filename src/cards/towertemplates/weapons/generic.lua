@@ -14,6 +14,7 @@
     LASER = {
       name                    = [[Laser Blaster]],
       areaOfEffect            = 24,
+	  avoidFriendly			  = false,
       beamWeapon              = true,
       canattackground         = true,
       cegTag                  = [[redlaser_llt]],

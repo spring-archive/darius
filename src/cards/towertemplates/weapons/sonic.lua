@@ -12,6 +12,7 @@
 
     GAUSS         = {
       name                    = [[Gauss Battery]],
+	  avoidFriendly			  = false,
       alphaDecay              = 0.12,
       areaOfEffect            = 40,
       cegTag                  = [[gauss_tag_h]],

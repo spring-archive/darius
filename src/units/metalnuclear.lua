@@ -74,6 +74,7 @@ weapons             = {
 
     NUKE = {
       name                    = [[Nuclear missile]],
+	  avoidFriendly			  = true,
       areaOfEffect            = 300,
       craterBoost             = 0,
       craterMult              = 2,
@@ -94,7 +95,7 @@ weapons             = {
       noSelfDamage            = true,
       predictBoost            = 1,
       range                   = 800,
-      reloadtime              = 50.2,
+      reloadtime              = 50.3,
       renderType              = 1,
       selfprop                = true,
       smokedelay              = [[.1]],

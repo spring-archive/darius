@@ -74,6 +74,7 @@ unitDef = {
 
     GAUSS         = {
       name                    = [[Gauss Battery]],
+	  avoidFriendly			  = false,
       alphaDecay              = 0.12,
       areaOfEffect            = 40,
       cegTag                  = [[gauss_tag_h]],
@@ -81,7 +82,7 @@ unitDef = {
       craterMult              = 2,
 
       damage                  = {
-        default = 3,
+        default = 4,
       },
 
       explosionGenerator      = [[custom:gauss_hit_h]],

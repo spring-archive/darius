@@ -13,6 +13,7 @@ weapons             = {
     Lightning  = {
       name                    = [[Electro-Stunner]],
       areaOfEffect            = 1,
+	  avoidFriendly			  = false,
       beamWeapon              = true,
       collideFriendly         = true,
       craterBoost             = 0,

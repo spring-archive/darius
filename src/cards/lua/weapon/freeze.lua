@@ -7,7 +7,7 @@ local card = {
 	paralyze	= 1,
 	reloadTime 	= 2.5,
 	range 		= 200,
-	greenballs 	= 0,
+	greenballs 	= -1,
 	desc 		= "Does no damage, but freezes monsters within range."
 }
 

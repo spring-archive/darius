@@ -14,6 +14,7 @@ weapons             = {
     Sniper = {
       name                    = [[Long Range Pulse Rifle]],
       areaOfEffect            = 1,
+	  avoidFriendly			  = false,
       craterBoost             = 0,
       craterMult              = 0,
 

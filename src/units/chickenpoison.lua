@@ -76,6 +76,7 @@ unitDef = {
     GAS = {
       name                    = [[Poison Gas]],
       areaOfEffect            = 200,
+	  avoidFriendly			  = false,
       avoidFeature            = false,
       collideFeature          = false,
       craterBoost             = 0,

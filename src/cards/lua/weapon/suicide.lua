@@ -7,7 +7,7 @@ local card = {
 	reloadTime 	= 20.0,
 	range 		= 1000,
 	damage 		= 700,
-	greenballs 	= -4,
+	greenballs 	= -5,
 	effect 		= nil,
 	desc 		= "This one trick pony does just as it's name promises." }
 

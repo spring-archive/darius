@@ -7,7 +7,7 @@ local card = {
 	health 		= 5000,
 	reloadTime 	= 0,
 	range 		= 200,
-	greenballs 	= -15,
+	greenballs 	= -25,
 	desc 		= "Ultimate material. Made by combining bananas and excessive\n" ..
 				  "documentation to a substance and exposing it to a fusion reaction.",
 }

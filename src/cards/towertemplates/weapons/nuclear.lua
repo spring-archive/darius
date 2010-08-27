@@ -12,6 +12,7 @@ weapons             = {
 
     NUKE = {
       name                    = [[Nuclear missile]],
+	  avoidFriendly			  = true,
       areaOfEffect            = 300,
       craterBoost             = 0,
       craterMult              = 2,

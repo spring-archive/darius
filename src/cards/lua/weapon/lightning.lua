@@ -5,9 +5,9 @@ local card = {
 	img 		= 'cards/images/weapon/lightning.png',
 	health 		= 0,
 	paralyze	= 3,
-	reloadTime 	= 3,
+	reloadTime 	= 4.5,
 	range 		= 300,
-	greenballs 	= 0,
+	greenballs 	= -4,
 	desc 		= "Shoots a lightning bolt that does good damage and the shock halts \n" ..
 				  "a single monsters movement, but the weapon takes a while to recharge",
 }

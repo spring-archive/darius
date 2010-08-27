@@ -7,7 +7,7 @@ local card = {
 	reloadTime 	= 7,
 	range 		= 350,
 	damage 		= 300,
-	greenballs 	= 0,
+	greenballs 	= -3,
 	desc 		= "Shoots a powerful concentrated laserbeam at a single enemie",
 }
 

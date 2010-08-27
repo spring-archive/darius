@@ -7,7 +7,7 @@ local card = {
 	reloadTime 	= 3,
 	range 		= 300,
 	damage 		= 60, 
-	greenballs 	= 0,
+	greenballs 	= -4,
 	desc 		= "Shoots 3 bursts of acid nn enemies. Due to the hazards involved this tower loses health.",
 }
 

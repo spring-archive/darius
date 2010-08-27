@@ -75,6 +75,7 @@ weapons             = {
     WEAPON = {
       name                    = [[Blob]],
       areaOfEffect            = 100,
+	  avoidFriendly			  = false,
       burst                   = 3,
       burstrate               = 0.01,
       craterBoost             = 0,

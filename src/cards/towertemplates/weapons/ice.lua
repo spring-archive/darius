@@ -13,6 +13,7 @@ weapons             = {
 
     ICE = {
       name                    = [[Ice Beam]],
+	  avoidFriendly			  = false,
       areaOfEffect            = 40,
 	  beamWeapon              = true,
       collideFriendly         = true,

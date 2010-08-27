@@ -75,6 +75,7 @@ weapons             = {
 
     ICE = {
       name                    = [[Ice Beam]],
+	  avoidFriendly			  = false,
       areaOfEffect            = 40,
 	  beamWeapon              = true,
       collideFriendly         = true,
@@ -99,7 +100,7 @@ weapons             = {
       paralyzer               = true,
       paralyzeTime            =	1,
       range                   = 300,
-      reloadtime              = 2.7,
+      reloadtime              = 2.8,
       renderType              = 4,
 	  rgbColor                = [[0.5 0.5 1]],
       soundHit                = [[weapons/xplomed3]],

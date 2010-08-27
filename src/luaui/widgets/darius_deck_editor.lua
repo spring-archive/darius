@@ -56,7 +56,7 @@ local createNewDeckButton			= nil
 local activateSelectedDeckButton	= nil
 
 -- UI element sizes
-local labelFontSize = 10
+local labelFontSize = 13
 local cardButtonX = 240
 local cardButtonY = 400
 
@@ -491,6 +491,9 @@ local function UpdateDeckEditorUI()
 					conflictLabels[i]:SetCaption(redOfDenial .. GenerateCardLabelString(cardName, amount)) 
 					i = i + 1
 				end
+				
+				sideDataPanel:AddChild(conflictLabels[#conflictLabels])
+				conflictLabels[#conflictLabels]:SetCaption("")
 			end
 		end
 
@@ -512,7 +515,7 @@ local function UpdateDeckEditorUI()
 		if decksAreOK then
 			activeDeckInfoLabel:SetCaption(acceptiveGreen .. "You can play with these decks")
 		else
-			activeDeckInfoLabel:SetCaption(redOfDenial .. "You can't play with these decks because\nyou have exceeded the card pool as follows:")
+			activeDeckInfoLabel:SetCaption(redOfDenial .. "You can't play with these decks\nbecause you have exceeded\nthe card pool as follows:")
 		end
 	else --The deck editing view:
 
@@ -618,7 +621,12 @@ local function UpdateDeckEditorUI()
 		selectedDeckLabelStack:Invalidate()
 		selectedDeckScrollStack:Invalidate()
 	end
-
+--[[
+	if sideDataPanel then
+		sideDataPanel:UpdateLayout()
+		sideDataPanel:Invalidate()
+	end
+	--]]
 	if deckEditorWindow then
 		deckEditorWindow:Invalidate()
 	end
@@ -805,8 +813,8 @@ end
 
 local function MakeDeckEditorUI()
 
-	local windowWidth = 500
-	local windowHeight = 500
+	local windowWidth = 525
+	local windowHeight = 525
 	local posX = 300
 	local posY = 10
 
@@ -1118,8 +1126,10 @@ local function MakeDeckEditorUI()
 		y = posY,
 		dockable = false,
 		name = "deckEditorWindow",
-		clientWidth = windowWidth,
-		clientHeight = windowHeight,
+		width = windowWidth,
+		height = windowHeight,
+		minWidth = windowWidth,
+		minHeight = windowHeight,
 		draggable = true,
 		resizable = true,
 

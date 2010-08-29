@@ -30,7 +30,7 @@ local maxDeckAmount = 10		-- The maximum amount of decks supported by the editor
 
 local activatedDeckIndex1 = 0
 local activatedDeckIndex2 = 0
-local useNext = false
+local useNext = true
 
 -- UI handles
 local deckEditorStack 				= nil
@@ -59,6 +59,16 @@ local activateSelectedDeckButton	= nil
 local labelFontSize = 13
 local cardButtonX = 240
 local cardButtonY = 400
+local settings = {}
+
+local defaults = {
+	windowMinWidth = 525,
+	windowMinHeight = 525,
+	windowWidth	= 525,
+	windowHeight = 525,
+	posX = 300,
+	posY = 10,
+}
 
 -- Data flags
 local poolHasChanged 		= false	-- Tells the update function to redraw card pool related data
@@ -152,23 +162,6 @@ function table.copy(t)
 	return r
 end
 
-local function GenerateOccuranceTable(t)
-	local occuranceTable = {}
-
-	for i = 1, #t do
-
-		if occuranceTable[t[i]] == nil then
-			--This is the first occurance => set amount to 1
-			occuranceTable[t[i]] = 1
-		else
-			--Not the first occurance => increase the counter
-			occuranceTable[t[i]] = occuranceTable[t[i]] + 1
-		end
-	end
-
-	return occuranceTable
-end
-
 local function FindLongestKey(t) -- Currently not used
 	if not t or t == {} then
 		return 0
@@ -236,6 +229,23 @@ local function GenerateDecksString()
 	return decksString
 end
 
+local function GenerateOccuranceTable(t)
+	local occuranceTable = {}
+
+	for i = 1, #t do
+
+		if occuranceTable[t[i]] == nil then
+			--This is the first occurance => set amount to 1
+			occuranceTable[t[i]] = 1
+		else
+			--Not the first occurance => increase the counter
+			occuranceTable[t[i]] = occuranceTable[t[i]] + 1
+		end
+	end
+
+	return occuranceTable
+end
+
 ------------------------------------
 -- Interfacing with the card pool --
 ------------------------------------
@@ -264,9 +274,13 @@ local function GetDeckSelection()
 end
 
 local function SetDecks(deckCollection)
+	decks = {}
 	-- Modify the data to the format used by the deck editor
 	for i = 1, #deckCollection do
-		table.insert(decks, GenerateOccuranceTable(deckCollection[i]))
+		-- Remove the possible empty decks received from the pool
+		if not table.isempty(deckCollection[i]) then
+			table.insert(decks, GenerateOccuranceTable(deckCollection[i]))
+		end
 	end
 
 	-- Order the redraw of the deck data
@@ -338,12 +352,12 @@ local function RemoveCardFromDeck(cardName, deckID, amount)
 	decksHaveChanged = true
 end
 
-local function CheckDecks(deckID1, deckID2)
+local function CheckDecks(deck1, deck2)
 	-- Use the first deck as a base for the calculation (copy is needed, because we don't want to break the existing deck)
-	local cardTotals = table.copy(decks[deckID1])
+	local cardTotals = table.copy(deck1)
 
 	-- Counts the total amount of each card in the decks supplied
-	for cardName, amount in pairs(decks[deckID2]) do
+	for cardName, amount in pairs(deck2) do
 
 		if cardTotals[cardName] then
 			-- The card totals allready has some of these cards => increase the amount
@@ -419,25 +433,34 @@ local function GetLabelByCaption(labelArray, caption) -- Currently not used
 end
 
 local function CheckActivatedDecks()
-	-- Check that we have two active decks
-	if activatedDeckIndex1 > 0 and activatedDeckIndex2 > 0  and decks[activatedDeckIndex1] and decks[activatedDeckIndex2]then
+	-- Check our activation status (if isActive == true we need to check that that decks is valid)
+	local IsActive1 = activatedDeckIndex1 > 0 and decks[activatedDeckIndex1]
+	local isActive2 = activatedDeckIndex2 > 0 and decks[activatedDeckIndex2]
 
-		-- Check if the decks are valid and save the results
-		local conflicts = CheckDecks(activatedDeckIndex1, activatedDeckIndex2)
-		
-		if table.isempty(conflicts) then
-			-- There are no conflicts => the decks are OK
-			decksAreOK = true
-			return nil
+	local resultingConflicts = {}
+	
+	if isActive1 then
+		if isActive2 then
+			-- Check for conflicts with the activated decks
+			resultingConflicts = CheckDecks(decks[activatedDeckIndex1], decks[activatedDeckIndex2])
 		else
-			-- There were conflicts => the decks are not OK
-			decksAreOK = false
-			return conflicts
+			-- Check for conflicts with just the one active deck
+			resultingConflicts = CheckDecks(decks[activatedDeckIndex1], {})
 		end
-	else -- Something wrong with the variables => decks are definately not ok
-		decksAreOK = false
-		return {}
+	else
+		if isActive2 then
+			-- Check for conflicts with just the one active deck
+			resultingConflicts = CheckDecks(decks[activatedDeckIndex2], {})
+		else
+			-- No decks are active => the are no conflicts
+			-- resultingConflicts = {} (this line is unnecessary)
+		end
 	end
+	
+	-- Check for conflicts (no conflicts means that the decks are OK)
+	decksAreOK = table.isempty(resultingConflicts)
+	
+	return resultingConflicts
 end
 ------------------
 -- UI functions --
@@ -477,7 +500,7 @@ local function UpdateDeckEditorUI()
 		-- Check if the activated decks need a re-check
 		if reCheckDecks then
 			reCheckDecks = false
-			--Remove the old conflictions
+			--Remove the old conflicts
 			for i = 1, #conflictLabels do
 				sideDataPanel:RemoveChild(conflictLabels[i])
 			end
@@ -491,9 +514,9 @@ local function UpdateDeckEditorUI()
 					conflictLabels[i]:SetCaption(redOfDenial .. GenerateCardLabelString(cardName, amount)) 
 					i = i + 1
 				end
-				
-				sideDataPanel:AddChild(conflictLabels[#conflictLabels])
-				conflictLabels[#conflictLabels]:SetCaption("")
+				-- An ugly hack which adds an extra label to the panel, so that the text in the last label will show properly
+				sideDataPanel:AddChild(conflictLabels[i + 1])
+				conflictLabels[i + 1]:SetCaption("")
 			end
 		end
 
@@ -621,12 +644,7 @@ local function UpdateDeckEditorUI()
 		selectedDeckLabelStack:Invalidate()
 		selectedDeckScrollStack:Invalidate()
 	end
---[[
-	if sideDataPanel then
-		sideDataPanel:UpdateLayout()
-		sideDataPanel:Invalidate()
-	end
-	--]]
+
 	if deckEditorWindow then
 		deckEditorWindow:Invalidate()
 	end
@@ -744,15 +762,28 @@ end
 local function RunOnDeletedDeckButtonClick()
 	-- Check that we are removing an existing deck
 	if selectedDeckIndex and decks[selectedDeckIndex] then
-		-- remove the deck
-		table.remove(decks, selectedDeckIndex)
-
-		-- Recheck the active decks if the user deleded an active deck
-		if selectedDeckIndex == activatedDeckIndex1 or selectedDeckIndex == activatedDeckIndex2 then
+	
+		-- Recheck the active decks if the user deleded an active deck, also remove the activation if this was the case
+		if selectedDeckIndex == activatedDeckIndex1 then
+			activatedDeckIndex1 = 0
 			reCheckDecks = true
 		end
+		if selectedDeckIndex == activatedDeckIndex2 then
+			activatedDeckIndex2 = 0
+			reCheckDecks = true
+		end
+		-- remove the deck
+		table.remove(decks, selectedDeckIndex)
+		
+		-- fix the indexes (removing a value from the table will decrease the table size)
+		if selectedDeckIndex < activatedDeckIndex1 then
+			activatedDeckIndex1 = activatedDeckIndex1 - 1
+		end
+		if selectedDeckIndex < activatedDeckIndex2 then
+			activatedDeckIndex2 = activatedDeckIndex2 - 1
+		end
 
-		-- remove deck selection
+		-- remove the deck selection
 		selectedDeckIndex = 0
 
 		-- Redraw
@@ -765,10 +796,10 @@ local function RunOnActivateSelectedDeckButtonClick()
 	-- Only set the deck as active if it has not been activated before
 	if selectedDeckIndex ~= activatedDeckIndex1 and selectedDeckIndex ~= activatedDeckIndex2 then
 
-		-- Check if the first variable has been used before
+		-- Check if the first variable is used
 		if activatedDeckIndex1 > 0 then
 
-			--Check if the second variable has been used before
+			--Check if the second variable is used
 			if activatedDeckIndex2 > 0 then
 
 				-- Check wich of the variables should be used next
@@ -780,19 +811,15 @@ local function RunOnActivateSelectedDeckButtonClick()
 
 				useNext = not useNext
 			else
-				-- This is the first time the second variable is used
+				-- The second variable can be used
 				activatedDeckIndex2 = selectedDeckIndex
 			end
-
-			-- Force the update function to check if the decks are valid
-			reCheckDecks = true
-
 		else
-			-- This is the first time the first variable is used
+			-- The first variable can be used
 			activatedDeckIndex1 = selectedDeckIndex
 		end
-
 		-- Something has been changed => redraw
+		reCheckDecks = true
 		UpdateDeckEditorUI()
 	end
 end
@@ -811,14 +838,26 @@ local function RunOnCreateNewDeckButtonClick()
 	end
 end
 
+local function RunOnActiveDeckLabelClick(label)
+	if label and label.caption and label.caption ~= "" then
+		-- Extract the active deck number
+		local deck = tonumber(label.caption)
+	
+		-- Remove the deck selection
+		if deck == activatedDeckIndex1 then
+			activatedDeckIndex1 = 0
+		end
+		if deck == activatedDeckIndex2 then
+			activatedDeckIndex2 = 0
+		end
+		-- Revalidate the active decks and redraw
+		reCheckDecks = true
+		UpdateDeckEditorUI()
+	end
+end
+
 local function MakeDeckEditorUI()
-
-	local windowWidth = 525
-	local windowHeight = 525
-	local posX = 300
-	local posY = 10
-
-	local label = nil
+	local label = nil -- A cache for the most recently generated label
 
 	-- Generate the side data panel labels
 	activeDeckLabel = Label:New{
@@ -837,6 +876,9 @@ local function MakeDeckEditorUI()
 		align = "left",
 		valign = "left",
 		fontSize = labelFontSize,
+		OnMouseUp = {function(self)
+						RunOnActiveDeckLabelClick(self)
+					end},
 	}
 
 	activeDeck2Label = Label:New{
@@ -846,6 +888,9 @@ local function MakeDeckEditorUI()
 		align = "left",
 		valign = "left",
 		fontSize = labelFontSize,
+		OnMouseUp = {function(self)
+						RunOnActiveDeckLabelClick(self)
+					end},
 	}
 
 	activeDeckInfoLabel = Label:New{
@@ -858,7 +903,7 @@ local function MakeDeckEditorUI()
 	}
 	
 	-- Generate the labels for the possible conflicts
-	for i = 1, maxCardAmount do
+	for i = 1, maxCardAmount + 1 do -- The +1 is because of an ugly hack used in the UpdateDeckEditorUI()-function
 		label = Label:New{
 					caption = "",
 					textColor = color.sub_fg,
@@ -1121,15 +1166,15 @@ local function MakeDeckEditorUI()
 	}
 
 	deckEditorWindow = Window:New {
-		caption="Deck Editor",
-		x = posX,
-		y = posY,
+		caption = "Deck Editor",
+		x = settings.posX or defaults.posX,
+		y = settings.posY or defaults.posY,
 		dockable = false,
 		name = "deckEditorWindow",
-		width = windowWidth,
-		height = windowHeight,
-		minWidth = windowWidth,
-		minHeight = windowHeight,
+		width = settings.windowWidth or defaults.windowWidth,
+		height = settings.windowHeight or defaults.windowHeight,
+		minWidth = defaults.windowMinWidth,
+		minHeight = defaults.windowMinHeight,
 		draggable = true,
 		resizable = true,
 
@@ -1164,9 +1209,35 @@ function widget:Update()
 end
 
 function widget:Shutdown()
-	SendDecks()
 	-- Check that the decks the user has selected are valid and only then activate them
 	if decksAreOK then
+		-- If the user is using only one deck (or no decks at all) add an empty deck as the other deck(to make the card pool work properly)
+		if activatedDeckIndex1 == 0  then
+			decks[#decks + 1] = {}
+			activatedDeckIndex1 = #decks
+		end
+		if activatedDeckIndex2 == 0  then
+			decks[#decks + 1] = {}
+			activatedDeckIndex2 = #decks
+		end
+		-- Send the data to the card pool
+		SendDecks()
 		SendActivatedDecks(activatedDeckIndex1, activatedDeckIndex2)
+	end
+end
+
+function widget:GetConfigData()
+	if (deckEditorWindow) then
+		settings.windowHeight = deckEditorWindow.height
+		settings.windowWidth  = deckEditorWindow.width
+		settings.posX  = deckEditorWindow.x
+		settings.posY  = deckEditorWindow.y
+	end
+	return settings
+end
+
+function widget:SetConfigData(data)
+	if (data and type(data) == 'table') then
+		settings = data
 	end
 end

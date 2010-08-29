@@ -8,7 +8,7 @@ local card = {
 	damage     = 0,
 	greenballs = 2,
 	effect     = {
-		effect = function(pos, unit)
+		start = function(pos, unit)
 			local units = Spring.GetAllUnits()
 			for _,unitID in ipairs(units) do
 				local health, maxhealth, _,_,_ = Spring.GetUnitHealth(unitID)

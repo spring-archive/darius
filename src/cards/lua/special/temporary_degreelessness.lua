@@ -8,10 +8,17 @@ local card = {
 	damage     = 0,
 	greenballs = 1,
 	effect     = {
-		effect = function()
+		reqPos = false,
+		reqUnit = false,
+		duration = 30,
+		start = function(pos, unit)
+		end,
+		continuous = function()
+		end,
+		stop = function()
 		end,
 	},
-	desc       = "(DOESN'T WORK)\nActivates the god mode... for 30 seconds."
+	desc       = "(DOESN'T WORK)\nActivates god mode... for 30 seconds."
 }
 
 return card

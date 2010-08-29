@@ -13,7 +13,8 @@ end
 --------------
 -- Speed Up --
 --------------
-local spEcho = Spring.Echo
+local spEcho           = Spring.Echo
+local spGetGameSeconds = Spring.GetGameSeconds
 
 --local debug_message = spEcho
 
@@ -21,9 +22,22 @@ local spEcho = Spring.Echo
 if (gadgetHandler:IsSyncedCode()) then -- synced
 ------------------------------------------------
 
+local card = nil
 local effect = nil
 local pos = nil
 local unit = nil
+
+local active = {}
+
+local function RunEffects()
+	for index, effect in pairs(active) do
+		if (effect.continuous) then effect.continuous() end
+		if (spGetGameSeconds() - effect.time) > (effect.duration or 0) then
+			if (effect.stop) then effect.stop() end
+			table.remove(active, index)
+		end
+	end
+end
 
 function gadget:Initialize()
 	effect = nil
@@ -32,11 +46,12 @@ function gadget:Initialize()
 end
 
 function gadget:GameFrame(f)
+	RunEffects()
 	if not GG.Darius then return end
 	if (debug_message) then debug_message("Darius is Accessible") end
-	local selectedCard = GG.Darius:GetSelectedSpecial()
 	if not (effect == GG.Darius:GetEffect()) then
 		if (debug_message) then debug_message("Getting Effect") end
+		card = GG.Darius:GetSelectedSpecial() --So we discard the right card
 		effect = GG.Darius:GetEffect()
 		pos = nil
 		unit = nil
@@ -44,13 +59,16 @@ function gadget:GameFrame(f)
 
 	if (effect) and (type(effect) == "table") then
 		if (debug_message) then debug_message("Effect is valid") end
-		if ((effect.needsPos) and (not pos)) then return end
-		if ((effect.needsUnit) and (not unit)) then return end
+		if ((effect.reqPos) and (not pos)) then return end
+		if ((effect.reqUnit) and (not unit)) then return end
 
-		if (debug_message) then debug_message("Calling Effect") end
-		effect.effect(pos, unit)
+		if (debug_message) then debug_message("Starting Effect") end
+		effect.time = spGetGameSeconds()
+		table.insert(active, effect)
+		GG.Darius:DiscardCard(card, true)
 
-		GG.Darius:DiscardCard(selectedCard, true)
+		if (effect.start) then effect.start(pos, unit) end
+
 		pos = nil
 		unit = nil
 	end

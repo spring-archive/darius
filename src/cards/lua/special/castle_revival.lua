@@ -24,8 +24,7 @@ local card = {
 	damage     = 0,
 	greenballs = 0,
 	effect     = {
-		-- some kind of particle aura swings over the castle
-		effect = function()
+		start = function(pos, unit)
 			local commander = GetCommanders(1)[1]
 			local health, maxhealth, _,_,_ = Spring.GetUnitHealth(commander)
 			if (health < maxhealth*0.6) then

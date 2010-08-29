@@ -8,11 +8,17 @@ local card = {
 	damage     = 0,
 	greenballs = 1,
 	effect     = {
-		effect = function(pos, unit)
-			Spring.Echo("Not!")
+		reqPos = false,
+		reqUnit = false,
+		duration = 30,
+		start = function(pos, unit)
+		end,
+		continuous = function()
+		end,
+		stop = function()
 		end,
 	},
-	desc       = "(DOESN'T WORK)\nMultiplies damages of all towers by 4 for 30 seconds."
+	desc       = "(DOESN'T WORK)\nMultiplies damage of all towers by 4 for 30 seconds."
 }
 
 return card

@@ -8,7 +8,14 @@ local card = {
 	damage     = 0,
 	greenballs = 1,
 	effect     = {
-		effect = function()
+		reqPos = false,
+		reqUnit = false,
+		duration = 60,
+		start = function(pos, unit)
+		end,
+		continuous = function()
+		end,
+		stop = function()
 		end,
 	},
 	desc       = "(DOESN'T WORK)\nMovement speed of all enemies in the playfield slows down for 60 seconds."

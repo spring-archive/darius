@@ -8,7 +8,7 @@ local card = {
 	damage     = 0,
 	greenballs = -10,
 	effect     = {
-		effect = function()
+		start = function(pos, unit)
 			local towers = Spring.GetTeamUnits(1)
 			for _,unitID in ipairs(towers) do
 				--checks if the isCommander attribute is true in current unit's unitDef -file

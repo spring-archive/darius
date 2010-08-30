@@ -140,6 +140,12 @@ end
 function GadgetUpdate(f)
 	if spawning then
 		SpawnMonsters()
+	else
+		-- Bug fix for the game not properly ending after all the units have been destroyed
+		-- We are not spwning anymore => check for a possible game end
+		if monstersKilledTotal >= monstersSpawnedTotal and spGetGameRulesParam("gameWon") ~= 1 then
+			GameVictory()
+		end
 	end
 end
 
@@ -230,9 +236,6 @@ end
 function gadget:UnitDestroyed(unitID, unitDefID, teamID, _)
 	if teamID == monsterTeamNumber then
 		UpdateStats()
-		if not spawning and monstersKilledTotal == monstersSpawnedTotal then
-			GameVictory()
-		end
 	end
 end
 

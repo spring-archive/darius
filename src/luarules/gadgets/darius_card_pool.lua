@@ -243,40 +243,38 @@ local function LoadCardsFromFiles()
 end
 
 local function LoadDefaultDecks()
-	spEcho(gadget:GetInfo().name .. ": Loading Default Decks")
+	--spEcho(gadget:GetInfo().name .. ": Loading Default Decks")
 
 	local default_decks_filename = 'gamedata/default.lua'
 
-	spEcho(gadget:GetInfo().name .. ": Checking File Exists")
+	--spEcho(gadget:GetInfo().name .. ": Checking File Exists")
 	if not (VFS.FileExists(default_decks_filename)) then return false end
-	spEcho(gadget:GetInfo().name .. ": File Exists")
+	--spEcho(gadget:GetInfo().name .. ": File Exists")
 
 	local default = VFS.Include(default_decks_filename)
 	if not (type(default) == "table") then return false end
 
-	spEcho(gadget:GetInfo().name .. ": Data Obtained")
-	--If the player doesn't have a pool or any decks (possibly because the data hasn't been loaded yet) then give them the standard
-	if (#pool == 0) or (#decks == 0) then
-		spEcho(gadget:GetInfo().name .. ": Player lacks pool/decks")
-		for _, deck in pairs(default) do
-			if (type(deck) == "table") then
-				spEcho(gadget:GetInfo().name .. ": Creating new deck")
-				newdeck = {}
-				for _, cardname in pairs(deck) do
-					spEcho(gadget:GetInfo().name .. ": Adding Card " .. cardname)
-					local card = gadget:GetCardDataByName(cardname)
-					if (type(card) == "table") then --Makes sure data exists
-						spEcho(gadget:GetInfo().name .. ": " .. cardname .. " Exists")
-						table.insert(pool, card)
-						table.insert(newdeck, card)
-					end
+	--spEcho(gadget:GetInfo().name .. ": Data Obtained")
+		--spEcho(gadget:GetInfo().name .. ": Player lacks pool/decks")
+	for _, deck in pairs(default) do
+		if (type(deck) == "table") then
+			--spEcho(gadget:GetInfo().name .. ": Creating new deck")
+			newdeck = {}
+			for _, cardname in pairs(deck) do
+				--spEcho(gadget:GetInfo().name .. ": Adding Card " .. cardname)
+				local card = gadget:GetCardDataByName(cardname)
+				if (type(card) == "table") then --Makes sure data exists
+					--spEcho(gadget:GetInfo().name .. ": " .. cardname .. " Exists")
+					table.insert(pool, card)
+					table.insert(newdeck, card)
 				end
-				table.insert(decks, newdeck)
 			end
+			table.insert(decks, newdeck)
 		end
-		deck1Index = 1
-		deck2Index = 2
 	end
+	deck1Index = 1
+	deck2Index = 2
+	
 end
 
 local function SendDecksToSession()  -- Sends the decks to the instance game manager
@@ -313,6 +311,11 @@ function gadget:StartGame()
 
 	Darius = GG.Darius
 	Darius:ClearGame() --Clear any previous/current game data
+	
+	-- Load the default decks if necessary
+	if (#pool == 0) or (#decks == 0) then
+		LoadDefaultDecks()
+	end
 
 	if not (SendDecksToSession()) then
 		spEcho("Could not start game, decks are not valid ("..deck1Index..", "..deck2Index..")")
@@ -382,7 +385,6 @@ function gadget:Initialize()
 	end
 
 	LoadCardsFromFiles()
-	LoadDefaultDecks()
 end
 
 function gadget:GameFrame(f) --This is a temporary thing for testing

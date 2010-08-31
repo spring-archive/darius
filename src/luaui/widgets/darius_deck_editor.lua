@@ -1212,11 +1212,11 @@ function widget:Shutdown()
 	-- Check that the decks the user has selected are valid and only then activate them
 	if decksAreOK then
 		-- If the user is using only one deck (or no decks at all) add an empty deck as the other deck(to make the card pool work properly)
-		if activatedDeckIndex1 == 0  then
+		if activatedDeckIndex1 == 0 or not decks[activatedDeckIndex1] then
 			decks[#decks + 1] = {}
 			activatedDeckIndex1 = #decks
 		end
-		if activatedDeckIndex2 == 0  then
+		if activatedDeckIndex2 == 0 or not decks[activatedDeckIndex2] then
 			decks[#decks + 1] = {}
 			activatedDeckIndex2 = #decks
 		end

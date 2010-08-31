@@ -1,12 +1,7 @@
 return {
 	name = "The Labyrinth",
 	waves = {
-			easy = {
-			{duration = 10,
-			{ monster = "chicken", interval = 2, amount = 1, location = 1 },
-			},
-			},
---[[		easy = {
+		easy = {
 			{ -- wave 1
 				duration = 30,
 				{ monster = "chicken", interval = 2, amount = 5, location = 1 },
@@ -18,12 +13,16 @@ return {
 			},
 			{ -- wave 3
 				duration = 30,
-				{ monster = "armpw", interval = 2, amount = 10, location = 1 },
+				{ monster = "armpw", interval = 1, amount = 10, location = 1 },
 			},
 			{ -- wave 4
 				duration = 30,
 				{ monster = "arm_venom", interval = 2, amount = 5, location = 1 },
 				{ monster = "corthud", interval = 2, amount = 10, location = 1 },
+			},
+			{
+				duration = 20,
+				{ monster = "armpw", interval = 1, amount = 20, location = 1},
 			},
 			{ -- wave 10
 				duration = 30,
@@ -34,7 +33,7 @@ return {
 				{ monster = "cormortgold", interval = 2, amount = 2, location = 1 },
 				{ monster = "arm_venom", interval = 2, amount = 2, location = 1 },
 			},
-		},--]]
+		},
 		normal = {
 		},
 		hard = {

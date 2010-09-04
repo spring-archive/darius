@@ -389,6 +389,40 @@ local function CheckDecks(deck1, deck2)
 	return conflicts
 end
 
+local function CreateRandomDecks()
+	-- Seed the random numbers
+	math.randomseed(os.time())
+	-- Empty decks, where we'll add the all the cards in the pool
+	local deck1 = {}
+	local deck2 = {}
+	
+	-- Loop through the pool
+	for cardName, amount in pairs(cardPool) do
+		-- Each card needs to be added seperately to a deck
+		for i = 1, amount do
+			-- Pick the deck where the card will be inserted randomly
+			if math.random() < 0.5 then
+				-- Check if the deck already has this card
+				if deck1[cardName] then
+					-- Increase the counter in this case
+					deck1[cardName] = deck1[cardName] + 1
+				else
+					-- This is the first instance of this card => insert it
+					deck1[cardName] = 1
+				end
+			else
+				-- Same as above, but for the second deck
+				if deck2[cardName] then
+					deck2[cardName] = deck2[cardName] + 1
+				else
+					deck2[cardName] = 1
+				end
+			end
+		end
+	end
+
+	return deck1, deck2
+end
 ----------------
 -- UI helpers --
 ----------------
@@ -434,9 +468,9 @@ end
 
 local function CheckActivatedDecks()
 	-- Check our activation status (if isActive == true we need to check that that decks is valid)
-	local IsActive1 = activatedDeckIndex1 > 0 and decks[activatedDeckIndex1]
+	local isActive1 = activatedDeckIndex1 > 0 and decks[activatedDeckIndex1]
 	local isActive2 = activatedDeckIndex2 > 0 and decks[activatedDeckIndex2]
-
+	
 	local resultingConflicts = {}
 	
 	if isActive1 then
